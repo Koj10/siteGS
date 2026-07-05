@@ -28,14 +28,13 @@ function showNotification(message, isError = false) {
 function showNotificationTime() {
     const pc_token = getCookie('pc_token');
     const jwtToken = getCookie('jwt_token');
-    const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
 
     // Проверяем наличие pc_token перед отправкой запроса
     if (!pc_token) {
         return;
     }
 
-    fetch(`${apiBase}/pc/status/${pc_token}`, {
+    fetch(`https://api.game-sense.ru/pc/status/${pc_token}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

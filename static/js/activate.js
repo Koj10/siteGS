@@ -1,7 +1,6 @@
 function activate_package(id_product) {
     const jwtToken = getCookie('jwt_token');
     const pc_token = getCookie('pc_token');
-    const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
     const data = { 
         id: id_product, 
         type: "time_packages",
@@ -9,7 +8,7 @@ function activate_package(id_product) {
         token: `${pc_token}`
          };
 
-    fetch(`${apiBase}/activate_product`, {
+    fetch('https://api.game-sense.ru/activate_product', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,

@@ -19,16 +19,16 @@
 			<h1 class="custom-text gradient-text">GameSense</h1>
 		</div>
 		<form id="loginForm">
-			<input type="text" name="first_name" id="first_name" placeholder="Имя:" required class="none">
-			<input type="text" name="last_name" id="last_name" placeholder="Фамилия:" required class="none">
+			<input type="text" id="first_name" placeholder="Имя:" required class="none">
+			<input type="text" id="last_name" placeholder="Фамилия:" required class="none">
 			<input type="text" name="identifier" placeholder="E-mail:" required>
 			<input type="password" name="password" placeholder="Пароль:" required>
 			<div class="row">
 				<button type="submit" style="flex-grow: 1;">Войти</button>
-				<button type="button" class="outline-button">Регистрация</button>
+				<button class="outline-button">Регистрация</button>
 			</div>
 			<div class="row between">
-				<a href="http://193.176.78.125" class="outline-button small"><span class="iconoir-home icon"></span>На главную</a>
+				<a href="https://game-sense.ru" class="outline-button small"><span class="iconoir-home icon"></span>На главную</a>
 				<a data-menu="reset-password"><h6 class="small">Забыли пароль?</h6></a>
 			</div>
 			<div><p class="accent-text center">Нет аккаунта? Нажмите "Регистрация" для создания нового профиля</p></div>
@@ -46,6 +46,6 @@
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/login.js') }}?v=1.0.3" defer></script>
+<script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/reset-password.js') }}" defer></script>
 {% endblock %}

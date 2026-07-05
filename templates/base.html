@@ -15,17 +15,13 @@
     <!-- Подключение CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-    <script>
-        // Base URL API for this deployment (site: :5005 dev / :6100 prod, api: :5006 dev / :6001 prod)
-        window.GS_API_BASE = "{{ api_base|default('http://193.176.78.125:6001') }}";
-    </script>
-
     <script src="{{ url_for('static', filename='js/update-user.js') }}?v=1.0.1"></script>
     <script src="{{ url_for('static', filename='js/logout.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/notification.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/menu.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/send-payment.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/loading.js') }}" defer></script>
+    <!-- <script src="{{ url_for('static', filename='js/pure-snow.js') }}" defer></script> -->
 
     <!-- Подключение Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,10 +38,10 @@
 
     <!-- Цвет темы -->
     <meta name="theme-color" content="#19132E">
-    {% block extra_head %}{% endblock %}
 </head>
 
-<body class="{% block body_class %}{% endblock %}">
+<body>
+    <!-- <div id="snow" data-count="10"></div> -->
     {% include 'menu.html' %}
     <div id="custom-notification" class="notification"></div>
     <h4 id="out_time" class="notification"></h4>

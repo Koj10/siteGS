@@ -1,58 +1,27 @@
-{% extends "admin_layout.html" %}
+{% extends "base.html" %}
 {% block title %}Администратор{% endblock %}
-{% block admin_body %}
-<h1 class="admin-page-title">Обзор</h1>
-<p class="admin-page-sub">Быстрый снимок выручки и переходы в разделы</p>
+{% block content %}
 
-<div class="admin-stats">
-	<div class="admin-stat-card">
-		<div class="label">СЕГОДНЯ</div>
-		<div class="value" id="rev-today">—</div>
 	</div>
-	<div class="admin-stat-card">
-		<div class="label">7 ДНЕЙ</div>
-		<div class="value" id="rev-week">—</div>
-	</div>
-	<div class="admin-stat-card">
-		<div class="label">30 ДНЕЙ</div>
-		<div class="value" id="rev-month">—</div>
-	</div>
-</div>
-
-<div class="admin-shortcuts">
-	<a class="admin-shortcut" href="/admin/add_balance">
-		<div class="left">
-			<i class="icon iconoir-community"></i>
-			<div>
-				<h3>Клиенты и баланс</h3>
-				<p>Поиск, пополнение, способ оплаты</p>
-			</div>
+	
+	<section class="admin-section animate-fade-in animate-delay-1">
+		<div class="cardsContainer">
+			<a href="/admin/add_balance" class="card center">
+				<div class="column center">
+					<h1 class="iconoir-money-square"></h1>
+					<h4>Пополнение баланса</h4>
+				</div>
+			</a>
+			<a href="/admin/pc" class="card center">
+				<div class="column center">
+					<h1 class="iconoir-laptop-charging"></h1>
+					<h4>Просмотр ПК</h4>
+				</div>
+			</a>
 		</div>
-		<span class="icon iconoir-arrow-right arrow"></span>
-	</a>
-	<a class="admin-shortcut" href="/admin/pc">
-		<div class="left">
-			<i class="icon iconoir-pc-check"></i>
-			<div>
-				<h3>Компьютеры</h3>
-				<p>Статусы и время на местах</p>
-			</div>
-		</div>
-		<span class="icon iconoir-arrow-right arrow"></span>
-	</a>
-	<a class="admin-shortcut" href="/admin/revenue">
-		<div class="left">
-			<i class="icon iconoir-stats-report"></i>
-			<div>
-				<h3>Отчёт по выручке</h3>
-				<p>Разбивка по наличным, безналу и онлайн</p>
-			</div>
-		</div>
-		<span class="icon iconoir-arrow-right arrow"></span>
-	</a>
+	</section>
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/admin-dashboard.js') }}" defer></script>
-<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.2" defer></script>
+<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
 {% endblock %}

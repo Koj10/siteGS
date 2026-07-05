@@ -1,5 +1,3 @@
-const API_HOST = (window.GS_API_BASE || "http://193.176.78.125:6001").replace(/\/+$/, "");
-
 // Функция для получения значения куки по имени
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -17,7 +15,7 @@ function updateUserData() {
     }
 
     // Выполняем GET-запрос без тела
-    fetch(`${API_HOST}/profile`, {
+    fetch('https://api.game-sense.ru/profile', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +33,7 @@ function updateUserData() {
         localStorage.setItem('user', JSON.stringify(result));
     })
     .catch(error => {
-        console.error('Ошибка updateUserData:', error);
+        console.error('Ошибка:', error);
     });
 }
 

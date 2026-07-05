@@ -1,173 +1,169 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('loginForm');
-    if (!form) {
-        console.error('loginForm не найден');
-        return;
-    }
+const form = document.getElementById("loginForm");
+const buttons = form.querySelectorAll("button");
 
-    const buttons = form.querySelectorAll('button');
-    const loginBtn = buttons[0];
-    const registerBtn = buttons[1];
+const loginBtn = buttons[0];
+const registerBtn = buttons[1];
 
-    if (typeof getCookie === 'function' && getCookie('jwt_token')) {
+const jwtToken = getCookie('jwt_token');
+
+if (jwtToken) {
+    window.location.href = '/';
+}
+
+    // Функция для отправки формы входа
+async function handleLoginSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+
+    try {
+        const response = await fetch('https://api.game-sense.ru/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error('Ошибка входа');
+        }
+
+        const result = await response.json();
+        document.cookie = `jwt_token=${result.token}; path=/; SameSite=Strict`;
+        updateUserData();
         window.location.href = '/';
-        return;
+    } catch (error) {
+        showNotification("Неверный логин или пароль", true);
     }
+}
 
-    function getApiBase() {
-        return (window.GS_API_BASE || 'http://193.176.78.125:6001').replace(/\/+$/, '');
-    }
+    // Функция для отправки формы регистрации
+async function handleRegisterSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
 
-    async function handleLoginSubmit(e) {
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(form));
+    try {
+        const response = await fetch('https://api.game-sense.ru/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
 
-        try {
-            const response = await fetch(`${getApiBase()}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
+        const jsonData = await response.json();
 
-            if (!response.ok) {
-                throw new Error('Ошибка входа');
+        if (!response.ok) {
+            if (response.status === 400) {
+                showNotification(`Эта почта уже зарегистрирована`, true);
+            } else {
+                showNotification('Введите правильные данные', true);
             }
-
-            const result = await response.json();
-            document.cookie = `jwt_token=${result.token}; path=/; SameSite=Strict`;
-            if (typeof updateUserData === 'function') {
-                updateUserData();
-            }
-            window.location.href = '/';
-        } catch (error) {
-            console.error('Login error:', error);
-            if (typeof showNotification === 'function') {
-                showNotification('Неверный логин или пароль', true);
-            }
-        }
-    }
-
-    async function handleRegisterSubmit(e) {
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(form));
-
-        try {
-            const response = await fetch(`${getApiBase()}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-
-            const jsonData = await response.json();
-
-            if (!response.ok) {
-                const message = response.status === 400
-                    ? 'Эта почта уже зарегистрирована'
-                    : (jsonData.error || 'Введите правильные данные');
-                if (typeof showNotification === 'function') {
-                    showNotification(message, true);
-                }
-                return;
-            }
-
-            document.cookie = `jwt_token=${jsonData.token}; path=/; SameSite=Strict`;
-            if (typeof updateUserData === 'function') {
-                updateUserData();
-            }
-            window.location.href = '/';
-        } catch (error) {
-            console.error('Register error:', error);
-            if (typeof showNotification === 'function') {
-                showNotification('Произошла ошибка сети или сервера', true);
-            }
-        }
-    }
-
-    form.addEventListener('submit', handleLoginSubmit);
-
-    function switchToRegister(e) {
-        e.preventDefault();
-        if (form.id === 'registerForm') {
             return;
         }
-        form.id = 'registerForm';
 
+        // Успешная регистрация
+        document.cookie = `jwt_token=${jsonData.token}; path=/; SameSite=Strict`;
+        updateUserData();
+        window.location.href = '/';
+    } catch (error) {
+        console.error('Network or other error:', error);
+        showNotification('Произошла ошибка сети или сервера', true);
+    }
+}
+
+    // Первоначально слушаем только вход
+    form.addEventListener('submit', handleLoginSubmit);
+
+    // Функция для переключения на регистрацию
+    function switchToRegister() {
+        form.id = "registerForm";
+
+        // Удаляем старый обработчик
         form.removeEventListener('submit', handleLoginSubmit);
         form.addEventListener('submit', handleRegisterSubmit);
 
-        const firstName = form.querySelector('[name="first_name"]');
-        const lastName = form.querySelector('[name="last_name"]');
-        const identifier = form.querySelector('[name="identifier"]');
+        // Показываем имя и фамилию
+        form.first_name.classList.remove("none");
+        form.last_name.classList.remove("none");
 
-        firstName.classList.remove('none');
-        lastName.classList.remove('none');
-
-        loginBtn.classList.add('iconoir-arrow-left-circle-solid');
-        loginBtn.textContent = '';
+        loginBtn.classList.add("iconoir-arrow-left-circle-solid");
+        loginBtn.textContent = "";
         loginBtn.removeAttribute('style');
         registerBtn.style.flexGrow = '1';
 
-        firstName.required = true;
-        lastName.required = true;
+        form.first_name.name = "first_name";
+        form.last_name.name = "last_name";
 
-        const emailField = document.createElement('input');
-        emailField.type = 'text';
-        emailField.name = 'email';
-        emailField.placeholder = 'E-mail:';
+        form.first_name.required = true;
+        form.last_name.required = true;
+
+        // Заменяем identifier на email
+        const identifier = form.identifier;
+        const emailField = document.createElement("input");
+        emailField.type = "text";
+        emailField.name = "email";
+        emailField.placeholder = "E-mail:";
         emailField.required = true;
-        if (identifier) {
-            emailField.value = identifier.value;
-            identifier.parentNode.replaceChild(emailField, identifier);
-        } else {
-            form.insertBefore(emailField, form.querySelector('[name="password"]'));
-        }
+        emailField.value = identifier.value;
 
-        registerBtn.type = 'submit';
-        registerBtn.classList.remove('outline-button');
-        loginBtn.type = 'button';
+        identifier.parentNode.replaceChild(emailField, identifier);
+
+        // Превращаем кнопку регистрации в submit
+        registerBtn.type = "submit";
+        registerBtn.classList.remove("outline-button");
+
+        // Убираем submit у кнопки "Войти"
+        loginBtn.type = "button";
     }
 
-    function switchToLogin(e) {
-        e.preventDefault();
-        if (form.id === 'loginForm') {
-            return;
-        }
-        form.id = 'loginForm';
+    // Функция для возврата к входу
+    function switchToLogin() {
+        form.id = "loginForm";
 
+        // Удаляем обработчик регистрации
         form.removeEventListener('submit', handleRegisterSubmit);
         form.addEventListener('submit', handleLoginSubmit);
 
-        const firstName = form.querySelector('[name="first_name"]');
-        const lastName = form.querySelector('[name="last_name"]');
+        // Скрываем имя и фамилию
+        form.first_name.classList.add("none");
+        form.last_name.classList.add("none");
 
-        firstName.classList.add('none');
-        lastName.classList.add('none');
-
-        loginBtn.classList.remove('iconoir-arrow-left-circle-solid');
-        loginBtn.textContent = 'Войти';
+        loginBtn.classList.remove("iconoir-arrow-left-circle-solid");
+        loginBtn.textContent = "Войти";
         registerBtn.removeAttribute('style');
         loginBtn.style.flexGrow = '1';
 
-        registerBtn.classList.add('outline-button');
+        registerBtn.classList.add("outline-button");
 
-        firstName.required = false;
-        lastName.required = false;
+        form.first_name.removeAttribute("name");
+        form.last_name.removeAttribute("name");
 
-        const emailField = form.querySelector('[name="email"]');
+        form.first_name.required = false;
+        form.last_name.required = false;
+
+
+
+        // Удаляем email и возвращаем identifier
+        const emailField = form.email;
         if (emailField) {
-            const identifierField = document.createElement('input');
-            identifierField.type = 'text';
-            identifierField.name = 'identifier';
-            identifierField.placeholder = 'E-mail:';
+            const identifierField = document.createElement("input");
+            identifierField.type = "text";
+            identifierField.name = "identifier";
+            identifierField.placeholder = "E-mail:";
             identifierField.required = true;
             identifierField.value = emailField.value;
+
             emailField.parentNode.replaceChild(identifierField, emailField);
         }
 
-        loginBtn.type = 'submit';
-        registerBtn.type = 'button';
+        // Возвращаем тип кнопок
+        loginBtn.type = "submit";
+        registerBtn.type = "button";
     }
 
-    loginBtn.addEventListener('click', switchToLogin);
-    registerBtn.addEventListener('click', switchToRegister);
-});
+    // Обработчики событий
+    loginBtn.addEventListener("click", switchToLogin);
+    registerBtn.addEventListener("click", switchToRegister);

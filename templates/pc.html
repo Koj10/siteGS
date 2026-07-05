@@ -1,40 +1,93 @@
-{% extends "admin_layout.html" %}
+{% extends "base.html" %}
 {% block title %}Компьютеры{% endblock %}
-{% block admin_body %}
-<div class="pc-admin-wrap">
-	<h1 class="admin-page-title">Компьютеры</h1>
-	<p class="admin-page-sub">Выберите место в зале — настройки откроются в отдельном окне. Быстрые кнопки добавляют часы к времени окончания сессии.</p>
-	<div id="pcStatsBar" class="pc-stats-bar" aria-live="polite"></div>
-	<div id="pcContainer" class="pc-premium-grid"></div>
-</div>
-
-<div id="pcEditModal" class="pc-edit-modal" hidden aria-hidden="true">
-	<div class="clients-modal-backdrop" data-pc-modal-close tabindex="-1"></div>
-	<div class="pc-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="pcModalTitle">
-		<h2 id="pcModalTitle" class="clients-modal-title">ПК №—</h2>
-		<label class="clients-modal-label" for="pcModalStatus">Статус</label>
-		<select id="pcModalStatus" class="pc-edit-select">
-			<option value="активен">Свободен</option>
-			<option value="занят">Занят</option>
-			<option value="заблокирован">Заблокирован</option>
-			<option value="ремонт">Ремонт</option>
-		</select>
-		<label class="clients-modal-label" for="pcModalTime">Окончание сессии</label>
-		<input type="datetime-local" id="pcModalTime" class="clients-modal-input pc-modal-time-input">
-		<div class="pc-time-actions pc-time-actions--modal">
-			<button type="button" class="pc-quick-h" data-h="1">+1 ч</button>
-			<button type="button" class="pc-quick-h" data-h="2">+2 ч</button>
-			<button type="button" class="pc-quick-h" data-h="3">+3 ч</button>
-		</div>
-		<p class="pc-modal-note">Для свободного места выберите «Свободен» — время сбросится. Время указывается в вашем локальном часовом поясе.</p>
-		<div class="clients-modal-actions">
-			<button type="button" class="clients-modal-btn-cancel" data-pc-modal-close>Отмена</button>
-			<button type="button" class="clients-btn-glow" id="pcModalSave">Сохранить</button>
-		</div>
+{% block content %}
+<div id="dropdownContainer"></div>
+<section>
+    <header>
+        <h2>Настройка <span class="accent-text">компьютеров</span></h2>
+    </header>
+	<div id="pcContainer" class="cardsContainer">
 	</div>
-</div>
+</section>
+<div id="busyPcContainer" class="busy-pcs-container"></div>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/showPC.js') }}?v=3" defer></script>
-<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.2" defer></script>
+<script src="{{ url_for('static', filename='js/showPC.js') }}" defer></script>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+    // Родительский контейнер, в котором появляются элементы с dropdown
+    const container = document.getElementById('pcContainer'); // Или 'dropdownContainer', если меню там
+    
+    // Обработчик кликов для всего контейнера
+    container.addEventListener('click', function(event) {
+        // Проверяем, был ли клик по элементу с атрибутом dropdown
+    	const toggle = event.target.closest('[dropdown]');
+    	if (toggle) {
+    		const dropdownId = toggle.getAttribute('dropdown');
+    		const dropdownMenu = document.getElementById(dropdownId);
+    		if (dropdownMenu) {
+                // Позиционируем меню рядом с курсором
+    			positionDropdownAtCursor(dropdownMenu, event);
+    			dropdownMenu.classList.toggle('show');
+                event.stopPropagation(); // Чтобы не сработал window.click ниже
+            }
+        }
+    });
+
+    // Закрываем меню при клике вне его
+    window.addEventListener('click', function(event) {
+    	const allMenus = document.querySelectorAll('.dropdown-content');
+    	allMenus.forEach(menu => {
+    		if (!menu.contains(event.target)) {
+    			menu.classList.remove('show');
+    		}
+    	});
+    });
+
+    // Функция для позиционирования меню рядом с курсором
+    function positionDropdownAtCursor(menu, event) {
+    // Получаем текущие стили меню
+    // Получаем координаты курсора
+        const x = event.clientX;
+        const y = event.clientY;
+
+    // Устанавливаем стили только если они еще не заданы
+        const computedStyles = window.getComputedStyle(menu);
+
+        if (computedStyles.getPropertyValue('position') === 'static') {
+            menu.style.position = 'fixed';
+        }
+        if (computedStyles.getPropertyValue('left') !== '0px') {
+            menu.style.left = `${x}px`;
+        }
+        if (computedStyles.getPropertyValue('top') !== 'auto') {
+            console.log(computedStyles.getPropertyValue('top'))
+            menu.style.top = `${y}px`;
+        }
+
+    // Проверяем, чтобы меню не выходило за границы окна
+        const menuRect = menu.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        let adjustedLeft = x;
+        let adjustedTop = y;
+
+        if (x + menuRect.width > windowWidth) {
+            adjustedLeft = windowWidth - menuRect.width;
+        }
+        if (y + menuRect.height > windowHeight) {
+            adjustedTop = windowHeight - menuRect.height;
+        }
+
+        // if (menu.style.left !== `${adjustedLeft}px`) {
+        //     menu.style.left = `${adjustedLeft}px`;
+        // }
+        // if (menu.style.top !== `${adjustedTop}px`) {
+        //     menu.style.top = `${adjustedTop}px`;
+        // }
+    }
+});
+</script>
+<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
 {% endblock %}

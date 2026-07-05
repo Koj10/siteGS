@@ -2,7 +2,7 @@ const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 const inventory = user.inventory.time_packages;
 
-const host = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
+const host = "https://api.game-sense.ru"; 
 const container = document.getElementById("cardsContainer"); 
 const pc_token = getCookie('pc_token');
 const jwtToken = getCookie('jwt_token');

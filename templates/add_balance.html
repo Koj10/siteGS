@@ -1,57 +1,25 @@
-{% extends "admin_layout.html" %}
-{% block title %}Клиенты{% endblock %}
-{% block body_class %}admin-app admin-clients{% endblock %}
-{% block admin_body %}
-<div class="clients-page">
-	<h1 class="admin-page-title">Клиенты</h1>
-	<p class="admin-page-sub">Подтверждённая почта. Пополнение идёт в выручку; укажите способ оплаты при пополнении.</p>
-
-	<div class="clients-toolbar">
-		<div class="clients-search-wrap">
-			<i class="icon iconoir-search" aria-hidden="true"></i>
-			<input type="text" id="searchInput" class="clients-search-input" placeholder="Поиск по имени, фамилии или почте" autocomplete="off">
-		</div>
-		<select id="sortSelect" class="clients-sort" title="Сортировка">
+{% extends "base.html" %}
+{% block title %}Пользователи{% endblock %}
+{% block content %}
+<section>
+	<header>
+		<h2>Настрока <span class="gradient-text">пользователей</span></h2>
+		<h5>Пополни им всем <span class="gradient-text">баланс</span></h5>
+	</header>
+	<div class="center">
+		<input type="text" id="searchInput" placeholder="Поиск по имени или фамилии">
+		<select id="sortSelect">
 			<option value="">Без сортировки</option>
 			<option value="role">По роли</option>
-			<option value="balance-asc">Баланс ↑</option>
-			<option value="balance-desc">Баланс ↓</option>
+			<option value="balance-asc">По балансу (возрастание)</option>
+			<option value="balance-desc">По балансу (убывание)</option>
 		</select>
 	</div>
-
-	<div id="clientsListScroll" class="clients-list-scroll" tabindex="0" role="region" aria-label="Список клиентов">
-		<div id="cardsContainer" class="clients-list"></div>
-		<div id="blockedSection" class="clients-blocked-section" hidden>
-			<h2 class="clients-section-title">Заблокированные</h2>
-			<div id="cardsContainerBlock" class="clients-list"></div>
-		</div>
-	</div>
-
-	<div id="balanceModal" class="clients-modal" hidden aria-hidden="true">
-		<div class="clients-modal-backdrop" data-balance-modal-close tabindex="-1"></div>
-		<div class="clients-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="balanceModalTitle">
-			<h2 id="balanceModalTitle" class="clients-modal-title">Пополнение баланса</h2>
-			<p class="clients-modal-balance-line">Текущий баланс: <strong id="balanceModalCurrent">0 ₽</strong></p>
-			<p class="clients-modal-hint" id="balanceModalHint">Укажите сумму, которая прибавится к балансу.</p>
-			<label class="clients-modal-label" for="balanceModalAmount">Сумма, ₽</label>
-			<input type="number" id="balanceModalAmount" min="1" step="1" class="clients-modal-input" inputmode="numeric">
-			<div id="balanceModalPayWrap" class="clients-modal-pay">
-				<span class="clients-modal-label">Способ оплаты</span>
-				<div class="clients-pay-pills clients-pay-pills--modal">
-					<label><input type="radio" name="modalPay" value="cash" checked><span>Наличные</span></label>
-					<label><input type="radio" name="modalPay" value="card"><span>Безнал</span></label>
-				</div>
-			</div>
-			<div class="clients-modal-actions">
-				<button type="button" class="clients-modal-btn-cancel" id="balanceModalCancel">Отмена</button>
-				<button type="button" class="clients-btn-glow clients-modal-btn-ok" id="balanceModalConfirm"
-					onclick="if (typeof gameSenseConfirmBalance === 'function') { gameSenseConfirmBalance(event); } return false;">Подтвердить</button>
-			</div>
-		</div>
-	</div>
-</div>
+	<div id="cardsContainer" class="cardsContainer"></div>
+	<div id="cardsContainerBlock" class="cardsContainer"></div>
+</section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/users.js') }}?v=12" defer></script>
-<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.2" defer></script>
+<script src="{{ url_for('static', filename='js/users.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
 {% endblock %}

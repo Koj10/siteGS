@@ -90,8 +90,7 @@
           return false
         }
         try {
-          const apiBase = (window.GS_API_BASE || "http://193.176.78.125:6001").replace(/\/+$/, "");
-          const { data } = await axios.get(`${apiBase}/roulette/spin`, {
+          const { data } = await axios.get('https://api.game-sense.ru/roulette/spin', {
             headers: {
               Authorization: `Bearer ${token}`,
             },

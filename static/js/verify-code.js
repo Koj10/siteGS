@@ -9,9 +9,7 @@ const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 const email = user?.email || 'Email не найден';
 
-const API_BASE = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
-
-fetch(`${API_BASE}/verify-code/send`, {
+fetch('https://api.game-sense.ru/verify-code/send', {
 	method: 'POST',
 	headers: {
 		'Authorization': `Bearer ${jwtToken}`,
@@ -61,7 +59,7 @@ function sendData() {
 	const jwtToken = getCookie('jwt_token');
 	const data = { email: email, code: code };
 
-	fetch(`${API_BASE}/verify-code`, {
+	fetch('https://api.game-sense.ru/verify-code', {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${jwtToken}`,
@@ -102,7 +100,7 @@ resendBtn.addEventListener('click', async () => {
     const data = { email: email };
 
     try {
-        const response = await fetch(`${API_BASE}/verify-code/send`, {
+        const response = await fetch('https://api.game-sense.ru/verify-code/send', {
         	method: 'POST',
         	headers: {
         		'Authorization': `Bearer ${jwtToken}`,

@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function sendPayment(value, email) {
     const jwtToken = getCookie('jwt_token');
     const form = document.querySelector('form');
-    const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
     
     const data = {
         value: value,
@@ -40,7 +39,7 @@ function sendPayment(value, email) {
     
     loading(form, true);
     
-    fetch(`${apiBase}/payments`, {
+    fetch('https://api.game-sense.ru/payments', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,

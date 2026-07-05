@@ -3,11 +3,10 @@ function reset(e) {
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
-    const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
 
     loading(form, true);
     
-    fetch(`${apiBase}/reset-password`, {
+    fetch('https://api.game-sense.ru/reset-password', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

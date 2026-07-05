@@ -1,7 +1,6 @@
 async function logout() {
     const jwtToken = getCookie('jwt_token');
     const pc_token = getCookie('pc_token');
-    const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
 
     if (pc_token) {
         const data = { 
@@ -10,7 +9,7 @@ async function logout() {
         };
 
         try {
-            const response = await fetch(`${apiBase}/pc/status`,  {
+            const response = await fetch('https://api.game-sense.ru/pc/status',  {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`,

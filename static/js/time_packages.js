@@ -1,4 +1,5 @@
-const host = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
+// Замените на ваш реальный адрес
+const host = "https://api.game-sense.ru";
 const url = `${host}/time_packages`;
 
 function getCookie(name) {
