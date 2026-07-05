@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 @app.context_processor
 def inject_api_base():
-    return {"gs_api_base": os.getenv("GS_API_BASE", "http://193.176.78.125:6001")}
+    return {"gs_api_base": os.getenv("GS_API_BASE", "https://api.game-sense.ru")}
 
 PUBLIC_ROUTES = {"login", "static", "login_pc", "reset_password", "price"}
 
