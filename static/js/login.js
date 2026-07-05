@@ -10,6 +10,10 @@ if (jwtToken) {
     window.location.href = '/';
 }
 
+function getApiBase() {
+    return (window.GS_API_BASE || "http://193.176.78.125:6001").replace(/\/+$/, "");
+}
+
     // Функция для отправки формы входа
 async function handleLoginSubmit(e) {
     e.preventDefault();
@@ -17,8 +21,7 @@ async function handleLoginSubmit(e) {
     const data = Object.fromEntries(formData);
 
     try {
-        const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
-        const response = await fetch(`${apiBase}/login`, {
+        const response = await fetch(`${getApiBase()}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,8 +49,7 @@ async function handleRegisterSubmit(e) {
     const data = Object.fromEntries(formData);
 
     try {
-        const apiBase = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
-        const response = await fetch(`${apiBase}/register`, {
+        const response = await fetch(`${getApiBase()}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -80,38 +82,45 @@ async function handleRegisterSubmit(e) {
     form.addEventListener('submit', handleLoginSubmit);
 
     // Функция для переключения на регистрацию
-    function switchToRegister() {
+    function switchToRegister(e) {
+        e.preventDefault();
+        if (form.id === "registerForm") {
+            return;
+        }
         form.id = "registerForm";
 
         // Удаляем старый обработчик
         form.removeEventListener('submit', handleLoginSubmit);
         form.addEventListener('submit', handleRegisterSubmit);
 
+        const firstName = form.querySelector('[name="first_name"]');
+        const lastName = form.querySelector('[name="last_name"]');
+        const identifier = form.querySelector('[name="identifier"]');
+
         // Показываем имя и фамилию
-        form.first_name.classList.remove("none");
-        form.last_name.classList.remove("none");
+        firstName.classList.remove("none");
+        lastName.classList.remove("none");
 
         loginBtn.classList.add("iconoir-arrow-left-circle-solid");
         loginBtn.textContent = "";
         loginBtn.removeAttribute('style');
         registerBtn.style.flexGrow = '1';
 
-        form.first_name.name = "first_name";
-        form.last_name.name = "last_name";
-
-        form.first_name.required = true;
-        form.last_name.required = true;
+        firstName.required = true;
+        lastName.required = true;
 
         // Заменяем identifier на email
-        const identifier = form.identifier;
         const emailField = document.createElement("input");
         emailField.type = "text";
         emailField.name = "email";
         emailField.placeholder = "E-mail:";
         emailField.required = true;
-        emailField.value = identifier.value;
-
-        identifier.parentNode.replaceChild(emailField, identifier);
+        if (identifier) {
+            emailField.value = identifier.value;
+            identifier.parentNode.replaceChild(emailField, identifier);
+        } else {
+            form.insertBefore(emailField, form.querySelector('[name="password"]'));
+        }
 
         // Превращаем кнопку регистрации в submit
         registerBtn.type = "submit";
@@ -122,16 +131,23 @@ async function handleRegisterSubmit(e) {
     }
 
     // Функция для возврата к входу
-    function switchToLogin() {
+    function switchToLogin(e) {
+        e.preventDefault();
+        if (form.id === "loginForm") {
+            return;
+        }
         form.id = "loginForm";
 
         // Удаляем обработчик регистрации
         form.removeEventListener('submit', handleRegisterSubmit);
         form.addEventListener('submit', handleLoginSubmit);
 
+        const firstName = form.querySelector('[name="first_name"]');
+        const lastName = form.querySelector('[name="last_name"]');
+
         // Скрываем имя и фамилию
-        form.first_name.classList.add("none");
-        form.last_name.classList.add("none");
+        firstName.classList.add("none");
+        lastName.classList.add("none");
 
         loginBtn.classList.remove("iconoir-arrow-left-circle-solid");
         loginBtn.textContent = "Войти";
@@ -140,16 +156,11 @@ async function handleRegisterSubmit(e) {
 
         registerBtn.classList.add("outline-button");
 
-        form.first_name.removeAttribute("name");
-        form.last_name.removeAttribute("name");
-
-        form.first_name.required = false;
-        form.last_name.required = false;
-
-
+        firstName.required = false;
+        lastName.required = false;
 
         // Удаляем email и возвращаем identifier
-        const emailField = form.email;
+        const emailField = form.querySelector('[name="email"]');
         if (emailField) {
             const identifierField = document.createElement("input");
             identifierField.type = "text";
