@@ -39,7 +39,7 @@ function sendPayment(value, email) {
     
     loading(form, true);
     
-    fetch('https://api.game-sense.ru/payments', {
+    fetch(`${getApiBase()}/payments`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,

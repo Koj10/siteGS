@@ -7,7 +7,7 @@ function newPassword(e) {
 
     loading(form, true);
     
-    fetch('https://api.game-sense.ru/new-password', {
+    fetch(`${getApiBase()}/new-password`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,

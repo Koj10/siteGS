@@ -9,7 +9,7 @@ async function logout() {
         };
 
         try {
-            const response = await fetch('https://api.game-sense.ru/pc/status',  {
+            const response = await fetch(`${getApiBase()}/pc/status`,  {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`,

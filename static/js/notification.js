@@ -34,7 +34,7 @@ function showNotificationTime() {
         return;
     }
 
-    fetch(`https://api.game-sense.ru/pc/status/${pc_token}`, {
+    fetch(`${getApiBase()}/pc/status/${pc_token}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

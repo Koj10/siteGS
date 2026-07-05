@@ -17,7 +17,7 @@ async function handleLoginSubmit(e) {
     const data = Object.fromEntries(formData);
 
     try {
-        const response = await fetch('https://api.game-sense.ru/login', {
+        const response = await fetch(`${getApiBase()}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ async function handleRegisterSubmit(e) {
     const data = Object.fromEntries(formData);
 
     try {
-        const response = await fetch('https://api.game-sense.ru/register', {
+        const response = await fetch(`${getApiBase()}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

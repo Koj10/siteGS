@@ -8,7 +8,7 @@ function activate_package(id_product) {
         token: `${pc_token}`
          };
 
-    fetch('https://api.game-sense.ru/activate_product', {
+    fetch(`${getApiBase()}/activate_product`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,

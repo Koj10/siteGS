@@ -6,7 +6,7 @@ function reset(e) {
 
     loading(form, true);
     
-    fetch('https://api.game-sense.ru/reset-password', {
+    fetch(`${getApiBase()}/reset-password`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

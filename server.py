@@ -1,3 +1,5 @@
+import os
+
 from flask import (
     Flask,
     render_template,
@@ -9,6 +11,11 @@ from flask import (
 )
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def inject_api_base():
+    return {"gs_api_base": os.getenv("GS_API_BASE", "http://193.176.78.125:6001")}
 
 PUBLIC_ROUTES = {"login", "static", "login_pc", "reset_password", "price"}
 

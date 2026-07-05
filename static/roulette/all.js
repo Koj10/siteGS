@@ -90,7 +90,7 @@
           return false
         }
         try {
-          const { data } = await axios.get('https://api.game-sense.ru/roulette/spin', {
+          const { data } = await axios.get(`${getApiBase()}/roulette/spin`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

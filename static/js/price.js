@@ -1,4 +1,4 @@
-const host = "https://api.game-sense.ru";
+const host = getApiBase();
 const url = `${host}/time_packages`;
 const container = document.getElementById("cardsContainer");
 
