@@ -97,7 +97,7 @@ def _api_base() -> str:
     host = request.host.split(":")[0].strip() if request.host else "127.0.0.1"
     if host in ("127.0.0.1", "localhost"):
         return "http://127.0.0.1:5006"
-    return f"http://{host}:6000"
+    return f"http://{host}:6001"
 
 
 if __name__ == "__main__":

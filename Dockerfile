@@ -4,7 +4,8 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=6100
+    PORT=6100 \
+    GS_API_BASE=http://193.176.78.125:6001
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

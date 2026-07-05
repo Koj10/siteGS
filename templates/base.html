@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <script>
-        // Base URL API for this deployment (site: :5005 dev / :6100 prod, api: :5006 dev / :6000 prod)
-        window.GS_API_BASE = "{{ api_base|default('http://127.0.0.1:5000') }}";
+        // Base URL API for this deployment (site: :5005 dev / :6100 prod, api: :5006 dev / :6001 prod)
+        window.GS_API_BASE = "{{ api_base|default('http://193.176.78.125:6001') }}";
     </script>
 
     <script src="{{ url_for('static', filename='js/update-user.js') }}?v=1.0.1"></script>
