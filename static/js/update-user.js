@@ -1,4 +1,4 @@
-const API_HOST = (window.GS_API_BASE || "http://127.0.0.1:5000").replace(/\/+$/, "");
+const API_HOST = (window.GS_API_BASE || "http://193.176.78.125:6001").replace(/\/+$/, "");
 
 // Функция для получения значения куки по имени
 function getCookie(name) {

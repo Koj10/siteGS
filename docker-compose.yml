@@ -1,9 +1,0 @@
-services:
-  site:
-    image: ghcr.io/koj10/sitegs:1.0.3
-    container_name: gs_site
-    restart: unless-stopped
-    ports:
-      - "6100:6100"
-    environment:
-      GS_API_BASE: "http://193.176.78.125:6001"
