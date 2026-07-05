@@ -1,0 +1,272 @@
+@import url("cards.css");
+@import url("variables.css");
+@import url("menus.css");
+@import url("mobile.css");
+@import url("pc.css");
+@import url("animations.css");
+@import url("states.css");
+@import url("custom.css");
+@import url("theme-gamesense.css");
+
+/*Сброс и глобальные стили*/
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    transition: 300ms;
+    box-sizing: border-box;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+body {
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+    z-index: -10;
+}
+
+/* Контент не перекрывает атмосферный фон */
+body > main {
+    max-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px 0 0 24px;
+    z-index: 1;
+    background-color: transparent;
+}
+
+body > .full {
+    max-width: 1400px;
+    width: 100%;
+    border-radius: 0;
+    padding: 0 20px;
+    background-color: transparent;
+    z-index: 1;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: none;
+}
+
+section {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+section > header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+button {
+    color: var(--text-color);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+form > div {
+    margin-top: 20px;
+}
+
+form > a {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    padding: 4px;
+}
+
+input,
+select {
+    border-radius: 12px;
+    background-color: var(--gray-medium);
+    border: 2px solid var(--purple-dark);
+    color: var(--text-color);
+    margin: 6px 0;
+    max-height: 500px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--purple-accent);
+}
+
+#send-code {
+    margin: 20px 0;
+}
+
+#newPassword {
+    width: 600px;
+}
+
+#searchInput {
+    width: 60%;
+    margin-bottom: 20px;
+}
+
+#sortSelect {
+    width: 60%;
+    margin-bottom: 40px;
+}
+
+/*кнопки*/
+hr {
+    margin: 10px 0;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+a,
+button {
+    cursor: pointer;
+}
+
+a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0);
+}
+
+button,
+.button {
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background: var(--button-color);
+    border: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.outline-button {
+    background-color: transparent;
+    color: var(--purple-accent);
+    border: 2px solid var(--purple-accent);
+    background: none;
+}
+
+.flat-button {
+    border-radius: 0px;
+    padding: 0px;
+    background-color: none;
+    border: none;
+    color: var(--text-color);
+    background: none;
+}
+
+.flat-button:hover {
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0);
+}
+
+.deactivate > button {
+    background-color: gray;
+    pointer-events: none;
+}
+
+button.deactivate {
+    background-color: gray;
+    pointer-events: none;
+}
+
+#exit {
+    display: none;
+}
+
+/*Тултипы*/
+.tooltip-button {
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    background: var(--card-color);
+    color: var(--text-color);
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.tooltip-button:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Градиентный текст */
+.text-gradient {
+    background: var(--gradient-purple);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--card-color);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--purple-accent);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--purple-accent);
+}
+
+html {
+    overflow-x: hidden;
+}

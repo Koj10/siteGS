@@ -1,0 +1,40 @@
+{% extends "admin_layout.html" %}
+{% block title %}Компьютеры{% endblock %}
+{% block admin_body %}
+<div class="pc-admin-wrap">
+	<h1 class="admin-page-title">Компьютеры</h1>
+	<p class="admin-page-sub">Выберите место в зале — настройки откроются в отдельном окне. Быстрые кнопки добавляют часы к времени окончания сессии.</p>
+	<div id="pcStatsBar" class="pc-stats-bar" aria-live="polite"></div>
+	<div id="pcContainer" class="pc-premium-grid"></div>
+</div>
+
+<div id="pcEditModal" class="pc-edit-modal" hidden aria-hidden="true">
+	<div class="clients-modal-backdrop" data-pc-modal-close tabindex="-1"></div>
+	<div class="pc-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="pcModalTitle">
+		<h2 id="pcModalTitle" class="clients-modal-title">ПК №—</h2>
+		<label class="clients-modal-label" for="pcModalStatus">Статус</label>
+		<select id="pcModalStatus" class="pc-edit-select">
+			<option value="активен">Свободен</option>
+			<option value="занят">Занят</option>
+			<option value="заблокирован">Заблокирован</option>
+			<option value="ремонт">Ремонт</option>
+		</select>
+		<label class="clients-modal-label" for="pcModalTime">Окончание сессии</label>
+		<input type="datetime-local" id="pcModalTime" class="clients-modal-input pc-modal-time-input">
+		<div class="pc-time-actions pc-time-actions--modal">
+			<button type="button" class="pc-quick-h" data-h="1">+1 ч</button>
+			<button type="button" class="pc-quick-h" data-h="2">+2 ч</button>
+			<button type="button" class="pc-quick-h" data-h="3">+3 ч</button>
+		</div>
+		<p class="pc-modal-note">Для свободного места выберите «Свободен» — время сбросится. Время указывается в вашем локальном часовом поясе.</p>
+		<div class="clients-modal-actions">
+			<button type="button" class="clients-modal-btn-cancel" data-pc-modal-close>Отмена</button>
+			<button type="button" class="clients-btn-glow" id="pcModalSave">Сохранить</button>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/showPC.js') }}?v=3" defer></script>
+<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.2" defer></script>
+{% endblock %}

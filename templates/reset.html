@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Восстановление пароля{% endblock %}
+{% block content %}
+<section class="center-display center">
+	<h4 id="custom-notification" class="notification"></h4>
+	<div class="column width-max center">
+		<h4>Введите новый пароль:</h4>
+		<form id="newPassword" class="column" style="gap: 10px;">
+			<input type="password" name='password', placeholder="Пароль:">
+			<button type="submit">Обновить</button>
+		</form>
+	</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/newPassword.js') }}" defer></script>
+{% endblock %}

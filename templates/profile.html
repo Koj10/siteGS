@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Инвентарь{% endblock %}
+{% block content %}
+<section class="menu" id="about_activate">
+	<h5 class="center">Карточку можно активировать только в клубе<br>С нетерпением ждём вас!</h5>
+</section>
+<button id="exit" onclick="logout()"><h5 class="iconoir-transition-right"></h5></button>
+
+<section>
+	<header>
+		<h2>Профиль</h2>
+		<h5>Управляйте своими <span class="accent-text">карточками</span> и настройками</h5>
+	</header>
+	<div id="cardsContainer" class="cardsContainer"></div>
+</section>
+<section>
+	<header>
+		<h5>Сейчас не доступно<span class="accent-text"> :(</span></h5>
+	</header>
+	<div id="blockedContainer" class="cardsContainer"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
+<script src="{{ url_for('static', filename='js/activate.js') }}" defer></script>
+{% endblock %}

@@ -1,0 +1,5 @@
+.env
+database.db
+__pycache__/
+upload_image/
+config.py

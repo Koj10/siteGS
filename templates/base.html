@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}Задай название{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="GameSense">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <script>
+        // Base URL API for this deployment (site: :5005 dev / :6100 prod, api: :5006 dev / :6000 prod)
+        window.GS_API_BASE = "{{ api_base|default('http://127.0.0.1:5000') }}";
+    </script>
+
+    <script src="{{ url_for('static', filename='js/update-user.js') }}?v=1.0.1"></script>
+    <script src="{{ url_for('static', filename='js/logout.js') }}?v=1.0.1" defer></script>
+    <script src="{{ url_for('static', filename='js/notification.js') }}?v=1.0.1" defer></script>
+    <script src="{{ url_for('static', filename='js/menu.js') }}?v=1.0.1" defer></script>
+    <script src="{{ url_for('static', filename='js/send-payment.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/loading.js') }}" defer></script>
+
+    <!-- Подключение Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&display=swap"
+        rel="stylesheet">
+
+    <!-- Подключение иконок -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+
+    <!-- Фавиконка -->
+    <link rel="icon" href="{{ url_for('static', filename='lib/ghonse.svg') }}" type="image/x-icon">
+
+    <!-- Цвет темы -->
+    <meta name="theme-color" content="#19132E">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    {% include 'menu.html' %}
+    <div id="custom-notification" class="notification"></div>
+    <h4 id="out_time" class="notification"></h4>
+    {% if self.title() not in ['Подтверждение', 'Вход', 'Прайс', 'Восстановление пароля'] %}
+    <header>
+        <main>
+            <div class="user pc">
+                <h3 class="first_name">Загрузка</h3>
+                <div class="row">
+                    <h6 class="text"><b>Баланс:</b> <i class="balance"></i>₽</h6>
+                </div>
+                <!-- <button data-menu="balance" class="pc">
+                    <h6>Пополнить</h6></span>
+                </button> -->
+            </div>
+            <div class="main-link">
+                <a class="mobile button outline-button mobile">
+                    <h6><span class="balance"></span>₽</h6>
+                </a>
+                <a href="/"><i class="icon iconoir-shop"></i> <span class="pc">Магазин</span></a>
+                <a href="/profile"><i class="icon iconoir-profile-circle"></i> <span class="pc">Профиль</span></a>
+                <!-- <a href="/roulette"><i class="icon iconoir-color-wheel"></i> <span class="pc">Рулетка</span></a> -->
+                <a class='admin' href="/admin" style="display: none;"><i class="icon iconoir-user-crown"></i> <span
+                        class="pc">Адимин</span></a>
+                <a class="mobile" onclick="logout()"><i class="iconoir-transition-right accent-icon"></i></a>
+                <hr class="pc">
+                <a data-menu="rules" class="pc"><i class="icon iconoir-info-circle"></i> Правила клуба</a>
+            </div>
+        </main>
+        <button class="pc" onclick="logout()">
+            <h5>Выйти</h5>
+        </button>
+    </header>
+    {% endif %}
+    <main class="{% if self.title() in ['Подтверждение', 'Вход', 'Прайс', 'Восстановление пароля'] %}full{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+    {% block scripts %}{% endblock %}
+    <script>
+        const adminElements = document.querySelectorAll(".admin");
+
+        function updateData() {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                const user = JSON.parse(userData);
+
+                if (user.email_confirmed === 0 && window.location.pathname !== "/verify") {
+                    window.location.href = "/verify";
+                }
+
+                if (user.role === "admin") {
+                    adminElements.forEach(el => {
+                        el.style.display = 'flex';
+                    });
+                } else {
+                    adminElements.forEach(el => {
+                        el.style.display = 'none';
+                    });
+                }
+
+
+                // Функция для заполнения всех элементов с определённым классом
+                function fillElements(className, value) {
+                    const elements = document.querySelectorAll(`.${className}`);
+                    elements.forEach(el => el.textContent = value);
+                }
+
+                fillElements('first_name', user.first_name || '');
+                fillElements('last_name', user.last_name || '');
+                fillElements('email', user.email || '');
+                fillElements('balance', user.balance !== undefined ? user.balance : '');
+            }
+        }
+
+        updateUserData();
+
+        // И затем обновляем каждую секунду (1000 мс)
+        setInterval(updateData, 1000);
+        setInterval(updateUserData, 10000);
+    </script>
+</body>
+
+</html>

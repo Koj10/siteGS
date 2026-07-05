@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Прайс{% endblock %}
+{% block content %}
+<section>
+   <div id="cardsContainer" class="cardsContainer price"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/price.js') }}" defer></script>
+{% endblock %}

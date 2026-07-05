@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Магазин{% endblock %}
+{% block content %}
+<section>
+	<header>
+		<h2>Магазин <span class="custom-text accent-text">GameSense</span></h2>
+		<h5>Выберите подходящий тариф для игры</h5>
+	</header>
+	<div id="cardsContainer" class="cardsContainer"></div>
+</section>
+<section>
+	<header>
+		<h3>Сейчас не доступно</h3>
+	</header>
+	<div id="cardsContainerBlock" class="cardsContainer"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/time_packages.js') }}" defer></script>
+{% endblock %}

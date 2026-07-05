@@ -1,0 +1,110 @@
+:root {
+	--green-color: 44.99, 239.06, 15.938;
+	--red-color: 239.06, 15.937, 15.937;
+	--accent: 157, 138, 199;
+
+	--purple-dark: #3a2d5d;
+	--purple-medium: #5e4b8b;
+	--purple-light: #7d6ba0;
+	--purple-accent: rgb(var(--accent));
+	--gray-dark: #2a2a2a;
+	--gray-medium: #4a4a4a;
+	--gray-light: #e0e0e0;
+	--white: #ffffff;
+
+
+	--green: rgba(var(--green-color), 1);
+	--red: rgba(var(--red-color), 1);
+
+	--gradient-purple: linear-gradient(135deg, var(--purple-medium), var(--purple-accent));
+	--gradient-gray: linear-gradient(135deg, var(--gray-medium), var(--gray-dark));
+
+	--background-color: #1a1a1a;
+	
+	--card-color: var(--gradient-gray);
+	
+	--text-color: var(--white);
+	--button-color: var(--gradient-purple);
+	--button-border-color: #8e80ff;
+	--transperent: rgba(255, 255, 255, 0.5);
+	--fix: rgb(211.87, 239.06, 15.937, 0.3);
+	--employ: rgba(var(--green-color), 0.3);
+	--notification: rgba(var(--green-color), 0.1);
+	--notification-error: rgba(var(--red-color), 0.1);
+	--red-border: rgba(var(--red-color), 0.3);
+
+	--accent-bg: rgba(var(--accent), 0.1);
+}
+
+.employ{background-color: var(--notification);}
+.active{background-color: var(--accent-bg);}
+.fix{background-color: var(--fix);}
+
+.center-display{
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.none{
+	padding: 0;
+	border: none;
+	display: block;
+	max-height: 0;
+	overflow: hidden;
+	transition: 0.3s ease;
+}
+.show {display: flex !important;}
+
+
+.custom-text {
+	font-family: "Orbitron", sans-serif;
+	font-weight: 600;
+	font-style: normal;
+}
+
+.gradient-text{
+	background: var(--gradient-purple);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.accent-text{color: var(--purple-accent);}
+
+.accent-icon{color: var(--purple-accent);}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+}
+
+.busy-pc{margin: 10px 0}
+
+.column {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.center{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.between{
+	display: flex;
+	justify-content: space-between;
+}
+
+.small{font-size: 1rem;}
+.smaller{font-size: smaller;}
+
+.width-max{width: 100%}

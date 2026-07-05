@@ -1,0 +1,63 @@
+@media (width >= 1000px){
+	h1 { font-size: 64px; }
+	h2 { font-size: 48px; }
+	h3 { font-size: 32px; }
+	h4 { font-size: 26px; }
+	h5 { font-size: 24px; }
+	h6 { font-size: 20px; }
+
+	#newPassword{width: 600px}
+
+	.mobile{display: none !important;}
+
+	body>header{
+		box-sizing: border-box;
+		position: fixed;
+		display: flex;
+		top: 0;
+		left: 0;
+		min-width: 300px;
+		min-height: 100vh;
+		flex-direction: column;
+		padding: 20px 30px 20px 20px;
+		z-index: 1;
+		justify-content: space-between;
+	}
+
+	body>main{
+		margin-left: auto;
+		margin-right: 0;
+		width: calc(100% - 300px);
+		padding: 40px 20px;
+		box-shadow: -4px 0px 20px 10px rgba(0, 0, 0, 0.2);
+
+	}
+
+	button, .button {
+		padding: 18px 24px;
+		font-size: 20px;
+	}
+
+	.main-link{margin-top: 40px;}
+	.main-link>a{
+		padding: 10px 16px;
+		margin: 2px 0px;
+	}
+
+	a{
+		padding: 12px 24px;
+	}
+	
+	input, select{
+		padding: 14px 10px;
+		font-size: 24px;
+	}
+
+	#send-code>input{
+		width: 60px;
+		text-align: center;
+	}
+
+	.full>.menu{left: 50%}
+
+}
