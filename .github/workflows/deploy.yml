@@ -1,86 +1,84 @@
-name: Развертывание проекта
+name: Сборка проекта
 
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+      - '*'
   workflow_dispatch:
-    # inputs больше не нужны - используем встроенный выбор branch/tag
+
 
 jobs:
-  deploy:
+  check-tags:
     runs-on: ubuntu-latest
+    outputs:
+        tag: ${{ steps.version.outputs.tag }}
+        release: ${{ steps.version.outputs.release }}
     steps:
-      - name: Checkout
+      - name: Скачивание репозитория
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.ref }} # Используем выбранную ссылку (branch или tag)
 
       - name: Определение версии
-        id: get-version
+        id: version
         run: |
+          tag=false
+          release=false
           # Определяем, что было выбрано: branch или tag
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
-            # Это тег
-            VERSION=${GITHUB_REF#refs/tags/}
-            VERSION_TYPE="tag"
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+            echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+            SEGMENTS=$(echo "$TAG_NAME" | tr '.' '\n' | wc -l)
+            if [ "$SEGMENTS" -le 3 ]; then
+              echo "release=true" >> $GITHUB_OUTPUT
+            else
+              echo "release=false" >> $GITHUB_OUTPUT
+            fi
           else
-            # Это ветка
-            VERSION=${GITHUB_REF#refs/heads/}
-            VERSION_TYPE="branch"
+            echo "tag=false" >> $GITHUB_OUTPUT
+            echo "release=false" >> $GITHUB_OUTPUT
           fi
-          
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "VERSION_TYPE=$VERSION_TYPE" >> $GITHUB_OUTPUT
-          echo "VALID=true" >> $GITHUB_OUTPUT
+  build:
+    needs: check-tags
+    if: needs.check-tags.outputs.tag != 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Скачивание репозитория
+        uses: actions/checkout@v4
 
-      - name: Настройка SSH
-        if: steps.get-version.outputs.VALID == 'true'
+      - name: Вход в GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Нормализация имени образа в нижний регистр
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Сборка и публикация образа
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.image.outputs.name }}:${{ needs.check-tags.outputs.tag }}
+            ${{ steps.image.outputs.name }}:latest
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: check-tags
+    if: needs.check-tags.outputs.release == 'true'
+    permissions:
+      contents: write
+    steps:
+      - name: Создание релиза
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.check-tags.outputs.tag }}
+          name: Релиз ${{ needs.check-tags.outputs.tag }}
+          generate_release_notes: true
         env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          if [ -z "${SERVER_IP}" ]; then
-            echo "::error::Секрет SERVER_IP пустой или не задан (Settings → Secrets and variables → Actions)."
-            exit 1
-          fi
-          if [ -z "${SSH_PRIVATE_KEY}" ]; then
-            echo "::error::Секрет SSH_PRIVATE_KEY пустой или не задан."
-            exit 1
-          fi
-          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "${SERVER_IP}" >> ~/.ssh/known_hosts
-
-      - name: Очистка старого .env
-        if: steps.get-version.outputs.VALID == 'true'
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            rm -rf /tmp/.env
-
-      - name: Отправка .production
-        if: steps.get-version.outputs.VALID == 'true'
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".production"
-          target: "/tmp/.env"
-
-      - name: Деплой
-        if: steps.get-version.outputs.VALID == 'true'
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            chmod +x ~/deploy.sh
-            ~/deploy.sh ${{ github.repository_owner }} ${{ github.event.repository.name }} ${{ steps.get-version.outputs.VERSION_TYPE }} ${{ steps.get-version.outputs.VERSION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
