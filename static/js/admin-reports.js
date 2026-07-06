@@ -23,9 +23,32 @@ function paymentLabel(method) {
         cash: 'Наличные',
         card: 'Безнал',
         online: 'Онлайн',
+        coupon: 'Купон',
         none: '—'
     };
     return map[method] || method || '—';
+}
+
+function operationLabel(row) {
+    if (row.kind === 'coupon') return 'Купон';
+    if (row.kind === 'withdraw') return 'Списание';
+    return 'Пополнение';
+}
+
+function operationTagClass(row) {
+    if (row.kind === 'coupon') return 'coupon';
+    if (row.kind === 'withdraw') return 'withdraw';
+    return 'topup';
+}
+
+function transactionUserLabel(row) {
+    const name = `${row.first_name || ''} ${row.last_name || ''}`.trim() || row.email;
+    if (name) return name;
+    if (row.kind === 'coupon' && row.number_pc != null) {
+        const pkg = row.package_name ? ` · ${row.package_name}` : '';
+        return `ПК №${row.number_pc}${pkg}`;
+    }
+    return '—';
 }
 
 function showReportsLoading() {
@@ -33,6 +56,7 @@ function showReportsLoading() {
     const body = document.getElementById('transactionsBody');
     if (summaryEl) {
         summaryEl.innerHTML = `
+            <div class="admin-revenue-card admin-revenue-card--loading"><div class="admin-skeleton"></div></div>
             <div class="admin-revenue-card admin-revenue-card--loading"><div class="admin-skeleton"></div></div>
             <div class="admin-revenue-card admin-revenue-card--loading"><div class="admin-skeleton"></div></div>
             <div class="admin-revenue-card admin-revenue-card--loading"><div class="admin-skeleton"></div></div>
@@ -59,6 +83,10 @@ function renderRevenueCards(container, data) {
             <div class="admin-revenue-card__label">Онлайн</div>
             <div class="admin-revenue-card__value">${formatMoney(data.online)}</div>
         </div>
+        <div class="admin-revenue-card">
+            <div class="admin-revenue-card__label">Купоны</div>
+            <div class="admin-revenue-card__value">${formatMoney(data.coupons || 0)}</div>
+        </div>
         <div class="admin-revenue-card admin-revenue-card--total">
             <div class="admin-revenue-card__label">Итого</div>
             <div class="admin-revenue-card__value">${formatMoney(data.total)}</div>
@@ -76,8 +104,10 @@ function renderTransactions(rows) {
     }
 
     body.innerHTML = rows.map(row => {
-        const name = `${row.first_name || ''} ${row.last_name || ''}`.trim() || row.email || '—';
-        const isTopup = row.kind === 'topup';
+        const name = transactionUserLabel(row);
+        const isWithdraw = row.kind === 'withdraw';
+        const isCoupon = row.kind === 'coupon';
+        const sign = isWithdraw ? '−' : '+';
         const adminName = row.admin_first_name
             ? `${row.admin_first_name} ${row.admin_last_name || ''}`.trim()
             : (row.payment_method === 'online' ? 'Система' : '—');
@@ -86,8 +116,8 @@ function renderTransactions(rows) {
             <tr>
                 <td>${formatDateTime(row.created_at)}</td>
                 <td>${name}</td>
-                <td><span class="admin-tag admin-tag--${isTopup ? 'topup' : 'withdraw'}">${isTopup ? 'Пополнение' : 'Списание'}</span></td>
-                <td>${isTopup ? '+' : '−'}${formatMoney(row.amount)}</td>
+                <td><span class="admin-tag admin-tag--${operationTagClass(row)}">${operationLabel(row)}</span></td>
+                <td>${sign}${formatMoney(row.amount)}</td>
                 <td>${paymentLabel(row.payment_method)}</td>
                 <td>${adminName}</td>
             </tr>

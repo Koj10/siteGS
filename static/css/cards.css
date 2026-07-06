@@ -190,6 +190,31 @@
 	margin-top: 8px;
 }
 
+.coupon-section {
+	margin-bottom: 28px;
+}
+
+.coupon-redeem {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+	max-width: 520px;
+}
+
+.coupon-redeem__input {
+	flex: 1;
+	min-width: 200px;
+	padding: 12px 14px;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border-subtle);
+	background: rgba(20, 16, 32, 0.8);
+	color: var(--white);
+	font-family: "Orbitron", sans-serif;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
 @keyframes card-pulse {
 	0%, 100% { opacity: 0.55; }
 	50% { opacity: 1; }

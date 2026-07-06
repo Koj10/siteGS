@@ -6,6 +6,14 @@
 </section>
 <button id="exit" onclick="logout()"><h5 class="iconoir-transition-right"></h5></button>
 
+<section class="coupon-section" id="couponSection" hidden>
+	<h2 class="section-title">АКТИВАЦИЯ КУПОНА</h2>
+	<div class="coupon-redeem">
+		<input type="text" id="couponCode" class="coupon-redeem__input" placeholder="Код купона (GS-XXXXXX)" maxlength="12" autocomplete="off">
+		<button type="button" id="couponRedeemBtn" class="buy-button card-buy">Активировать купон</button>
+	</div>
+</section>
+
 <section class="shop-section">
 	<h2 class="section-title">МОИ КАРТОЧКИ</h2>
 	<div id="cardsContainer" class="cardsContainer"></div>
@@ -17,6 +25,6 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/card-images.js') }}?v=1.0"></script>
-<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.1"></script>
-<script src="{{ url_for('static', filename='js/activate.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.2"></script>
+<script src="{{ url_for('static', filename='js/activate.js') }}?v=1.1" defer></script>
 {% endblock %}

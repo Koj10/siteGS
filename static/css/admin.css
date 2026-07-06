@@ -262,7 +262,7 @@
 
 .admin-revenue-grid {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	gap: 12px;
 	margin-bottom: 24px;
 }
@@ -373,9 +373,62 @@
 	color: #6ee7a8;
 }
 
+.admin-tag--coupon {
+	background: rgba(124, 92, 191, 0.25);
+	color: #c9b4f0;
+}
+
 .admin-tag--withdraw {
 	background: rgba(155, 61, 79, 0.25);
 	color: #f0a0ad;
+}
+
+.admin-coupon-form {
+	display: grid;
+	gap: 16px;
+	max-width: 520px;
+	margin-bottom: 24px;
+	padding: 18px;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--border-subtle);
+	background: rgba(14, 11, 24, 0.6);
+}
+
+.admin-coupon-form__row {
+	display: grid;
+	gap: 6px;
+}
+
+.admin-input--wide {
+	width: 100%;
+	min-width: 0;
+}
+
+.admin-coupon-result {
+	margin-bottom: 24px;
+	padding: 18px;
+	border-radius: var(--radius-md);
+	border: 1px solid rgba(124, 92, 191, 0.45);
+	background: rgba(124, 92, 191, 0.12);
+}
+
+.admin-coupon-result h3 {
+	font-size: 0.95rem;
+	color: var(--white);
+	margin-bottom: 8px;
+}
+
+.admin-coupon-result__code {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.5rem;
+	color: var(--gold-light);
+	letter-spacing: 0.12em;
+	margin-bottom: 6px;
+}
+
+.admin-coupon-result__hint {
+	font-size: 0.85rem;
+	color: var(--text-muted);
 }
 
 .admin-empty {

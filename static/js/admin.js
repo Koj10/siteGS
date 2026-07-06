@@ -21,6 +21,10 @@ function initAdminTabs() {
         if (tabId === 'reports' && typeof window.loadAdminReports === 'function') {
             window.loadAdminReports({ force: true });
         }
+
+        if (tabId === 'coupons' && typeof window.loadAdminCoupons === 'function') {
+            window.loadAdminCoupons({ force: true });
+        }
     };
 
     navItems.forEach(btn => {

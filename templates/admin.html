@@ -17,6 +17,10 @@
 				<i class="iconoir-reports"></i>
 				<span>Отчёты</span>
 			</button>
+			<button type="button" class="admin-nav__item" data-tab="coupons">
+				<i class="iconoir-gift"></i>
+				<span>Купоны</span>
+			</button>
 		</nav>
 	</aside>
 
@@ -98,13 +102,63 @@
 				</div>
 			</div>
 		</section>
+
+		<section class="admin-panel" id="panel-coupons">
+			<header class="admin-panel__header">
+				<h1>Купоны</h1>
+				<p>Одноразовый купон на выбранный ПК и пакет времени</p>
+			</header>
+
+			<div class="admin-coupon-form">
+				<div class="admin-coupon-form__row">
+					<label class="admin-label" for="couponPc">Компьютер</label>
+					<select id="couponPc" class="admin-input admin-input--select admin-input--wide">
+						<option value="">Загрузка...</option>
+					</select>
+				</div>
+				<div class="admin-coupon-form__row">
+					<label class="admin-label" for="couponPackage">Пакет времени</label>
+					<select id="couponPackage" class="admin-input admin-input--select admin-input--wide">
+						<option value="">Загрузка...</option>
+					</select>
+				</div>
+				<button type="button" id="couponCreateBtn" class="admin-btn admin-btn--primary">Выдать купон</button>
+			</div>
+
+			<div id="couponResult" class="admin-coupon-result" hidden>
+				<h3>Купон создан</h3>
+				<p class="admin-coupon-result__code" id="couponResultCode"></p>
+				<p class="admin-coupon-result__hint">Сообщите код гостю — активировать можно только на выбранном ПК</p>
+			</div>
+
+			<div class="admin-transactions">
+				<h3>Выданные купоны</h3>
+				<div class="admin-table-wrap">
+					<table class="admin-table" id="couponsTable">
+						<thead>
+							<tr>
+								<th>Код</th>
+								<th>ПК</th>
+								<th>Пакет</th>
+								<th>Сумма</th>
+								<th>Статус</th>
+								<th>Выдал</th>
+								<th>Дата</th>
+							</tr>
+						</thead>
+						<tbody id="couponsBody"></tbody>
+					</table>
+				</div>
+			</div>
+		</section>
 	</main>
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/admin.js') }}?v=1.1" defer></script>
+<script src="{{ url_for('static', filename='js/admin.js') }}?v=1.2" defer></script>
 <script src="{{ url_for('static', filename='js/showPC.js') }}?v=1.1" defer></script>
 <script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
-<script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.1" defer></script>
+<script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.2" defer></script>
+<script src="{{ url_for('static', filename='js/admin-coupons.js') }}?v=1.0" defer></script>
 <script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
 {% endblock %}
