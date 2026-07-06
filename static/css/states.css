@@ -1,24 +1,23 @@
 .notification {
     background: var(--notification);
-    border: 2px solid var(--employ);
+    border: 1px solid var(--employ);
     color: var(--green);
-
     visibility: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
     min-width: 250px;
     text-align: center;
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: var(--radius-md);
+    padding: 16px 24px;
     position: fixed;
     z-index: 9999;
-    left: calc(50% + 150px);
-    top: 30px;
+    left: 50%;
+    top: 24px;
     transform: translateX(-50%);
     opacity: 0;
     transition: opacity 0.5s, visibility 0.5s;
-    font-size: 24px;
+    font-size: 0.95rem;
 }
-.full>.notification{left: 50%;}
+.full > .notification { left: 50%; }
 .notification.show {
     visibility: visible;
     opacity: 1;

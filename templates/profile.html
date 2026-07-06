@@ -6,21 +6,16 @@
 </section>
 <button id="exit" onclick="logout()"><h5 class="iconoir-transition-right"></h5></button>
 
-<section>
-	<header>
-		<h2>Профиль</h2>
-		<h5>Управляйте своими <span class="accent-text">карточками</span> и настройками</h5>
-	</header>
+<section class="shop-section">
+	<h2 class="section-title">МОИ КАРТОЧКИ</h2>
 	<div id="cardsContainer" class="cardsContainer"></div>
 </section>
-<section>
-	<header>
-		<h5>Сейчас не доступно<span class="accent-text"> :(</span></h5>
-	</header>
+<section class="shop-section shop-section--blocked">
+	<h2 class="section-title section-title--muted">НЕДОСТУПНЫЕ</h2>
 	<div id="blockedContainer" class="cardsContainer"></div>
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
+<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.0"></script>
 <script src="{{ url_for('static', filename='js/activate.js') }}" defer></script>
 {% endblock %}

@@ -2,6 +2,7 @@
 {% block title %}Вход{% endblock %}
 {% block content %}
 <div id="overlay"></div>
+
 <section class="center menu" id="reset-password">
 	<div class="column">
 		<h4>Введите почту для восстановления пароля:</h4>
@@ -12,40 +13,75 @@
 	</div>
 </section>
 
-<section class="center-display row between">
-	<div class="login">
-		<div class="logo">
-			<img src="{{ url_for('static', filename='lib/ghonse.svg') }}" alt="ghonse">
-			<h1 class="custom-text gradient-text">GameSense</h1>
-		</div>
-		<form id="loginForm">
-			<input type="text" id="first_name" placeholder="Имя:" required class="none">
-			<input type="text" id="last_name" placeholder="Фамилия:" required class="none">
-			<input type="text" name="identifier" placeholder="E-mail:" required>
-			<input type="password" name="password" placeholder="Пароль:" required>
-			<div class="row">
-				<button type="submit" style="flex-grow: 1;">Войти</button>
-				<button class="outline-button">Регистрация</button>
-			</div>
-			<div class="row between">
-				<a href="https://game-sense.ru" class="outline-button small"><span class="iconoir-home icon"></span>На главную</a>
-				<a data-menu="reset-password"><h6 class="small">Забыли пароль?</h6></a>
-			</div>
-			<div><p class="accent-text center">Нет аккаунта? Нажмите "Регистрация" для создания нового профиля</p></div>
-		</form>
-	</div>
-	<div class="pc greetings">
+<section class="auth-page">
+	<div class="auth-hero pc">
+		<div class="auth-hero__glow"></div>
 		<header>
-			<h1>Добро пожаловать в <span class="gradient-text">GameSense</span></h1>
-			<p class="accent-text">Премиальное гейминг пространство с лучшим оборудованием и атмосферой для настоящих геймеров</p>
+			<h2>Добро пожаловать в <span class="gradient-text">GameSense</span></h2>
+			<p>Премиальное гейминг-пространство с лучшим оборудованием и атмосферой для настоящих геймеров</p>
 		</header>
-		<div class="placeholder-item"><h5><span class="iconoir-cpu"></span>RTX 3060ti, i5-12400f, 16GB RAM</h5></div>
-		<div class="placeholder-item"><h5><span class="iconoir-wifi"></span>Гигабитный интернет с минимальным пингом</h5></div>
-		<div class="placeholder-item"><h5><span class="iconoir-pc-mouse"></span>Беспроводные игровые девайсы</h5></div>
+		<ul class="auth-features">
+			<li class="auth-feature">
+				<span class="auth-feature__icon iconoir-cpu"></span>
+				<div>
+					<strong>RTX 3060 Ti · i5-12400F</strong>
+					<span>16 GB RAM · 280 Hz мониторы</span>
+				</div>
+			</li>
+			<li class="auth-feature">
+				<span class="auth-feature__icon iconoir-wifi"></span>
+				<div>
+					<strong>Гигабитный интернет</strong>
+					<span>Минимальный пинг в играх</span>
+				</div>
+			</li>
+			<li class="auth-feature">
+				<span class="auth-feature__icon iconoir-pc-mouse"></span>
+				<div>
+					<strong>Игровая периферия</strong>
+					<span>Беспроводные девайсы в зале</span>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="auth-form-wrap login">
+		<div class="auth-logo">
+			<img src="{{ url_for('static', filename='lib/ghonse.svg') }}" alt="GameSense">
+			<div class="auth-logo__text">
+				<h1 class="custom-text">GameSense</h1>
+				<span class="auth-logo__sub">COMPUTER CLUB</span>
+			</div>
+		</div>
+
+		<form id="loginForm" class="auth-form">
+			<input type="text" id="first_name" placeholder="Имя" required class="none">
+			<input type="text" id="last_name" placeholder="Фамилия" required class="none">
+
+			<label class="auth-label">E-mail</label>
+			<input type="text" name="identifier" placeholder="your@email.com" required>
+
+			<label class="auth-label">Пароль</label>
+			<input type="password" name="password" placeholder="••••••••" required>
+
+			<div class="auth-actions row">
+				<button type="submit" class="auth-btn auth-btn--primary">Войти</button>
+				<button type="button" class="auth-btn auth-btn--outline outline-button">Регистрация</button>
+			</div>
+
+			<div class="auth-links row between">
+				<a href="https://game-sense.ru" class="auth-link">
+					<span class="iconoir-home"></span> На главную
+				</a>
+				<a data-menu="reset-password" class="auth-link auth-link--accent">Забыли пароль?</a>
+			</div>
+
+			<p class="auth-hint">Нет аккаунта? Нажмите «Регистрация» для создания профиля</p>
+		</form>
 	</div>
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/login.js') }}?v=2.0" defer></script>
 <script src="{{ url_for('static', filename='js/reset-password.js') }}" defer></script>
 {% endblock %}
