@@ -431,6 +431,45 @@
 	color: var(--text-muted);
 }
 
+.dropdown-content {
+	min-width: 240px;
+	gap: 0;
+}
+
+.pc-dropdown-section {
+	display: grid;
+	gap: 8px;
+	padding-top: 10px;
+	margin-top: 10px;
+	border-top: 1px solid var(--border-subtle);
+}
+
+.pc-dropdown-section--coupon .coupon-picker {
+	display: grid;
+	gap: 8px;
+}
+
+.dropdown-content .admin-btn {
+	width: 100%;
+	margin-top: 0;
+}
+
+.dropdown-content .admin-input--select {
+	width: 100%;
+	min-width: 0;
+}
+
+.busy-pc.row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.computer.blocked {
+	opacity: 0.75;
+}
+
 .admin-empty {
 	padding: 24px;
 	text-align: center;

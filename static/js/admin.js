@@ -21,10 +21,6 @@ function initAdminTabs() {
         if (tabId === 'reports' && typeof window.loadAdminReports === 'function') {
             window.loadAdminReports({ force: true });
         }
-
-        if (tabId === 'coupons' && typeof window.loadAdminCoupons === 'function') {
-            window.loadAdminCoupons({ force: true });
-        }
     };
 
     navItems.forEach(btn => {
@@ -32,10 +28,11 @@ function initAdminTabs() {
     });
 
     const params = new URLSearchParams(window.location.search);
-    const initial = params.get('tab') || 'sessions';
-    if (document.getElementById(`panel-${initial}`)) {
-        window.switchAdminTab(initial);
+    let initial = params.get('tab') || 'sessions';
+    if (initial === 'coupons' || !document.getElementById(`panel-${initial}`)) {
+        initial = 'sessions';
     }
+    window.switchAdminTab(initial);
 }
 
 function initPcDropdowns() {
