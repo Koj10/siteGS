@@ -63,6 +63,15 @@
 		border: none;
 	}
 
+	.nav-item .nav-icon {
+		font-size: 1.35rem;
+		line-height: 1;
+	}
+
+	.nav-item .nav-icon::before {
+		background-color: currentColor;
+	}
+
 	.nav-item .icon { font-size: 1.3rem; }
 
 	.nav-item--active {

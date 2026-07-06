@@ -10,7 +10,10 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=2.6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=3.0">
+
+    <link rel="preconnect" href="{{ gs_api_base }}" crossorigin>
+    <link rel="dns-prefetch" href="{{ gs_api_base }}">
 
     <script>window.GS_API_BASE = {{ gs_api_base | tojson }};</script>
     <script src="{{ url_for('static', filename='js/api-config.js') }}?v=1.0.2"></script>
@@ -49,19 +52,19 @@
 
         <nav class="app-nav main-link">
             <a href="/" class="nav-item" data-nav="/">
-                <i class="icon iconoir-shop"></i>
+                <i class="iconoir-shop nav-icon"></i>
                 <span class="pc">Магазин</span>
             </a>
             <a href="/profile" class="nav-item" data-nav="/profile">
-                <i class="icon iconoir-profile-circle"></i>
-                <span class="pc">Профиль</span>
+                <i class="iconoir-drawer nav-icon"></i>
+                <span class="pc">Инвентарь</span>
             </a>
             <a class="admin nav-item" href="/admin" data-nav="/admin" style="display: none;">
-                <i class="icon iconoir-user-crown"></i>
+                <i class="iconoir-user-crown nav-icon"></i>
                 <span class="pc">Админ</span>
             </a>
             <a data-menu="rules" class="nav-item nav-item--rules pc">
-                <i class="icon iconoir-info-circle"></i>
+                <i class="iconoir-info-circle nav-icon"></i>
                 <span>Правила клуба</span>
             </a>
             <a class="mobile nav-item" onclick="logout()">

@@ -59,11 +59,14 @@ def login_pc(pc_token):
 
 @app.route("/admin")
 def admin():
-    return render_template(f"admin.html")
+    return render_template("admin.html")
 
 
 @app.route("/admin/<action>")
 def action_admin(action):
+    tab_map = {"add_balance": "balance", "pc": "sessions"}
+    if action in tab_map:
+        return redirect(f"/admin?tab={tab_map[action]}")
     return render_template(f"{action}.html")
 
 

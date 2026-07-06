@@ -6,6 +6,7 @@
 @import url("animations.css");
 @import url("states.css");
 @import url("custom.css");
+@import url("admin.css");
 
 * {
 	padding: 0;

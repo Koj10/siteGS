@@ -98,8 +98,51 @@
 	flex-shrink: 0;
 	position: relative;
 	aspect-ratio: 1 / 1;
+	min-height: 180px;
 	overflow: hidden;
 	background: rgba(20, 16, 32, 0.6);
+}
+
+.card-image-wrap.is-loading::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	background: linear-gradient(
+		90deg,
+		rgba(30, 24, 48, 0.35) 0%,
+		rgba(80, 60, 120, 0.45) 50%,
+		rgba(30, 24, 48, 0.35) 100%
+	);
+	background-size: 200% 100%;
+	animation: card-shimmer 1.4s ease-in-out infinite;
+	pointer-events: none;
+}
+
+.card-image-wrap.is-error::after {
+	background: linear-gradient(to bottom, transparent 40%, rgba(17, 14, 26, 0.95));
+}
+
+.card-image-wrap.is-error {
+	background:
+		linear-gradient(135deg, rgba(40, 32, 60, 0.9), rgba(22, 18, 34, 0.95)),
+		rgba(20, 16, 32, 0.6);
+	cursor: pointer;
+}
+
+.card-image-wrap.is-error::before {
+	content: "↻";
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.75rem;
+	color: rgba(200, 180, 230, 0.55);
+	animation: none;
+	background: none;
+	pointer-events: none;
 }
 
 .card-image-wrap::after {
@@ -119,6 +162,37 @@
 	height: 100%;
 	object-fit: cover;
 	display: block;
+	opacity: 0;
+	transition: opacity 0.35s ease;
+}
+
+.card-image-wrap > img.is-loaded {
+	opacity: 1;
+}
+
+.card-image-wrap.is-loaded::before {
+	opacity: 0;
+	transition: opacity 0.35s ease;
+}
+
+@keyframes card-shimmer {
+	0% { background-position: 200% 0; }
+	100% { background-position: -200% 0; }
+}
+
+.shop-loading {
+	animation: card-pulse 1.2s ease-in-out infinite;
+}
+
+.shop-retry {
+	color: var(--purple-light) !important;
+	text-decoration: underline;
+	margin-top: 8px;
+}
+
+@keyframes card-pulse {
+	0%, 100% { opacity: 0.55; }
+	50% { opacity: 1; }
 }
 
 .card-body {

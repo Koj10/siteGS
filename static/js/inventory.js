@@ -1,6 +1,6 @@
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
-const inventory = user.inventory.time_packages;
+const inventory = user?.inventory?.time_packages || {};
 
 const host = getApiBase();
 const container = document.getElementById('cardsContainer');
@@ -14,7 +14,11 @@ function getPeriodLabel(item) {
     return item.time_period ? item.time_period.toUpperCase() : '';
 }
 
-function buildInventoryCard(item, buttonHTML, isBlocked) {
+function isBlockedPackage(item) {
+    return Number(item.is_active) === 2;
+}
+
+function buildInventoryCard(item, buttonHTML, isBlocked, eagerImage) {
     const card = document.createElement('div');
     card.className = 'card card_product';
     if (isBlocked) card.classList.add('deactivate');
@@ -25,8 +29,8 @@ function buildInventoryCard(item, buttonHTML, isBlocked) {
 
     card.innerHTML = `
         ${badge}
-        <div class="card-image-wrap">
-            <img alt="${name}" loading="lazy" src="${host}/images/time_packages/${item.id}">
+        <div class="card-image-wrap is-loading">
+            <img alt="${name}" decoding="async" loading="${eagerImage ? 'eager' : 'lazy'}"${eagerImage ? ' fetchpriority="high"' : ''} src="">
         </div>
         <div class="card-body">
             <h3 class="card-title">${name}</h3>
@@ -37,20 +41,42 @@ function buildInventoryCard(item, buttonHTML, isBlocked) {
             </div>
         </div>
     `;
+
+    const img = card.querySelector('img');
+    attachCardImage(img, 'time_packages', item.id);
+
     return card;
 }
 
-for (const id in inventory) {
-    fetch(`${host}/time_packages/${id}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(item => {
-        for (let i = 0; i < inventory[id]; i++) {
+async function loadInventoryCards() {
+    if (!container) return;
+
+    const ids = Object.keys(inventory);
+    if (ids.length === 0) {
+        container.innerHTML = '<p class="shop-empty">Инвентарь пуст.</p>';
+        return;
+    }
+
+    container.innerHTML = '<p class="shop-empty shop-loading">Загрузка карточек...</p>';
+    if (blockedSection) blockedSection.replaceChildren();
+
+    const requests = ids.map(async (id) => {
+        const response = await fetch(`${host}/time_packages/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) throw new Error(`Ошибка загрузки ID=${id}`);
+
+        const item = await response.json();
+        const count = inventory[id];
+        const cards = [];
+
+        for (let i = 0; i < count; i++) {
             let buttonHTML;
             if (pc_token) {
                 buttonHTML = `<button onclick="activate_package(${item.id})" class="card-buy buy-button" type="button">Активировать</button>`;
@@ -58,20 +84,37 @@ for (const id in inventory) {
                 buttonHTML = `<button data-menu="about_activate" class="card-buy buy-button details" type="button">Подробнее</button>`;
             }
 
-            const isBlocked = item.is_active === 2;
-            const card = buildInventoryCard(item, buttonHTML, isBlocked);
+            cards.push(buildInventoryCard(item, buttonHTML, isBlockedPackage(item), eagerCount < 6));
+            eagerCount += 1;
+        }
 
-            if (isBlocked) {
-                if (blockedSection) {
-                    blockedSection.style.display = 'flex';
-                    blockedSection.appendChild(card);
-                }
+        return cards;
+    });
+
+    let eagerCount = 0;
+
+    try {
+        const groups = await Promise.all(requests);
+        container.replaceChildren();
+
+        let hasBlocked = false;
+        groups.flat().forEach(card => {
+            if (card.classList.contains('deactivate') && blockedSection) {
+                blockedSection.style.display = 'flex';
+                blockedSection.appendChild(card);
+                hasBlocked = true;
             } else {
                 container.appendChild(card);
             }
+        });
+
+        if (!hasBlocked && blockedSection) {
+            blockedSection.closest('.shop-section--blocked')?.style.setProperty('display', 'none');
         }
-    })
-    .catch(error => {
-        console.error(`Ошибка при загрузке товара с ID=${id}:`, error);
-    });
+    } catch (error) {
+        console.error('Ошибка загрузки инвентаря:', error);
+        container.innerHTML = '<p class="shop-empty">Не удалось загрузить карточки.</p>';
+    }
 }
+
+loadInventoryCards();

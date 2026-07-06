@@ -18,7 +18,11 @@ function getPeriodLabel(item) {
     return period ? period.toUpperCase() : '';
 }
 
-function buildCard(item, isBlocked) {
+function isBlockedPackage(item) {
+    return Number(item.is_active) === 2;
+}
+
+function buildCard(item, isBlocked, eagerImage) {
     const card = document.createElement('div');
     card.className = 'card card_product';
     if (isBlocked) card.classList.add('deactivate');
@@ -30,8 +34,8 @@ function buildCard(item, isBlocked) {
 
     card.innerHTML = `
         ${badge}
-        <div class="card-image-wrap">
-            <img alt="${name}" loading="lazy" src="${host}/images/time_packages/${item.id}">
+        <div class="card-image-wrap is-loading">
+            <img alt="${name}" decoding="async" loading="${eagerImage ? 'eager' : 'lazy'}"${eagerImage ? ' fetchpriority="high"' : ''} src="">
         </div>
         <div class="card-body">
             <h3 class="card-title">${name}</h3>
@@ -39,10 +43,13 @@ function buildCard(item, isBlocked) {
             <div class="card-divider"><span class="card-diamond"></span></div>
             <div class="card-footer">
                 <span class="card-price">${price} ₽</span>
-                <button class="buy-button card-buy" type="button">Купить</button>
+                ${isBlocked ? '' : '<button class="buy-button card-buy" type="button">Купить</button>'}
             </div>
         </div>
     `;
+
+    const img = card.querySelector('img');
+    attachCardImage(img, 'time_packages', item.id);
 
     if (!isBlocked) {
         card.querySelector('.buy-button').addEventListener('click', () => sendBuyRequest(item.id));
@@ -51,59 +58,81 @@ function buildCard(item, isBlocked) {
     return card;
 }
 
-const jwtToken = getCookie('jwt_token');
-
-fetch(url, {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json'
-    }
-})
-.then(response => {
-    if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    return response.json();
-})
-.then(data => {
+function renderPackages(data) {
     const container = document.getElementById('cardsContainer');
     const blockedContainer = document.getElementById('cardsContainerBlock');
+    const blockedSection = document.querySelector('.shop-section--blocked');
 
     if (!container || !blockedContainer) return;
 
+    container.replaceChildren();
+    blockedContainer.replaceChildren();
+
     if (!Array.isArray(data) || data.length === 0) {
         container.innerHTML = '<p class="shop-empty">Нет доступных пакетов времени.</p>';
+        if (blockedSection) blockedSection.style.display = 'none';
         return;
     }
 
-    let hasActive = false;
-    let hasBlocked = false;
+    const activeItems = data.filter(item => !isBlockedPackage(item));
+    const blockedItems = data.filter(item => isBlockedPackage(item));
 
-    data.forEach(item => {
-        const isBlocked = item.is_active === 2;
-        const card = buildCard(item, isBlocked);
-        if (isBlocked) {
-            blockedContainer.appendChild(card);
-            hasBlocked = true;
-        } else {
-            container.appendChild(card);
-            hasActive = true;
-        }
-    });
-
-    if (!hasActive) {
+    if (activeItems.length === 0) {
         container.innerHTML = '<p class="shop-empty">Сейчас нет доступных тарифов.</p>';
+    } else {
+        activeItems.forEach((item, index) => {
+            container.appendChild(buildCard(item, false, index < 6));
+        });
     }
-    if (!hasBlocked) {
-        document.querySelector('.shop-section--blocked').style.display = 'none';
+
+    if (blockedItems.length === 0) {
+        if (blockedSection) blockedSection.style.display = 'none';
+    } else {
+        if (blockedSection) blockedSection.style.display = '';
+        blockedItems.forEach(item => {
+            blockedContainer.appendChild(buildCard(item, true, false));
+        });
     }
-})
-.catch(error => {
-    console.error('Ошибка загрузки данных:', error);
+}
+
+async function loadPackages() {
     const container = document.getElementById('cardsContainer');
+    if (container?.dataset.loading === '1') return;
+
     if (container) {
-        container.innerHTML = '<p class="shop-empty">Данные устарели. Перезайдите в аккаунт.</p>';
+        container.dataset.loading = '1';
+        container.innerHTML = '<p class="shop-empty shop-loading">Загрузка тарифов...</p>';
     }
-});
+
+    const jwtToken = getCookie('jwt_token');
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+
+        const data = await response.json();
+        renderPackages(data);
+    } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        if (container) {
+            container.innerHTML = '<p class="shop-empty">Не удалось загрузить тарифы. <button type="button" class="flat-button shop-retry">Повторить</button></p>';
+            container.querySelector('.shop-retry')?.addEventListener('click', () => {
+                if (container) delete container.dataset.loading;
+                loadPackages();
+            });
+        }
+    } finally {
+        if (container) delete container.dataset.loading;
+    }
+}
 
 function sendBuyRequest(productId) {
     const jwtToken = getCookie('jwt_token');
@@ -130,3 +159,5 @@ function sendBuyRequest(productId) {
         showNotification('Недостаточный баланс :(', true);
     });
 }
+
+loadPackages();
