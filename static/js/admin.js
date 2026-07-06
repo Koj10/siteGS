@@ -2,7 +2,7 @@ function initAdminTabs() {
     const navItems = document.querySelectorAll('.admin-nav__item');
     const panels = document.querySelectorAll('.admin-panel');
 
-    const switchTab = (tabId) => {
+    window.switchAdminTab = (tabId) => {
         navItems.forEach(btn => {
             btn.classList.toggle('admin-nav__item--active', btn.dataset.tab === tabId);
         });
@@ -28,13 +28,13 @@ function initAdminTabs() {
     };
 
     navItems.forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        btn.addEventListener('click', () => window.switchAdminTab(btn.dataset.tab));
     });
 
     const params = new URLSearchParams(window.location.search);
     const initial = params.get('tab') || 'sessions';
     if (document.getElementById(`panel-${initial}`)) {
-        switchTab(initial);
+        window.switchAdminTab(initial);
     }
 }
 

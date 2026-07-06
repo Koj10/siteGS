@@ -140,7 +140,9 @@ async function createCoupon() {
         await loadCouponsList();
         await loadCouponOptions();
 
-        if (typeof showPC === 'function') {
+        if (typeof window.switchAdminTab === 'function') {
+            window.switchAdminTab('sessions');
+        } else if (typeof showPC === 'function') {
             showPC();
         }
         if (typeof window.reloadAdminReports === 'function') {
