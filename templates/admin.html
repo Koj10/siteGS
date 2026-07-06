@@ -106,7 +106,7 @@
 		<section class="admin-panel" id="panel-coupons">
 			<header class="admin-panel__header">
 				<h1>Купоны</h1>
-				<p>Одноразовый купон на выбранный ПК и пакет времени</p>
+				<p>Мгновенная активация пакета на выбранном ПК без входа гостя</p>
 			</header>
 
 			<div class="admin-coupon-form">
@@ -122,26 +122,25 @@
 						<option value="">Загрузка...</option>
 					</select>
 				</div>
-				<button type="button" id="couponCreateBtn" class="admin-btn admin-btn--primary">Выдать купон</button>
+				<button type="button" id="couponCreateBtn" class="admin-btn admin-btn--primary">Активировать на ПК</button>
 			</div>
 
 			<div id="couponResult" class="admin-coupon-result" hidden>
-				<h3>Купон создан</h3>
+				<h3>Пакет активирован</h3>
 				<p class="admin-coupon-result__code" id="couponResultCode"></p>
-				<p class="admin-coupon-result__hint">Сообщите код гостю — активировать можно только на выбранном ПК</p>
+				<p class="admin-coupon-result__hint" id="couponResultHint"></p>
 			</div>
 
 			<div class="admin-transactions">
-				<h3>Выданные купоны</h3>
+				<h3>История активаций</h3>
 				<div class="admin-table-wrap">
 					<table class="admin-table" id="couponsTable">
 						<thead>
 							<tr>
-								<th>Код</th>
 								<th>ПК</th>
 								<th>Пакет</th>
 								<th>Сумма</th>
-								<th>Статус</th>
+								<th>До</th>
 								<th>Выдал</th>
 								<th>Дата</th>
 							</tr>
@@ -159,6 +158,6 @@
 <script src="{{ url_for('static', filename='js/showPC.js') }}?v=1.1" defer></script>
 <script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
 <script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.2" defer></script>
-<script src="{{ url_for('static', filename='js/admin-coupons.js') }}?v=1.0" defer></script>
+<script src="{{ url_for('static', filename='js/admin-coupons.js') }}?v=1.1" defer></script>
 <script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
 {% endblock %}

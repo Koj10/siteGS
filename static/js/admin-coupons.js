@@ -71,7 +71,7 @@ function renderCouponsList(rows) {
     if (!body) return;
 
     if (!rows || !rows.length) {
-        body.innerHTML = '<tr><td colspan="7" class="admin-empty">Купоны ещё не выдавались</td></tr>';
+        body.innerHTML = '<tr><td colspan="6" class="admin-empty">Активаций пока нет</td></tr>';
         return;
     }
 
@@ -79,16 +79,13 @@ function renderCouponsList(rows) {
         const admin = row.admin_first_name
             ? `${row.admin_first_name} ${row.admin_last_name || ''}`.trim()
             : '—';
-        const statusLabel = row.status === 'used' ? 'Использован' : 'Активен';
-        const statusClass = row.status === 'used' ? 'withdraw' : 'topup';
 
         return `
             <tr>
-                <td><code>${escapeText(row.code)}</code></td>
                 <td>№${escapeText(row.number_pc)}</td>
                 <td>${escapeText(row.package_name)}</td>
                 <td>${Math.round(row.amount || 0)} ₽</td>
-                <td><span class="admin-tag admin-tag--${statusClass}">${statusLabel}</span></td>
+                <td>${formatDateTime(row.time_active)}</td>
                 <td>${escapeText(admin)}</td>
                 <td>${formatDateTime(row.created_at)}</td>
             </tr>
@@ -98,13 +95,13 @@ function renderCouponsList(rows) {
 
 async function loadCouponsList() {
     const body = document.getElementById('couponsBody');
-    if (body) body.innerHTML = '<tr><td colspan="7" class="admin-empty">Загрузка...</td></tr>';
+    if (body) body.innerHTML = '<tr><td colspan="6" class="admin-empty">Загрузка...</td></tr>';
 
     try {
         const rows = await apiAuthFetch(`${couponHost}/admin/coupons?limit=100`);
         renderCouponsList(rows);
     } catch (error) {
-        if (body) body.innerHTML = `<tr><td colspan="7" class="admin-empty">${escapeText(error.message)}</td></tr>`;
+        if (body) body.innerHTML = `<tr><td colspan="6" class="admin-empty">${escapeText(error.message)}</td></tr>`;
     }
 }
 
@@ -114,6 +111,7 @@ async function createCoupon() {
     const btn = document.getElementById('couponCreateBtn');
     const resultBox = document.getElementById('couponResult');
     const resultCode = document.getElementById('couponResultCode');
+    const resultHint = document.getElementById('couponResultHint');
 
     if (!pcId || !packageId) {
         showNotification('Выберите компьютер и пакет', true);
@@ -130,14 +128,21 @@ async function createCoupon() {
             })
         });
 
-        if (resultBox && resultCode) {
-            resultCode.textContent = data.code;
+        if (resultBox && resultCode && resultHint) {
+            resultCode.textContent = `ПК №${data.number_pc} · ${data.package_name}`;
+            resultHint.textContent = data.time_active
+                ? `Сессия до ${formatDateTime(data.time_active)}`
+                : 'Пакет активирован';
             resultBox.hidden = false;
         }
 
-        showNotification(`Купон ${data.code} выдан на ПК №${data.number_pc}`);
+        showNotification(`Пакет активирован на ПК №${data.number_pc}`);
         await loadCouponsList();
+        await loadCouponOptions();
 
+        if (typeof showPC === 'function') {
+            showPC();
+        }
         if (typeof window.reloadAdminReports === 'function') {
             window.reloadAdminReports();
         }
