@@ -1,110 +1,220 @@
-{% extends "base.html" %}
-{% block title %}Администратор{% endblock %}
-{% block content %}
-<div class="admin-layout">
-	<aside class="admin-sidebar">
-		<h2 class="admin-sidebar__title">Админ-панель</h2>
-		<nav class="admin-nav">
-			<button type="button" class="admin-nav__item" data-tab="balance">
-				<i class="iconoir-wallet"></i>
-				<span>Пополнение баланса</span>
-			</button>
-			<button type="button" class="admin-nav__item admin-nav__item--active" data-tab="sessions">
-				<i class="iconoir-laptop-charging"></i>
-				<span>Сессии</span>
-			</button>
-			<button type="button" class="admin-nav__item" data-tab="reports">
-				<i class="iconoir-reports"></i>
-				<span>Отчёты</span>
-			</button>
-		</nav>
-	</aside>
-
-	<main class="admin-main">
-		<section class="admin-panel admin-panel--active" id="panel-sessions">
-			<header class="admin-panel__header">
-				<h1>Сессии</h1>
-				<p>Управление компьютерами, купонами и активными сессиями</p>
-			</header>
-			<div id="dropdownContainer"></div>
-			<div id="pcContainer" class="admin-pc-grid"></div>
-			<div id="busyPcContainer" class="busy-pcs-container"></div>
-		</section>
-
-		<section class="admin-panel" id="panel-balance">
-			<header class="admin-panel__header">
-				<h1>Пополнение баланса</h1>
-				<p>Пополнение и списание средств с учётом в отчётах</p>
-			</header>
-			<div class="admin-toolbar">
-				<input type="search" id="balanceSearch" class="admin-input" placeholder="Поиск по имени, фамилии или email">
-				<select id="balanceSort" class="admin-input admin-input--select">
-					<option value="">Без сортировки</option>
-					<option value="balance-desc">Баланс: по убыванию</option>
-					<option value="balance-asc">Баланс: по возрастанию</option>
-					<option value="name">По имени</option>
-				</select>
-			</div>
-			<div class="admin-balance-global">
-				<label class="admin-label">Способ оплаты (для пополнения)</label>
-				<div class="admin-pay-methods">
-					<label class="admin-pay-method"><input type="radio" name="payMethod" value="cash" checked> Наличные</label>
-					<label class="admin-pay-method"><input type="radio" name="payMethod" value="card"> Безнал</label>
-				</div>
-			</div>
-			<div id="balanceUsersList" class="admin-users-list"></div>
-		</section>
-
-		<section class="admin-panel" id="panel-reports">
-			<header class="admin-panel__header">
-				<h1>Отчёты</h1>
-				<p>Прибыль от пополнений баланса и активаций купонов</p>
-			</header>
-
-			<div class="admin-period-tabs">
-				<button type="button" class="admin-period-tab admin-period-tab--active" data-period="today">День</button>
-				<button type="button" class="admin-period-tab" data-period="week">Неделя</button>
-				<button type="button" class="admin-period-tab" data-period="month">Месяц</button>
-			</div>
-
-			<div id="revenueSummary" class="admin-revenue-grid"></div>
-
-			<div class="admin-range">
-				<h3>Произвольный период</h3>
-				<div class="admin-range__fields">
-					<label>С <input type="date" id="reportFrom" class="admin-input"></label>
-					<label>По <input type="date" id="reportTo" class="admin-input"></label>
-					<button type="button" id="reportRangeBtn" class="admin-btn admin-btn--primary">Показать</button>
-				</div>
-				<div id="revenueCustom" class="admin-revenue-grid admin-revenue-grid--custom"></div>
-			</div>
-
-			<div class="admin-transactions">
-				<h3>Операции</h3>
-				<div class="admin-table-wrap">
-					<table class="admin-table" id="transactionsTable">
-						<thead>
-							<tr>
-								<th>Дата и время</th>
-								<th>Пользователь</th>
-								<th>Операция</th>
-								<th>Сумма</th>
-								<th>Способ</th>
-								<th>Администратор</th>
-							</tr>
-						</thead>
-						<tbody id="transactionsBody"></tbody>
-					</table>
-				</div>
-			</div>
-		</section>
-	</main>
-</div>
-{% endblock %}
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/admin.js') }}?v=1.4" defer></script>
-<script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.0" defer></script>
-<script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
-<script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.2" defer></script>
-<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
-{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Администратор{% endblock %}
+
+{% block content %}
+
+<div class="admin-layout">
+
+	<aside class="admin-sidebar">
+
+		<h2 class="admin-sidebar__title">Админ-панель</h2>
+
+		<nav class="admin-nav">
+
+			<button type="button" class="admin-nav__item" data-tab="balance">
+
+				<i class="iconoir-wallet"></i>
+
+				<span>Пополнение баланса</span>
+
+			</button>
+
+			<button type="button" class="admin-nav__item admin-nav__item--active" data-tab="sessions">
+
+				<i class="iconoir-laptop-charging"></i>
+
+				<span>Сессии</span>
+
+			</button>
+
+			<button type="button" class="admin-nav__item" data-tab="reports">
+
+				<i class="iconoir-reports"></i>
+
+				<span>Отчёты</span>
+
+			</button>
+
+		</nav>
+
+	</aside>
+
+
+
+	<main class="admin-main">
+
+		<section class="admin-panel admin-panel--active" id="panel-sessions">
+
+			<header class="admin-panel__header">
+
+				<h1>Сессии</h1>
+
+				<p>Управление компьютерами, купонами и активными сессиями</p>
+
+			</header>
+
+			<div id="dropdownContainer"></div>
+
+			<div id="pcContainer" class="admin-pc-grid"></div>
+
+			<div id="busyPcContainer" class="busy-pcs-container"></div>
+
+		</section>
+
+
+
+		<section class="admin-panel" id="panel-balance">
+
+			<header class="admin-panel__header">
+
+				<h1>Пополнение баланса</h1>
+
+				<p>Пополнение и списание средств с учётом в отчётах</p>
+
+			</header>
+
+			<div class="admin-toolbar">
+
+				<input type="search" id="balanceSearch" class="admin-input" placeholder="Поиск по имени, фамилии или email">
+
+				<select id="balanceSort" class="admin-input admin-input--select">
+
+					<option value="">Без сортировки</option>
+
+					<option value="balance-desc">Баланс: по убыванию</option>
+
+					<option value="balance-asc">Баланс: по возрастанию</option>
+
+					<option value="name">По имени</option>
+
+				</select>
+
+			</div>
+
+			<div class="admin-balance-global">
+
+				<label class="admin-label">Способ оплаты (для пополнения)</label>
+
+				<div class="admin-pay-methods">
+
+					<label class="admin-pay-method"><input type="radio" name="payMethod" value="cash" checked> Наличные</label>
+
+					<label class="admin-pay-method"><input type="radio" name="payMethod" value="card"> Безнал</label>
+
+				</div>
+
+			</div>
+
+			<div id="balanceUsersList" class="admin-users-list"></div>
+
+		</section>
+
+
+
+		<section class="admin-panel" id="panel-reports">
+
+			<header class="admin-panel__header">
+
+				<h1>Отчёты</h1>
+
+				<p>Прибыль от пополнений баланса и активаций купонов</p>
+
+			</header>
+
+
+
+			<div class="admin-period-tabs">
+
+				<button type="button" class="admin-period-tab admin-period-tab--active" data-period="today">День</button>
+
+				<button type="button" class="admin-period-tab" data-period="week">Неделя</button>
+
+				<button type="button" class="admin-period-tab" data-period="month">Месяц</button>
+
+			</div>
+
+
+
+			<div id="revenueSummary" class="admin-revenue-grid"></div>
+
+
+
+			<div class="admin-range">
+
+				<h3>Произвольный период</h3>
+
+				<div class="admin-range__fields">
+
+					<label>С <input type="date" id="reportFrom" class="admin-input"></label>
+
+					<label>По <input type="date" id="reportTo" class="admin-input"></label>
+
+					<button type="button" id="reportRangeBtn" class="admin-btn admin-btn--primary">Показать</button>
+
+				</div>
+
+				<div id="revenueCustom" class="admin-revenue-grid admin-revenue-grid--custom"></div>
+
+			</div>
+
+
+
+			<div class="admin-transactions">
+
+				<h3>Операции</h3>
+
+				<div class="admin-table-wrap">
+
+					<table class="admin-table" id="transactionsTable">
+
+						<thead>
+
+							<tr>
+
+								<th>Дата и время</th>
+
+								<th>Пользователь</th>
+
+								<th>Операция</th>
+
+								<th>Сумма</th>
+
+								<th>Способ</th>
+
+								<th>Администратор</th>
+
+							</tr>
+
+						</thead>
+
+						<tbody id="transactionsBody"></tbody>
+
+					</table>
+
+				</div>
+
+			</div>
+
+		</section>
+
+	</main>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/admin.js') }}?v=1.5" defer></script>
+
+<script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.1" defer></script>
+
+<script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
+
+<script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.2" defer></script>
+
+<script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
+
+{% endblock %}
+

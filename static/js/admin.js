@@ -54,7 +54,10 @@ function initPcDropdowns() {
         event.stopPropagation();
     });
 
-    window.addEventListener('click', () => {
+    window.addEventListener('click', (event) => {
+        if (event.target.closest('.dropdown-content') || event.target.closest('[dropdown]')) {
+            return;
+        }
         document.querySelectorAll('.dropdown-content').forEach(menu => {
             menu.classList.remove('show');
         });

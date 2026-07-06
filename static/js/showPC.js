@@ -109,6 +109,7 @@ function showPC() {
             const dropdown = document.createElement("div");
             dropdown.id = `dropdown${item.id}`;
             dropdown.className = "dropdown-content";
+            dropdown.addEventListener('click', (event) => event.stopPropagation());
             dropdown.innerHTML = `
                 <h4>Компьютер: ${item.number_pc}</h4>
                 <div class="pc-dropdown-section">
