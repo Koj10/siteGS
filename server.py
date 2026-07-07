@@ -40,6 +40,11 @@ def profile():
     return render_template("profile.html")
 
 
+@app.route("/friends")
+def friends():
+    return render_template("friends.html")
+
+
 @app.route("/login")
 def login():
     return render_template("login.html")

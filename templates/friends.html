@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Друзья{% endblock %}
+{% block content %}
+<section class="friends-page">
+    <header class="friends-page__header">
+        <h1>Друзья</h1>
+        <p>Ищите игроков клуба и добавляйте их в друзья</p>
+    </header>
+
+    <div class="friends-search">
+        <input type="search" id="friendsSearch" class="friends-input" placeholder="Поиск по имени или фамилии" autocomplete="off">
+    </div>
+    <div id="friendsSearchResults" class="friends-list"></div>
+
+    <section class="friends-section">
+        <h2 class="friends-section__title">Входящие заявки</h2>
+        <div id="friendsIncoming" class="friends-list"></div>
+    </section>
+
+    <section class="friends-section">
+        <h2 class="friends-section__title">Исходящие заявки</h2>
+        <div id="friendsOutgoing" class="friends-list"></div>
+    </section>
+
+    <section class="friends-section">
+        <h2 class="friends-section__title">Мои друзья</h2>
+        <div id="friendsList" class="friends-list"></div>
+    </section>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/friends.js') }}?v=1.0" defer></script>
+{% endblock %}
