@@ -19,32 +19,25 @@
     const container = document.getElementById('pcContainer'); // Или 'dropdownContainer', если меню там
     let openedDropdownId = null;
     
-    function positionDropdownAtRight(menu, toggleElement) {
-        const containerRect = container.getBoundingClientRect();
-        const toggleRect = toggleElement.getBoundingClientRect();
-        const gap = 16;
-        const horizontalShift = -24;
-
+    function positionDropdownAtRight(menu) {
         menu.style.position = 'fixed';
         menu.style.visibility = 'hidden';
+        menu.classList.add('pc-dropdown-fixed');
         menu.classList.add('show');
 
-        const menuRect = menu.getBoundingClientRect();
-
-        let left = containerRect.right + gap + horizontalShift;
-        if (left + menuRect.width > window.innerWidth - gap) {
-            left = window.innerWidth - menuRect.width - gap;
+        if (window.matchMedia('(max-width: 1000px)').matches) {
+            menu.style.right = '';
+            menu.style.left = '';
+            menu.style.top = '';
+            menu.style.bottom = '';
+            menu.style.visibility = '';
+            return;
         }
-        left = Math.max(gap, left);
 
-        let top = toggleRect.top;
-        if (top + menuRect.height > window.innerHeight - gap) {
-            top = window.innerHeight - menuRect.height - gap;
-        }
-        top = Math.max(gap, top);
-
-        menu.style.left = `${left}px`;
-        menu.style.top = `${top}px`;
+        menu.style.right = '28px';
+        menu.style.left = 'auto';
+        menu.style.top = '130px';
+        menu.style.bottom = 'auto';
         menu.style.visibility = '';
     }
 
@@ -66,7 +59,7 @@
                 const shouldCloseCurrent = openedDropdownId === dropdownId && dropdownMenu.classList.contains('show');
                 closeAllDropdowns();
                 if (!shouldCloseCurrent) {
-                    positionDropdownAtRight(dropdownMenu, toggle);
+                    positionDropdownAtRight(dropdownMenu);
                     openedDropdownId = dropdownId;
                 }
                 event.stopPropagation(); // Чтобы не сработал window.click ниже

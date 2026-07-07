@@ -40,32 +40,27 @@ function initPcDropdowns() {
     if (!sessionsPanel) return;
     let openedDropdownId = null;
 
-    const positionDropdownRightOfGrid = (dropdownMenu, toggleElement, gridElement) => {
-        const containerRect = gridElement.getBoundingClientRect();
-        const toggleRect = toggleElement.getBoundingClientRect();
-
+    const positionDropdownRightFixed = (dropdownMenu) => {
         dropdownMenu.style.position = 'fixed';
         dropdownMenu.style.visibility = 'hidden';
+        dropdownMenu.classList.add('pc-dropdown-fixed');
         dropdownMenu.classList.add('show');
 
-        const menuRect = dropdownMenu.getBoundingClientRect();
-        const gap = 16;
-        const horizontalShift = -24;
-
-        let left = containerRect.right + gap + horizontalShift;
-        if (left + menuRect.width > window.innerWidth - gap) {
-            left = window.innerWidth - menuRect.width - gap;
+        if (window.matchMedia('(max-width: 1000px)').matches) {
+            dropdownMenu.style.right = '';
+            dropdownMenu.style.left = '';
+            dropdownMenu.style.top = '';
+            dropdownMenu.style.bottom = '';
+            dropdownMenu.style.visibility = '';
+            return;
         }
-        left = Math.max(gap, left);
 
-        let top = toggleRect.top;
-        if (top + menuRect.height > window.innerHeight - gap) {
-            top = window.innerHeight - menuRect.height - gap;
-        }
-        top = Math.max(gap, top);
-
-        dropdownMenu.style.left = `${left}px`;
-        dropdownMenu.style.top = `${top}px`;
+        const topOffset = 130;
+        const rightOffset = 28;
+        dropdownMenu.style.right = `${rightOffset}px`;
+        dropdownMenu.style.left = 'auto';
+        dropdownMenu.style.top = `${topOffset}px`;
+        dropdownMenu.style.bottom = 'auto';
         dropdownMenu.style.visibility = '';
     };
 
@@ -79,8 +74,6 @@ function initPcDropdowns() {
     sessionsPanel.addEventListener('click', (event) => {
         const toggle = event.target.closest('[dropdown]');
         if (!toggle) return;
-        const gridElement = toggle.closest('.admin-pc-grid, .cardsContainer');
-        if (!gridElement) return;
 
         const dropdownId = toggle.getAttribute('dropdown');
         const dropdownMenu = document.getElementById(dropdownId);
@@ -89,7 +82,7 @@ function initPcDropdowns() {
         const shouldCloseCurrent = openedDropdownId === dropdownId && dropdownMenu.classList.contains('show');
         closeAllDropdowns();
         if (!shouldCloseCurrent) {
-            positionDropdownRightOfGrid(dropdownMenu, toggle, gridElement);
+            positionDropdownRightFixed(dropdownMenu);
             openedDropdownId = dropdownId;
         }
         event.stopPropagation();
