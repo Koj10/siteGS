@@ -7,15 +7,13 @@ function getCookie(name) {
 
 // Функция для обновления данных пользователя
 function updateUserData() {
-    // Получаем jwt_token из куки
     const jwtToken = getCookie('jwt_token');
 
     if (!jwtToken) {
-        return;
+        return Promise.resolve(null);
     }
 
-    // Выполняем GET-запрос без тела
-    fetch(`${getApiBase()}/profile`, {
+    return fetch(`${getApiBase()}/profile`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -29,11 +27,12 @@ function updateUserData() {
         return response.json();
     })
     .then(result => {
-        // Сохраняем данные пользователя в localStorage
         localStorage.setItem('user', JSON.stringify(result));
+        return result;
     })
     .catch(error => {
         console.error('Ошибка:', error);
+        return null;
     });
 }
 

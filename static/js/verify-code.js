@@ -1,40 +1,94 @@
-function getCookie(name) {
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; ${name}=`);
-	if (parts.length === 2) return parts.pop().split(';').shift();
+let email = '';
+
+function getAuthHeaders() {
+    const jwtToken = getCookie('jwt_token');
+    return {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json'
+    };
 }
 
-const jwtToken = getCookie('jwt_token');
-const userData = localStorage.getItem('user');
-const user = JSON.parse(userData);
-const email = user?.email || 'Email не найден';
+async function loadUserEmail() {
+    const jwtToken = getCookie('jwt_token');
+    if (!jwtToken) {
+        window.location.href = '/login';
+        return false;
+    }
 
-fetch(`${getApiBase()}/verify-code/send`, {
-	method: 'POST',
-	headers: {
-		'Authorization': `Bearer ${jwtToken}`,
-		'Content-Type': 'application/json'
-	},
-	body: JSON.stringify({email:email})
-})
+    const response = await fetch(`${getApiBase()}/profile`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+    });
 
-document.getElementById("email").textContent = email;
+    if (!response.ok) {
+        throw new Error('Не удалось загрузить профиль');
+    }
 
-const inputs = document.querySelectorAll('input');
-const resendBtn = document.getElementById('resendBtn');
+    const user = await response.json();
+    email = user.email;
+    document.getElementById('email').textContent = email;
+    return true;
+}
 
-inputs[0].focus();
+async function sendVerificationCode() {
+    const response = await fetch(`${getApiBase()}/verify-code/send`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ email })
+    });
 
-document.addEventListener('DOMContentLoaded', function() {
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.error || 'Не удалось отправить код');
+    }
+}
+
+function sendData() {
     const inputs = document.querySelectorAll('#send-code input');
-    
+    const code = Array.from(inputs).map(input => input.value).join('');
+    const data = { email, code };
+
+    fetch(`${getApiBase()}/verify-code`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json()
+                .then(errorData => {
+                    throw new Error(errorData.error || 'Неверный код');
+                });
+        }
+        return response.json();
+    })
+    .then(() => {
+        window.location.href = '/';
+    })
+    .catch(error => {
+        showNotification(error.message, true);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const inputs = document.querySelectorAll('#send-code input');
+    const resendBtn = document.getElementById('resendBtn');
+
+    try {
+        const loaded = await loadUserEmail();
+        if (!loaded) return;
+        await sendVerificationCode();
+    } catch (error) {
+        showNotification(error.message, true);
+    }
+
     inputs.forEach((input, index) => {
         input.addEventListener('input', () => {
             if (input.value.length === 1 && index < inputs.length - 1) {
                 inputs[index + 1].focus();
             }
 
-            const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+            const allFilled = Array.from(inputs).every(item => item.value.length === 1);
             if (allFilled) {
                 sendData();
             }
@@ -52,80 +106,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
 
-function sendData() {
-	const code = Array.from(inputs).map(input => input.value).join('');
-	const jwtToken = getCookie('jwt_token');
-	const data = { email: email, code: code };
+    if (inputs[0]) inputs[0].focus();
 
-	fetch(`${getApiBase()}/verify-code`, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${jwtToken}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-	})
-	.then(response => {
-		if (!response.ok) {
-			return response.json()
-			.then(errorData => {
-				const errorMessage = errorData.error || 'Неверный код';
-				throw new Error(errorMessage);
-			});
-		}
-		return response.json();
-	})
-	.then(result => {
-		window.location.href = '/';
-	})
-	.catch(error => {
-        showNotification(error.message, true);
-    });
-}
+    setTimeout(() => {
+        resendBtn.classList.remove('deactivate');
+    }, 30000);
 
-setTimeout(() => {
-	resendBtn.classList.remove('deactivate');
-}, 30000);
+    resendBtn.addEventListener('click', async () => {
+        resendBtn.classList.add('deactivate');
 
-resendBtn.addEventListener('click', async () => {
-	resendBtn.classList.add('deactivate');
+        setTimeout(() => {
+            resendBtn.classList.remove('deactivate');
+        }, 30000);
 
-	setTimeout(() => {
-		resendBtn.classList.remove('deactivate');
-	}, 30000);
-
-	const jwtToken = getCookie('jwt_token');
-    const data = { email: email };
-
-    try {
-        const response = await fetch(`${getApiBase()}/verify-code/send`, {
-        	method: 'POST',
-        	headers: {
-        		'Authorization': `Bearer ${jwtToken}`,
-        		'Content-Type': 'application/json'
-        	},
-        	body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-        	let errorMessage = 'Ошибка на сервере';
-        	const contentType = response.headers.get("content-type");
-        	if (contentType && contentType.includes("application/json")) {
-        		const errorData = await response.json();
-        		errorMessage = errorData.error || errorMessage;
-        	} else {
-        		const errorText = await response.text();
-        		errorMessage = errorText || errorMessage;
-        	}
-
-        	throw new Error(errorMessage);
+        try {
+            await sendVerificationCode();
+            showNotification('Код отправлен повторно');
+        } catch (error) {
+            showNotification(error.message, true);
         }
-
-        const result = await response.json();
-
-    } catch (error) {
-        showNotification(error.message, true);
-    }
+    });
 });

@@ -15,7 +15,10 @@ function reset(e) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Ошибка при получении данных пользователя');
+            return response.json()
+                .then(data => {
+                    throw new Error(data.error || 'Ошибка при отправке письма');
+                });
         }
         return response.json();
     })
@@ -23,7 +26,7 @@ function reset(e) {
         showNotification("Письмо отправлено на вашу почту");
     })
     .catch(error => {
-        showNotification(error);
+        showNotification(error.message || 'Ошибка при отправке письма', true);
     })
     .finally(() => {
         loading(form, false);

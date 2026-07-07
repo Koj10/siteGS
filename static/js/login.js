@@ -66,8 +66,8 @@ async function handleRegisterSubmit(e) {
 
         // Успешная регистрация
         document.cookie = `jwt_token=${jsonData.token}; path=/; SameSite=Strict`;
-        updateUserData();
-        window.location.href = '/';
+        await updateUserData();
+        window.location.href = '/verify';
     } catch (error) {
         console.error('Network or other error:', error);
         showNotification('Произошла ошибка сети или сервера', true);
