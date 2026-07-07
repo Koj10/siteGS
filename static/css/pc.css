@@ -111,13 +111,20 @@
 	.bonus-progress-widget {
 		display: flex;
 		flex-direction: column;
-		align-items: stretch;
-		gap: 4px;
-		min-width: 132px;
+		gap: 6px;
+		min-width: 148px;
 		padding: 8px 14px;
 		border-radius: var(--radius-md);
 		border: 1px solid rgba(167, 139, 212, 0.28);
 		background: rgba(167, 139, 212, 0.08);
+	}
+
+	.bonus-progress-widget__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		width: 100%;
 	}
 
 	.bonus-progress-widget__label {
@@ -125,31 +132,32 @@
 		letter-spacing: 0.14em;
 		color: var(--text-muted);
 		font-weight: 600;
-		text-align: right;
+		white-space: nowrap;
 	}
 
-	.bonus-progress-widget__value {
+	.bonus-progress-widget__ratio {
 		font-family: "Orbitron", sans-serif;
-		font-size: 0.95rem;
+		font-size: 0.82rem;
 		font-weight: 700;
 		color: var(--purple-accent);
-		line-height: 1.2;
-		text-align: right;
+		line-height: 1;
+		white-space: nowrap;
 	}
 
-	.bonus-progress-bar {
+	.bonus-progress-widget__track {
 		width: 100%;
-		height: 5px;
+		height: 6px;
 		border-radius: 999px;
 		background: rgba(255, 255, 255, 0.08);
 		overflow: hidden;
+		border: 1px solid rgba(167, 139, 212, 0.18);
 	}
 
-	.bonus-progress-bar__fill {
+	.bonus-progress-widget__fill {
 		height: 100%;
 		width: 0;
-		border-radius: inherit;
-		background: linear-gradient(90deg, var(--purple-medium), var(--purple-accent), var(--gold-light));
+		border-radius: 999px;
+		background: linear-gradient(90deg, var(--purple-medium), var(--purple-accent));
 		box-shadow: 0 0 10px rgba(167, 139, 212, 0.45);
 		transition: width 0.35s ease;
 	}

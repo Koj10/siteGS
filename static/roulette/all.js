@@ -19,13 +19,10 @@
       duration: 3000,
       time_remaining: 38,
       num: 0,
-      numbers: [],
-      isToggle: false,
-      isSpinning: false,
-      spinsRemaining: 0,
-      prizeModalVisible: false,
-      claimLoading: false,
-      pendingPrize: null,
+      numbers: [],//紀錄還有獎品的編號
+      isToggle: false,//顯示隱藏按鈕
+      isClicked: false,//轉動中禁止觸發  
+      isShow: true,
     },
     mounted() {
       let vm = this
@@ -34,7 +31,6 @@
       } else {
         vm.initPrize()
       }
-      vm.loadRouletteState()
     },
     watch: {
       current_year: {
@@ -42,12 +38,7 @@
       }
     },
     computed: {
-      canSpinWheel() {
-        return this.spinsRemaining > 0 && !this.isSpinning && !this.prizeModalVisible && !this.pendingPrize
-      },
-      pointerClass() {
-        return this.canSpinWheel ? 'pointer' : 'pointer pointer--disabled'
-      },
+      // 判斷轉盤 class
       containerClass() {
         let vm = this
         if (vm.current_year === 2017) return 'container'
@@ -78,58 +69,21 @@
       }
     },
     methods: {
-      authHeaders() {
-        const token = this.getCookie('jwt_token')
-        return {
-          Authorization: `Bearer ${token}`,
-        }
-      },
-      getApiError(error, fallback) {
-        const response = error && error.response
-        const data = response && response.data
-        if (data && typeof data === 'object' && data.error) {
-          return data.error
-        }
-        if (response && response.status) {
-          return `${fallback} (код ${response.status})`
-        }
-        return fallback
-      },
       prizeActive() {
+        // 抽到獎品後變更 item 的 css
         let vm = this
         setTimeout(() => {
-          if (vm.$refs.item && vm.$refs.item[vm.index]) {
-            vm.$refs.item[vm.index].classList.value = `${vm.itemClass} active`
-          }
-        }, vm.duration)
+          vm.$refs.item[vm.index].classList.value = `${vm.itemClass} active`
+        }, vm.duration);
+        console.log('item active')
       },
       getCookie(name) {
+        // 讀取 cookie 值
         const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'))
         return match ? decodeURIComponent(match[1]) : ''
       },
-      async loadRouletteState() {
-        const token = this.getCookie('jwt_token')
-        if (!token) return
-
-        try {
-          const { data } = await axios.get(`${getApiBase()}/roulette`, {
-            headers: this.authHeaders(),
-          })
-          this.spinsRemaining = Number(data.roulette ?? data.spin ?? 0)
-          if (data.pending) {
-            this.showPendingPrize(data.pending)
-          }
-        } catch (error) {
-          console.error('Ошибка загрузки состояния рулетки', error)
-        }
-      },
-      showPendingPrize(pending) {
-        this.pendingPrize = pending
-        this.prize_name = pending.prize_name
-        this.prize_icon = pending.prize_icon || 'card_giftcard'
-        this.prizeModalVisible = true
-      },
       async ensureSpinPermission() {
+        // Проверяем доступность вращения через API
         const token = this.getCookie('jwt_token')
         if (!token) {
           showNotification('Не найден jwt_token в cookie', true)
@@ -137,82 +91,24 @@
         }
         try {
           const { data } = await axios.get(`${getApiBase()}/roulette/spin`, {
-            headers: this.authHeaders(),
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           })
-          if (!data || data.spin === false) {
-            if (data && data.pending) {
-              this.showPendingPrize(data.pending)
-              showNotification('Сначала получите предыдущий приз', true)
-            } else {
-              showNotification('Недостаточно спинов', true)
-            }
+          if (data && typeof data.spin !== 'undefined' && data.spin === false) {
+            showNotification('Недостаточно спинов', true)
             return false
           }
-          this.spinsRemaining = Number(data.roulette ?? this.spinsRemaining)
           return true
         } catch (error) {
           console.error('Ошибка запроса спинов', error)
-          showNotification('Не удалось проверить спины', true)
+          showNotification('Не удалось получить спины', true)
           return false
-        }
-      },
-      async performSpin() {
-        const headers = this.authHeaders()
-        const url = `${getApiBase()}/roulette/spin?perform=1`
-        try {
-          const { data } = await axios.get(url, { headers })
-          return data
-        } catch (error) {
-          if (error.response && error.response.status === 405) {
-            const { data } = await axios.post(`${getApiBase()}/roulette/spin`, null, { headers })
-            return data
-          }
-          throw error
-        }
-      },
-      async claimPrize() {
-        if (this.claimLoading) return
-
-        const token = this.getCookie('jwt_token')
-        if (!token) {
-          showNotification('Не найден jwt_token в cookie', true)
-          return
-        }
-
-        this.claimLoading = true
-        try {
-          const headers = this.authHeaders()
-          let data
-          try {
-            const response = await axios.get(`${getApiBase()}/roulette/claim?perform=1`, { headers })
-            data = response.data
-          } catch (error) {
-            if (error.response && error.response.status === 405) {
-              const response = await axios.post(`${getApiBase()}/roulette/claim`, null, { headers })
-              data = response.data
-            } else {
-              throw error
-            }
-          }
-
-          if (typeof updateUserData === 'function') {
-            await updateUserData()
-          }
-
-          this.prizeModalVisible = false
-          this.pendingPrize = null
-          this.spinsRemaining = Number(data.roulette ?? this.spinsRemaining)
-          showNotification(`Приз получен: ${data.prize_name}`)
-        } catch (error) {
-          console.error('Ошибка получения приза', error)
-          showNotification(this.getApiError(error, 'Не удалось получить приз'), true)
-        } finally {
-          this.claimLoading = false
         }
       },
       setCurrentYear(year) {
         let vm = this
-        if (vm.isSpinning) return
+        if (vm.isClicked) return
         vm.current_year = year
       },
       restart() {
@@ -236,14 +132,18 @@
       },
       reset() {
         let vm = this
+        vm.isShow = true
         vm.index = 0
+        vm.prize_name = ''
+        vm.prize_icon = ''
         vm.prize_rotate = []
         vm.numbers = []
         vm.start_deg = 0
         vm.rotate_deg = `rotate(0deg)`
         vm.current_deg = 0
-        vm.isSpinning = false
-        vm.prize_transition = `none`
+        vm.isClicked = false
+        vm.prize_transition = `none`;
+        console.log('RESET')
       },
       initPrize() {
         let vm = this
@@ -256,21 +156,21 @@
             vm.numberArray()
           })
           .catch(function (error) {
-            console.log(error)
-          })
+            console.log(error);
+          });
       },
       initPrize_38() {
         let vm = this
-        axios.get('/static/roulette/prize38.json')
+        axios.get('./static/roulette/prize38.json')
           .then(function (response) {
-            vm.prizes = response.data
+            vm.prizes = JSON.parse(response.request.responseText)
             vm.num = vm.prizes.length
             vm.degree(vm.num)
             vm.numberArray()
           })
           .catch(function (error) {
-            console.log(error)
-          })
+            console.log(error);
+          });
       },
       initPrize_2018() {
         let vm = this
@@ -309,72 +209,72 @@
         vm.numberArray()
       },
       degree(num) {
+        // 計算每個轉盤角度
         let vm = this
-        vm.prize_rotate = []
         for (let i = 1; i <= num; i++) {
           let deg = 360 / num
           vm.each_deg = deg
-          vm.prize_rotate.push(i * deg)
+          let eachDeg
+          eachDeg = i * deg
+          vm.prize_rotate.push(eachDeg)
         }
       },
       numberArray() {
+        // 產生獎品 index 編號 => [0,1,2,3,4,5]
         let vm = this
-        vm.numbers = vm.prizes.map((prize, index) => index)
+        vm.numbers = vm.prizes.map((prize, index) => {
+          return index
+        })
       },
-      async rotateHandler() {
+      async rotateHandler(num) {
         let vm = this
-        if (!vm.canSpinWheel) return
+        if (vm.isClicked) return
 
         const canSpin = await vm.ensureSpinPermission()
         if (!canSpin) return
 
-        vm.isSpinning = true
-        let spinResult
-        try {
-          spinResult = await vm.performSpin()
-        } catch (error) {
-          console.error('Ошибка спина', error)
-          const responseData = error.response && error.response.data
-          if (responseData && responseData.pending) {
-            vm.showPendingPrize(responseData.pending)
+        // 刪去沒有獎品的 index
+        vm.prizes.filter((prize, index) => {
+          let filterArray
+          if (prize.count <= 0) {
+            let filterArray = vm.numbers.filter((num) => {
+              return num !== index
+            })
+            vm.numbers = filterArray
           }
-          showNotification(vm.getApiError(error, 'Не удалось выполнить спин'), true)
-          vm.isSpinning = false
-          return
-        }
+        })
 
-        if (spinResult.prize_index === undefined || spinResult.prize_index === null) {
-          showNotification('Сервер не вернул приз. Обновите API на сервере.', true)
-          vm.isSpinning = false
-          return
-        }
-
-        vm.spinsRemaining = Number(spinResult.roulette ?? vm.spinsRemaining)
-        vm.pendingPrize = spinResult
-        if (typeof updateUserData === 'function') {
-          updateUserData()
-        }
-        vm.prize_draw(spinResult)
-      },
-      prize_draw(spinResult) {
-        let vm = this
-        if (!spinResult) {
-          vm.isSpinning = false
-          return
-        }
-
-        if (vm.$refs.item && vm.$refs.item[vm.index]) {
+        if (vm.time_remaining > 0) {
           vm.$refs.item[vm.index].classList.value = vm.itemClass
+          // 執行旋轉
+          vm.prize_draw(num)
+        } else if (vm.time_remaining <= 0) {
+          vm.$refs.item[vm.index].classList.value = vm.itemClass
+          vm.restart()
         }
+      },
+      prize_draw(num) {
+        // 執行抽獎
+        let vm = this
+        if (vm.isClicked) return
+        vm.isShow = vm.isClicked
 
-        vm.index = spinResult.prize_index
-        vm.prize_name = spinResult.prize_name
-        vm.prize_icon = spinResult.prize_icon || 'card_giftcard'
+        // 移除抽到獎品 active 狀態
+        vm.$refs.item[vm.index].classList.value = vm.itemClass
 
+        // 取出 0-5之間隨機整數
+        vm.index = vm.numbers[Math.floor(Math.random() * vm.numbers.length)]
+        console.log('Количество призов', vm.numbers)
+
+        // 預先旋轉四圈
         let circle = 4
-        let degree = vm.start_deg + circle * 360 + vm.prize_rotate[vm.index] - vm.start_deg % 360
+        let degree
+        //degree=初始角度 + 旋轉4圈 + 獎品旋轉角度[隨機數] - 餘數
+        degree = vm.start_deg + circle * 360 + vm.prize_rotate[vm.index] - vm.start_deg % 360
 
+        // 將初始角度 start_deg:0度 = 旋轉後的角度 degree，下次執行從當下角度開始
         vm.start_deg = degree
+        //綁定旋轉角度到指針
         if (vm.current_year === 2017) {
           vm.rotate_deg = `rotate(${degree}deg)`
         } else {
@@ -382,12 +282,38 @@
         }
 
         vm.prize_transition = `all ${vm.duration / 1000}s cubic-bezier(0.42, 0, 0.2, 0.91)`
-        vm.prizeActive()
+        vm.time_remaining--
+        vm.isClicked = true
 
+        // 取當下開始角度的餘數，與輪盤角度比對(除錯用)
+        let remainder = vm.start_deg % 360
+        if (remainder <= 0) {
+          // 為了不產生負數或0，加360
+          vm.current_deg = vm.current_year === 2017 ? remainder + 360 : remainder + 360 - vm.each_deg / 2
+        } else if (remainder > 0) {
+          vm.current_deg = vm.current_year === 2017 ? remainder : remainder - vm.each_deg / 2
+        }
+        console.log('Угол', degree, 'Выйгрыш', vm.index)
+
+        // 將vm.index設為抽中獎品索引數，獎品抽完的索引數將不再出現，直到獎品全數抽完，重新 RESET
+        let prize = vm.prizes[vm.index]
+        vm.prize_name = prize.name
+        vm.prize_icon = prize.icon
+        if (vm.current_year === 2018) {
+          vm.prize_icon = "card_giftcard"
+        }
+        vm.prizeActive()
         setTimeout(() => {
-          vm.prizeModalVisible = true
-          vm.isSpinning = false
-        }, vm.duration)
+          prize.count--
+          console.log('Градусы:', vm.current_deg, 'Название:', prize.name, 'Количество:', prize.count, ' index', vm.index)
+        }, vm.duration);
+
+        // 點選動畫結束後，將"已點選"改回"未點選"
+        setTimeout(() => {
+          if (vm.isClicked === true) {
+            vm.isClicked = false
+          }
+        }, vm.duration);
       }
     },
   })

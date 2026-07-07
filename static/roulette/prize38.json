@@ -1,7 +1,7 @@
 [
   {
-    "name": "450 РУБЛЕЙ",
-    "icon": "account_balance",
+    "name": "Ночной пакет",
+    "icon": "card_membership",
     "count": 1
   },
   {
@@ -95,77 +95,77 @@
     "count": 1
   },
   {
-    "name": "450 РУБЛЕЙ",
+    "name": "Ночной пакет",
+    "icon": "nights_stay",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "200 РУБЛЕЙ",
+    "icon": "account_balance_wallet",
+    "count": 1
+  },
+  {
+    "name": "500 РУБЛЕЙ",
     "icon": "account_balance",
     "count": 1
   },
   {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "200 РУБЛЕЙ",
-    "icon": "account_balance_wallet",
-    "count": 1
-  },
-  {
-    "name": "400 РУБЛЕЙ",
-    "icon": "account_balance",
-    "count": 1
-  },
-  {
-    "name": "400 РУБЛЕЙ",
+    "name": "500 РУБЛЕЙ",
     "icon": "account_balance",
     "count": 1
   },

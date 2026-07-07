@@ -101,11 +101,12 @@
 	}
 
 	.bonus-progress-widget--mobile {
-		min-width: 108px;
-		padding: 8px 10px;
+		min-width: 118px;
+		padding: 7px 10px;
+		gap: 5px;
 	}
 
-	.bonus-progress-widget--mobile .bonus-progress-widget__value {
+	.bonus-progress-widget--mobile .bonus-progress-widget__ratio {
 		font-size: 0.72rem;
 	}
 
@@ -113,8 +114,8 @@
 		font-size: 0.5rem;
 	}
 
-	.bonus-progress-widget--mobile .bonus-progress-bar {
-		height: 4px;
+	.bonus-progress-widget--mobile .bonus-progress-widget__track {
+		height: 5px;
 	}
 
 	.app-main {
