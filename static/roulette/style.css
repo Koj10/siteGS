@@ -263,6 +263,16 @@ button:focus {
   cursor: pointer;
 }
 
+.pointer-container .pointer--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.pointer-container .pointer--disabled::after {
+  content: none;
+}
+
 .item {
   position: absolute;
   display: -webkit-box;
@@ -1071,5 +1081,88 @@ button:focus {
   -webkit-transform: translateX(10px);
           transform: translateX(10px);
   opacity: 0;
+}
+
+.roulette-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.roulette-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 10, 60, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.roulette-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  padding: 32px 28px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #2a1a8f 0%, #1f1172 100%);
+  border: 2px solid rgba(255, 0, 186, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  color: #fff;
+}
+
+.roulette-modal__label {
+  margin: 0 0 20px;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f0beff;
+}
+
+.roulette-modal__prize {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.roulette-modal__prize .material-icons {
+  font-size: 64px;
+  color: #ff00ba;
+}
+
+.roulette-modal__prize-name {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.roulette-modal__btn {
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #ff00ba 0%, #ff5fd1 100%);
+  color: #fff;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.roulette-modal__btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.roulette-modal__btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
 }
 /*# sourceMappingURL=style.css.map */

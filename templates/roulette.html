@@ -36,9 +36,12 @@
 
     <div class="lucky-wheel">
       <div class="pointer-container">
-        <!-- pointer -->
-        <div class="pointer" ref="pointer" id="pointer" :style="{'transform':rotate_deg,'transition': prize_transition}"
-          @click="rotateHandler(num)">
+        <div
+          :class="pointerClass"
+          ref="pointer"
+          id="pointer"
+          :style="{'transform':rotate_deg,'transition': prize_transition}"
+          @click="rotateHandler">
         </div>
       </div>
       <!-- lucky wheel -->
@@ -57,29 +60,32 @@
 
       <!-- display results -->
       <transition name="slide-fade">
-        <div class="prize" v-if="isShow==isClicked">
-          <div class="prize-container">
-            <div class="prize-title">ВАШ</br> ПРИЗ!</div>
-            <div class="prize-title">ТЫ ПОЛУЧИЛ...</br>
-              <span class="prize-item">[[prize_name]]</span>
+        <div class="roulette-modal" v-if="prizeModalVisible">
+          <div class="roulette-modal__backdrop"></div>
+          <div class="roulette-modal__dialog" role="dialog" aria-modal="true">
+            <p class="roulette-modal__label">Ваш приз</p>
+            <div class="roulette-modal__prize">
+              <i class="material-icons">[[prize_icon]]</i>
+              <span class="roulette-modal__prize-name">[[prize_name]]</span>
             </div>
-            <div class="prize-background">
-              <template v-for="(prizeIcon,index) in 9">
-                <img src="https://pc.game-sense.ru/static/lib/ghonse.svg" alt="prize">
-              </template>
-            </div>
+            <button
+              type="button"
+              class="roulette-modal__btn"
+              :disabled="claimLoading"
+              @click="claimPrize">
+              [[ claimLoading ? 'Получаем...' : 'Получить приз' ]]
+            </button>
           </div>
         </div>
       </transition>
     </div>
-  </div>
   </div>
   <script>window.GS_API_BASE = {{ gs_api_base | tojson }};</script>
   <script src="{{ url_for('static', filename='js/api-config.js') }}?v=1.0.2"></script>
   <script src="{{ url_for('static', filename='js/update-user.js') }}?v=1.0.2"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.8/vue.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js'></script>
-  <script src="{{ url_for('static', filename='roulette/all.js') }}"></script>
+  <script src="{{ url_for('static', filename='roulette/all.js') }}?v=2.0.0"></script>
   <script src="{{ url_for('static', filename='roulette/snowfall.js') }}"></script>
   <script src="{{ url_for('static', filename='js/notification.js') }}" defer></script>
 </body>
