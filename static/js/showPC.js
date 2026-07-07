@@ -63,6 +63,20 @@ async function activateCouponOnPc(computerId, packageId) {
     return data;
 }
 
+function isAdminSessionsPage() {
+    return Boolean(document.getElementById('vipPcContainer'));
+}
+
+function formatPcStatus(status) {
+    const labels = {
+        активен: 'Активен',
+        занят: 'Занят',
+        заблокирован: 'Заблокирован',
+        ремонт: 'На ремонте'
+    };
+    return labels[status] || status;
+}
+
 function buildPackageOptions(packages) {
     if (!packages.length) {
         return '<option value="">Нет активных пакетов</option>';
@@ -102,6 +116,8 @@ function showPC() {
 
         const busyPcs = [];
 
+        const adminPage = isAdminSessionsPage();
+
         data.forEach(item => {
             const pc = document.createElement("div");
             pc.className = "computer";
@@ -112,7 +128,31 @@ function showPC() {
             dropdown.id = `dropdown${item.id}`;
             dropdown.className = "dropdown-content";
             dropdown.addEventListener('click', (event) => event.stopPropagation());
-            dropdown.innerHTML = `
+            dropdown.innerHTML = adminPage ? `
+                <h4>Компьютер: ${item.number_pc}</h4>
+                <div class="pc-dropdown-section">
+                    <div class="pc-status-readonly">
+                        <span class="admin-label">Статус</span>
+                        <span class="pc-status-readonly__value">${formatPcStatus(item.status)}</span>
+                    </div>
+                    <label class="admin-label">Зона</label>
+                    <select class="zonePC">
+                        <option value="regular">Обычная</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                    <button type="button" class="update-zone-btn admin-btn">Сохранить зону</button>
+                </div>
+                <div class="pc-dropdown-section pc-dropdown-section--coupon">
+                    <button type="button" class="coupon-toggle-btn admin-btn admin-btn--primary">Активировать купон</button>
+                    <div class="coupon-picker" hidden>
+                        <label class="admin-label">Пакет времени</label>
+                        <select class="coupon-package-select admin-input admin-input--select">
+                            <option value="">Загрузка...</option>
+                        </select>
+                        <button type="button" class="coupon-confirm-btn admin-btn admin-btn--primary">Запустить сессию</button>
+                    </div>
+                </div>
+            ` : `
                 <h4>Компьютер: ${item.number_pc}</h4>
                 <div class="pc-dropdown-section">
                     <label class="admin-label">Зона</label>
@@ -142,7 +182,7 @@ function showPC() {
             `;
 
             const statusSelect = dropdown.querySelector('.statusPC');
-            statusSelect.value = item.status;
+            if (statusSelect) statusSelect.value = item.status;
             const zoneSelect = dropdown.querySelector('.zonePC');
             const pcZone = String(item.zone || 'regular').toLowerCase();
             zoneSelect.value = pcZone === 'vip' ? 'vip' : 'regular';
@@ -176,9 +216,18 @@ function showPC() {
             dropdownContainer.appendChild(dropdown);
 
             const updateButton = dropdown.querySelector('.update-btn');
-            updateButton.addEventListener('click', () => {
-                sendUpdate(item.token, statusSelect.value, null, zoneSelect.value);
-            });
+            if (updateButton) {
+                updateButton.addEventListener('click', () => {
+                    sendUpdate(item.token, statusSelect.value, null, zoneSelect.value);
+                });
+            }
+
+            const updateZoneButton = dropdown.querySelector('.update-zone-btn');
+            if (updateZoneButton) {
+                updateZoneButton.addEventListener('click', () => {
+                    sendZoneUpdate(item.token, zoneSelect.value);
+                });
+            }
 
             const couponToggle = dropdown.querySelector('.coupon-toggle-btn');
             const couponPicker = dropdown.querySelector('.coupon-picker');
@@ -267,6 +316,28 @@ function showPC() {
     })
     .catch(error => {
         console.log(error);
+    });
+}
+
+function sendZoneUpdate(token, zone) {
+    const jwtToken = getCookie('jwt_token');
+
+    fetch(`${getApiBase()}/pc/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ token, zone })
+    })
+    .then(response => response.json().then(data => ({ ok: response.ok, data })))
+    .then(({ ok, data }) => {
+        if (!ok) throw new Error(data.error || 'Не удалось сохранить зону');
+        showNotification('Зона сохранена');
+        showPC();
+    })
+    .catch(error => {
+        showNotification(error.message, true);
     });
 }
 
