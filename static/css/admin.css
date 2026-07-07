@@ -238,6 +238,17 @@
 	margin-bottom: 20px;
 }
 
+.admin-pc-grid--vip {
+	margin-bottom: 28px;
+}
+
+.admin-pc-section-title {
+	margin: 8px 0 12px;
+	font-size: 0.95rem;
+	color: var(--text-muted);
+	letter-spacing: 0.04em;
+}
+
 .admin-period-tabs {
 	display: flex;
 	gap: 8px;
@@ -432,7 +443,10 @@
 }
 
 .dropdown-content {
-	min-width: 240px;
+	width: 320px;
+	min-width: 320px;
+	max-width: 320px;
+	box-sizing: border-box;
 	gap: 0;
 }
 
@@ -468,6 +482,11 @@
 
 .computer.blocked {
 	opacity: 0.75;
+}
+
+.computer-vip {
+	border: 1px solid rgba(201, 165, 92, 0.5);
+	box-shadow: 0 0 0 1px rgba(201, 165, 92, 0.2);
 }
 
 .admin-empty {

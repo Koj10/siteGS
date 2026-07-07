@@ -70,7 +70,7 @@ function buildPackageOptions(packages) {
     return '<option value="">Выберите пакет</option>' +
         packages.map(pkg => `
             <option value="${pkg.id}">
-                ${pkg.name} — ${formatPackageDuration(pkg.duration_minutes)} — ${Math.round(pkg.price)} ₽
+                ${pkg.name} — ${formatPackageDuration(pkg.duration_minutes)} — ${Math.round(pkg.display_price)} ₽
             </option>
         `).join('');
 }
@@ -89,10 +89,12 @@ function showPC() {
     .then(response => response.json())
     .then(data => {
         const container = document.getElementById("pcContainer");
+        const vipContainer = document.getElementById("vipPcContainer");
         const dropdownContainer = document.getElementById("dropdownContainer");
         const busyPcContainer = document.getElementById("busyPcContainer");
 
         container.innerHTML = '';
+        if (vipContainer) vipContainer.innerHTML = '';
         dropdownContainer.innerHTML = '';
         if (busyPcContainer) busyPcContainer.innerHTML = '';
 
@@ -113,6 +115,11 @@ function showPC() {
             dropdown.innerHTML = `
                 <h4>Компьютер: ${item.number_pc}</h4>
                 <div class="pc-dropdown-section">
+                    <label class="admin-label">Зона</label>
+                    <select class="zonePC">
+                        <option value="regular">Обычная</option>
+                        <option value="vip">VIP</option>
+                    </select>
                     <label class="admin-label">Статус</label>
                     <select class="statusPC">
                         <option value="активен">Активен</option>
@@ -136,6 +143,9 @@ function showPC() {
 
             const statusSelect = dropdown.querySelector('.statusPC');
             statusSelect.value = item.status;
+            const zoneSelect = dropdown.querySelector('.zonePC');
+            const pcZone = String(item.zone || 'regular').toLowerCase();
+            zoneSelect.value = pcZone === 'vip' ? 'vip' : 'regular';
 
             if (item.status === "занят") {
                 pc.innerHTML = `<p class="iconoir-computer"></p>`;
@@ -157,13 +167,17 @@ function showPC() {
                 pc.innerHTML = `<p class="iconoir-pc-check"></p>`;
                 pc.classList.add("active");
             }
+            if (zoneSelect.value === 'vip') {
+                pc.classList.add("computer-vip");
+            }
 
-            container.appendChild(pc);
+            const targetContainer = (zoneSelect.value === 'vip' && vipContainer) ? vipContainer : container;
+            targetContainer.appendChild(pc);
             dropdownContainer.appendChild(dropdown);
 
             const updateButton = dropdown.querySelector('.update-btn');
             updateButton.addEventListener('click', () => {
-                sendUpdate(item.token, statusSelect.value, null);
+                sendUpdate(item.token, statusSelect.value, null, zoneSelect.value);
             });
 
             const couponToggle = dropdown.querySelector('.coupon-toggle-btn');
@@ -179,7 +193,12 @@ function showPC() {
                 packageSelect.innerHTML = '<option value="">Загрузка...</option>';
                 try {
                     const packages = await loadTimePackages();
-                    packageSelect.innerHTML = buildPackageOptions(packages);
+                    const isVip = zoneSelect.value === 'vip';
+                    const adaptedPackages = packages.map(pkg => ({
+                        ...pkg,
+                        display_price: isVip ? Number(pkg.price_vip ?? pkg.price ?? 0) : Number(pkg.price ?? 0)
+                    }));
+                    packageSelect.innerHTML = buildPackageOptions(adaptedPackages);
                 } catch (error) {
                     packageSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
                     showNotification(error.message, true);
@@ -251,11 +270,12 @@ function showPC() {
     });
 }
 
-function sendUpdate(token, status, time) {
+function sendUpdate(token, status, time, zone) {
     const jwtToken = getCookie('jwt_token');
 
     const data = { token, status };
     if (time) data.time = time;
+    if (zone) data.zone = zone;
 
     fetch(`${getApiBase()}/pc/status`, {
         method: 'POST',

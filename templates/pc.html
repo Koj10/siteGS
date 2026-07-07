@@ -17,7 +17,44 @@
 	document.addEventListener('DOMContentLoaded', function() {
     // Родительский контейнер, в котором появляются элементы с dropdown
     const container = document.getElementById('pcContainer'); // Или 'dropdownContainer', если меню там
+    let openedDropdownId = null;
     
+    function positionDropdownAtRight(menu, toggleElement) {
+        const containerRect = container.getBoundingClientRect();
+        const toggleRect = toggleElement.getBoundingClientRect();
+        const gap = 16;
+        const horizontalShift = -24;
+
+        menu.style.position = 'fixed';
+        menu.style.visibility = 'hidden';
+        menu.classList.add('show');
+
+        const menuRect = menu.getBoundingClientRect();
+
+        let left = containerRect.right + gap + horizontalShift;
+        if (left + menuRect.width > window.innerWidth - gap) {
+            left = window.innerWidth - menuRect.width - gap;
+        }
+        left = Math.max(gap, left);
+
+        let top = toggleRect.top;
+        if (top + menuRect.height > window.innerHeight - gap) {
+            top = window.innerHeight - menuRect.height - gap;
+        }
+        top = Math.max(gap, top);
+
+        menu.style.left = `${left}px`;
+        menu.style.top = `${top}px`;
+        menu.style.visibility = '';
+    }
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-content').forEach(menu => {
+            menu.classList.remove('show');
+        });
+        openedDropdownId = null;
+    }
+
     // Обработчик кликов для всего контейнера
     container.addEventListener('click', function(event) {
         // Проверяем, был ли клик по элементу с атрибутом dropdown
@@ -26,9 +63,12 @@
     		const dropdownId = toggle.getAttribute('dropdown');
     		const dropdownMenu = document.getElementById(dropdownId);
     		if (dropdownMenu) {
-                // Позиционируем меню рядом с курсором
-    			positionDropdownAtCursor(dropdownMenu, event);
-    			dropdownMenu.classList.toggle('show');
+                const shouldCloseCurrent = openedDropdownId === dropdownId && dropdownMenu.classList.contains('show');
+                closeAllDropdowns();
+                if (!shouldCloseCurrent) {
+                    positionDropdownAtRight(dropdownMenu, toggle);
+                    openedDropdownId = dropdownId;
+                }
                 event.stopPropagation(); // Чтобы не сработал window.click ниже
             }
         }
@@ -36,57 +76,12 @@
 
     // Закрываем меню при клике вне его
     window.addEventListener('click', function(event) {
-    	const allMenus = document.querySelectorAll('.dropdown-content');
-    	allMenus.forEach(menu => {
-    		if (!menu.contains(event.target)) {
-    			menu.classList.remove('show');
-    		}
-    	});
+        if (event.target.closest('.dropdown-content') || event.target.closest('[dropdown]')) {
+            return;
+        }
+        closeAllDropdowns();
     });
 
-    // Функция для позиционирования меню рядом с курсором
-    function positionDropdownAtCursor(menu, event) {
-    // Получаем текущие стили меню
-    // Получаем координаты курсора
-        const x = event.clientX;
-        const y = event.clientY;
-
-    // Устанавливаем стили только если они еще не заданы
-        const computedStyles = window.getComputedStyle(menu);
-
-        if (computedStyles.getPropertyValue('position') === 'static') {
-            menu.style.position = 'fixed';
-        }
-        if (computedStyles.getPropertyValue('left') !== '0px') {
-            menu.style.left = `${x}px`;
-        }
-        if (computedStyles.getPropertyValue('top') !== 'auto') {
-            console.log(computedStyles.getPropertyValue('top'))
-            menu.style.top = `${y}px`;
-        }
-
-    // Проверяем, чтобы меню не выходило за границы окна
-        const menuRect = menu.getBoundingClientRect();
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-
-        let adjustedLeft = x;
-        let adjustedTop = y;
-
-        if (x + menuRect.width > windowWidth) {
-            adjustedLeft = windowWidth - menuRect.width;
-        }
-        if (y + menuRect.height > windowHeight) {
-            adjustedTop = windowHeight - menuRect.height;
-        }
-
-        // if (menu.style.left !== `${adjustedLeft}px`) {
-        //     menu.style.left = `${adjustedLeft}px`;
-        // }
-        // if (menu.style.top !== `${adjustedTop}px`) {
-        //     menu.style.top = `${adjustedTop}px`;
-        // }
-    }
 });
 </script>
 <script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
