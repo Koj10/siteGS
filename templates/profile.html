@@ -35,7 +35,8 @@
 			<p class="bonus-case-result__amount">0 ₽</p>
 		</div>
 		<div class="bonus-case-modal__actions">
-			<button type="button" id="bonusCaseClaimBtn" class="card-buy buy-button" disabled>Получить</button>
+			<button type="button" id="bonusCaseStartBtn" class="card-buy buy-button">Открыть</button>
+			<button type="button" id="bonusCaseClaimBtn" class="card-buy buy-button" disabled hidden>Получить</button>
 		</div>
 		<div class="bonus-case-chances">
 			<span class="bonus-case-chances__item"><strong>100 ₽</strong> — 45%</span>
@@ -50,6 +51,6 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/card-images.js') }}?v=1.0"></script>
 <script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.2"></script>
-<script src="{{ url_for('static', filename='js/bonus-case.js') }}?v=1.0"></script>
+<script src="{{ url_for('static', filename='js/bonus-case.js') }}?v=1.2"></script>
 <script src="{{ url_for('static', filename='js/activate.js') }}" defer></script>
 {% endblock %}
