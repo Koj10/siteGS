@@ -1,10 +1,13 @@
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 const inventory = user?.inventory?.time_packages || {};
+const bonusCards = Number(user?.inventory?.bonuses?.card || user?.bonus_cards || 0);
 
 const host = getApiBase();
 const container = document.getElementById('cardsContainer');
 const blockedSection = document.getElementById('blockedContainer');
+const bonusSection = document.getElementById('bonusCardsSection');
+const bonusContainer = document.getElementById('bonusCardsContainer');
 const pc_token = getCookie('pc_token');
 const jwtToken = getCookie('jwt_token');
 
@@ -46,6 +49,31 @@ function buildInventoryCard(item, buttonHTML, isBlocked, eagerImage) {
     attachCardImage(img, 'time_packages', item.id);
 
     return card;
+}
+
+function renderBonusCards() {
+    if (!bonusContainer || !bonusSection) return;
+
+    bonusContainer.replaceChildren();
+    if (bonusCards <= 0) {
+        bonusSection.hidden = true;
+        return;
+    }
+
+    bonusSection.hidden = false;
+    for (let i = 0; i < bonusCards; i++) {
+        const card = document.createElement('div');
+        card.className = 'card card_product bonus-card-placeholder';
+        card.innerHTML = `
+            <div class="card-body">
+                <h3 class="card-title">БОНУС</h3>
+                <span class="card-subtitle">СКОРО</span>
+                <div class="card-divider"><span class="card-diamond"></span></div>
+                <p class="shop-empty" style="margin:0;padding:0;">Детали появятся позже</p>
+            </div>
+        `;
+        bonusContainer.appendChild(card);
+    }
 }
 
 async function loadInventoryCards() {
@@ -118,3 +146,4 @@ async function loadInventoryCards() {
 }
 
 loadInventoryCards();
+renderBonusCards();

@@ -104,8 +104,33 @@
 	.app-user {
 		display: flex;
 		align-items: center;
-		gap: 16px;
+		gap: 12px;
 		flex-shrink: 0;
+	}
+
+	.bonus-progress-widget {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		padding: 8px 16px;
+		border-radius: var(--radius-md);
+		border: 1px solid rgba(167, 139, 212, 0.28);
+		background: rgba(167, 139, 212, 0.08);
+	}
+
+	.bonus-progress-widget__value {
+		font-family: "Orbitron", sans-serif;
+		font-size: 1.05rem;
+		font-weight: 700;
+		color: var(--purple-accent);
+		line-height: 1.2;
+	}
+
+	.bonus-progress-widget__label {
+		font-size: 0.6rem;
+		letter-spacing: 0.15em;
+		color: var(--text-muted);
+		font-weight: 600;
 	}
 
 	.balance-widget {

@@ -79,10 +79,6 @@
 	}
 
 	.balance-mobile {
-		position: fixed;
-		top: 16px;
-		right: 16px;
-		z-index: 90;
 		padding: 8px 14px;
 		border-radius: var(--radius-md);
 		background: var(--gold-muted);
@@ -91,6 +87,30 @@
 		font-size: 0.85rem;
 		font-weight: 700;
 		color: var(--gold-light) !important;
+		text-decoration: none;
+	}
+
+	.wallet-mobile {
+		position: fixed;
+		top: 16px;
+		right: 16px;
+		z-index: 90;
+		display: flex;
+		align-items: stretch;
+		gap: 8px;
+	}
+
+	.bonus-progress-widget--mobile {
+		padding: 8px 12px;
+		align-items: flex-end;
+	}
+
+	.bonus-progress-widget--mobile .bonus-progress-widget__value {
+		font-size: 0.78rem;
+	}
+
+	.bonus-progress-widget--mobile .bonus-progress-widget__label {
+		font-size: 0.52rem;
 	}
 
 	.app-main {

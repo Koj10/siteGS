@@ -38,9 +38,15 @@
     <h4 id="out_time" class="notification"></h4>
 
     {% if self.title() not in ['Подтверждение', 'Вход', 'Прайс', 'Восстановление пароля'] %}
-    <a class="mobile balance-mobile">
-        <span class="balance">0</span> ₽
-    </a>
+    <div class="mobile wallet-mobile">
+        <div class="bonus-progress-widget bonus-progress-widget--mobile">
+            <span class="bonus-progress-widget__value"><span class="bonus-until">2000</span> ₽</span>
+            <span class="bonus-progress-widget__label">ДО БОНУСА</span>
+        </div>
+        <a class="balance-mobile">
+            <span class="balance">0</span> ₽
+        </a>
+    </div>
     <header class="app-header">
         <a href="/" class="app-brand">
             <img src="{{ url_for('static', filename='lib/ghonse.svg') }}" alt="GameSense" class="app-brand__logo">
@@ -77,6 +83,10 @@
         </nav>
 
         <div class="app-user">
+            <div class="bonus-progress-widget pc">
+                <span class="bonus-progress-widget__value"><span class="bonus-until">2000</span> ₽</span>
+                <span class="bonus-progress-widget__label">ДО БОНУСА</span>
+            </div>
             <div class="balance-widget pc">
                 <span class="balance-widget__value"><span class="balance">0</span> ₽</span>
                 <span class="balance-widget__label">БАЛАНС</span>
@@ -111,6 +121,17 @@
     <script>
         const adminElements = document.querySelectorAll(".admin");
 
+        function updateBonusCounter(user) {
+            if (!user) return;
+            const remaining = user.topup_bonus_remaining !== undefined
+                ? user.topup_bonus_remaining
+                : Math.max(0, (user.topup_bonus_threshold || 2000) - (user.topup_bonus_progress || 0));
+
+            document.querySelectorAll('.bonus-until').forEach(el => {
+                el.textContent = remaining;
+            });
+        }
+
         document.querySelectorAll('.nav-item[data-nav]').forEach(link => {
             const path = link.getAttribute('data-nav');
             if (path === window.location.pathname) {
@@ -141,6 +162,7 @@
                 fillElements('last_name', user.last_name || '');
                 fillElements('email', user.email || '');
                 fillElements('balance', user.balance !== undefined ? user.balance : '');
+                updateBonusCounter(user);
 
                 const initial = document.querySelector('.user-chip__initial');
                 if (initial && user.first_name) {
