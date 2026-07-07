@@ -7,7 +7,7 @@
 <button id="exit" onclick="logout()"><h5 class="iconoir-transition-right"></h5></button>
 
 <section class="shop-section" id="bonusCardsSection" hidden>
-	<h2 class="section-title">БОНУСЫ</h2>
+	<h2 class="section-title">КОЛЕСО ФОРТУНЫ</h2>
 	<div id="bonusCardsContainer" class="cardsContainer"></div>
 </section>
 <section class="shop-section">
@@ -21,6 +21,6 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/card-images.js') }}?v=1.0"></script>
-<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.1"></script>
+<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.2"></script>
 <script src="{{ url_for('static', filename='js/activate.js') }}" defer></script>
 {% endblock %}

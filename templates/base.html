@@ -40,8 +40,13 @@
     {% if self.title() not in ['Подтверждение', 'Вход', 'Прайс', 'Восстановление пароля'] %}
     <div class="mobile wallet-mobile">
         <div class="bonus-progress-widget bonus-progress-widget--mobile">
-            <span class="bonus-progress-widget__value"><span class="bonus-until">2000</span> ₽</span>
             <span class="bonus-progress-widget__label">ДО БОНУСА</span>
+            <span class="bonus-progress-widget__value">
+                <span class="bonus-progress-current">0</span>/<span class="bonus-progress-total">2000</span>
+            </span>
+            <div class="bonus-progress-bar" aria-hidden="true">
+                <div class="bonus-progress-bar__fill"></div>
+            </div>
         </div>
         <a class="balance-mobile">
             <span class="balance">0</span> ₽
@@ -84,8 +89,13 @@
 
         <div class="app-user">
             <div class="bonus-progress-widget pc">
-                <span class="bonus-progress-widget__value"><span class="bonus-until">2000</span> ₽</span>
                 <span class="bonus-progress-widget__label">ДО БОНУСА</span>
+                <span class="bonus-progress-widget__value">
+                    <span class="bonus-progress-current">0</span>/<span class="bonus-progress-total">2000</span>
+                </span>
+                <div class="bonus-progress-bar" aria-hidden="true">
+                    <div class="bonus-progress-bar__fill"></div>
+                </div>
             </div>
             <div class="balance-widget pc">
                 <span class="balance-widget__value"><span class="balance">0</span> ₽</span>
@@ -123,12 +133,22 @@
 
         function updateBonusCounter(user) {
             if (!user) return;
-            const remaining = user.topup_bonus_remaining !== undefined
-                ? user.topup_bonus_remaining
-                : Math.max(0, (user.topup_bonus_threshold || 2000) - (user.topup_bonus_progress || 0));
 
-            document.querySelectorAll('.bonus-until').forEach(el => {
-                el.textContent = remaining;
+            const threshold = Number(user.topup_bonus_threshold) || 2000;
+            const progress = Math.min(
+                threshold,
+                Math.max(0, Number(user.topup_bonus_progress) || 0)
+            );
+            const percent = threshold > 0 ? (progress / threshold) * 100 : 0;
+
+            document.querySelectorAll('.bonus-progress-current').forEach(el => {
+                el.textContent = progress;
+            });
+            document.querySelectorAll('.bonus-progress-total').forEach(el => {
+                el.textContent = threshold;
+            });
+            document.querySelectorAll('.bonus-progress-bar__fill').forEach(el => {
+                el.style.width = `${percent}%`;
             });
         }
 

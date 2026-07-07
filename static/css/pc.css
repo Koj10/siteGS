@@ -111,26 +111,47 @@
 	.bonus-progress-widget {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-end;
-		padding: 8px 16px;
+		align-items: stretch;
+		gap: 4px;
+		min-width: 132px;
+		padding: 8px 14px;
 		border-radius: var(--radius-md);
 		border: 1px solid rgba(167, 139, 212, 0.28);
 		background: rgba(167, 139, 212, 0.08);
 	}
 
+	.bonus-progress-widget__label {
+		font-size: 0.58rem;
+		letter-spacing: 0.14em;
+		color: var(--text-muted);
+		font-weight: 600;
+		text-align: right;
+	}
+
 	.bonus-progress-widget__value {
 		font-family: "Orbitron", sans-serif;
-		font-size: 1.05rem;
+		font-size: 0.95rem;
 		font-weight: 700;
 		color: var(--purple-accent);
 		line-height: 1.2;
+		text-align: right;
 	}
 
-	.bonus-progress-widget__label {
-		font-size: 0.6rem;
-		letter-spacing: 0.15em;
-		color: var(--text-muted);
-		font-weight: 600;
+	.bonus-progress-bar {
+		width: 100%;
+		height: 5px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.08);
+		overflow: hidden;
+	}
+
+	.bonus-progress-bar__fill {
+		height: 100%;
+		width: 0;
+		border-radius: inherit;
+		background: linear-gradient(90deg, var(--purple-medium), var(--purple-accent), var(--gold-light));
+		box-shadow: 0 0 10px rgba(167, 139, 212, 0.45);
+		transition: width 0.35s ease;
 	}
 
 	.balance-widget {

@@ -1,7 +1,7 @@
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 const inventory = user?.inventory?.time_packages || {};
-const bonusCards = Number(user?.inventory?.bonuses?.card || user?.bonus_cards || 0);
+const rouletteSpins = Number(user?.roulette ?? user?.bonus_cards ?? 0);
 
 const host = getApiBase();
 const container = document.getElementById('cardsContainer');
@@ -55,21 +55,26 @@ function renderBonusCards() {
     if (!bonusContainer || !bonusSection) return;
 
     bonusContainer.replaceChildren();
-    if (bonusCards <= 0) {
+    if (rouletteSpins <= 0) {
         bonusSection.hidden = true;
         return;
     }
 
     bonusSection.hidden = false;
-    for (let i = 0; i < bonusCards; i++) {
+    for (let i = 0; i < rouletteSpins; i++) {
         const card = document.createElement('div');
-        card.className = 'card card_product bonus-card-placeholder';
+        card.className = 'card card_product bonus-roulette-card';
         card.innerHTML = `
+            <div class="card-image-wrap bonus-roulette-card__visual">
+                <img src="/static/lib/ghonse.svg" alt="Колесо фортуны" loading="lazy">
+            </div>
             <div class="card-body">
-                <h3 class="card-title">БОНУС</h3>
-                <span class="card-subtitle">СКОРО</span>
+                <h3 class="card-title">КОЛЕСО ФОРТУНЫ</h3>
+                <span class="card-subtitle">БОНУСНЫЙ СПИН</span>
                 <div class="card-divider"><span class="card-diamond"></span></div>
-                <p class="shop-empty" style="margin:0;padding:0;">Детали появятся позже</p>
+                <div class="card-footer">
+                    <a href="/roulette" class="card-buy buy-button">Крутить</a>
+                </div>
             </div>
         `;
         bonusContainer.appendChild(card);
