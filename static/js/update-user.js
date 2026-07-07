@@ -28,6 +28,7 @@ function updateUserData() {
     })
     .then(result => {
         localStorage.setItem('user', JSON.stringify(result));
+        window.dispatchEvent(new CustomEvent('gamesense:user-updated', { detail: result }));
         return result;
     })
     .catch(error => {

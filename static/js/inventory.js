@@ -1,7 +1,11 @@
-const userData = localStorage.getItem('user');
-const user = JSON.parse(userData);
-const inventory = user?.inventory?.time_packages || {};
-const rouletteSpins = Number(user?.roulette ?? user?.bonus_cards ?? 0);
+function readUserFromStorage() {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+}
+
+let user = readUserFromStorage();
+let inventory = user?.inventory?.time_packages || {};
+let rouletteSpins = Number(user?.roulette ?? user?.bonus_cards ?? 0);
 
 const host = getApiBase();
 const container = document.getElementById('cardsContainer');
@@ -150,5 +154,14 @@ async function loadInventoryCards() {
     }
 }
 
+function refreshInventoryState() {
+    user = readUserFromStorage();
+    inventory = user?.inventory?.time_packages || {};
+    rouletteSpins = Number(user?.roulette ?? user?.bonus_cards ?? 0);
+    renderBonusCards();
+    loadInventoryCards();
+}
+
 loadInventoryCards();
 renderBonusCards();
+window.addEventListener('gamesense:user-updated', refreshInventoryState);
