@@ -547,6 +547,65 @@
 	animation: card-shimmer 1.4s ease-in-out infinite;
 }
 
+.admin-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.admin-modal[hidden] {
+	display: none;
+}
+
+.admin-modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(5, 4, 10, 0.75);
+	backdrop-filter: blur(6px);
+}
+
+.admin-modal__dialog {
+	position: relative;
+	width: min(100%, 420px);
+	padding: 22px 20px;
+	border-radius: var(--radius-lg);
+	border: 1px solid rgba(167, 139, 212, 0.45);
+	background: linear-gradient(180deg, rgba(32, 25, 50, 0.98), rgba(20, 16, 34, 0.98));
+	box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+.admin-modal__dialog h3 {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1rem;
+	color: var(--gold-light);
+	margin-bottom: 12px;
+}
+
+.admin-modal__text {
+	color: var(--text-muted);
+	font-size: 0.95rem;
+	margin-bottom: 18px;
+}
+
+.admin-modal__text span {
+	color: var(--white);
+	font-weight: 700;
+}
+
+.admin-modal__actions {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+}
+
+.admin-btn--end-session {
+	margin-top: 8px;
+}
+
 @media (width <= 1000px) {
 	.admin-layout {
 		grid-template-columns: 1fr;

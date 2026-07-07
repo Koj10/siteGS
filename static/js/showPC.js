@@ -63,6 +63,73 @@ async function activateCouponOnPc(computerId, packageId) {
     return data;
 }
 
+let pendingEndSession = null;
+
+function openEndSessionModal(computerId, numberPc) {
+    const modal = document.getElementById('endSessionModal');
+    const numberEl = document.getElementById('endSessionPcNumber');
+    if (!modal || !numberEl) return;
+
+    pendingEndSession = { computerId: Number(computerId), numberPc };
+    numberEl.textContent = numberPc;
+    modal.hidden = false;
+}
+
+function closeEndSessionModal() {
+    const modal = document.getElementById('endSessionModal');
+    if (modal) modal.hidden = true;
+    pendingEndSession = null;
+}
+
+async function endSessionEarly(computerId) {
+    const jwtToken = getCookie('jwt_token');
+    const response = await fetch(`${getApiBase()}/admin/sessions/end`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ computer_id: Number(computerId) })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || `Ошибка ${response.status}`);
+    return data;
+}
+
+function initEndSessionModal() {
+    if (window.endSessionModalInitialized) return;
+    window.endSessionModalInitialized = true;
+
+    const modal = document.getElementById('endSessionModal');
+    const confirmBtn = document.getElementById('endSessionConfirm');
+    if (!modal || !confirmBtn) return;
+
+    modal.addEventListener('click', (event) => {
+        if (event.target.closest('[data-close-end-session]')) {
+            closeEndSessionModal();
+        }
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+        if (!pendingEndSession) return;
+
+        confirmBtn.disabled = true;
+        try {
+            const result = await endSessionEarly(pendingEndSession.computerId);
+            showNotification(`ПК №${result.number_pc}: сессия завершена досрочно`);
+            closeEndSessionModal();
+            showPC();
+            if (typeof window.reloadAdminReports === 'function') {
+                window.reloadAdminReports();
+            }
+        } catch (error) {
+            showNotification(error.message, true);
+        } finally {
+            confirmBtn.disabled = false;
+        }
+    });
+}
+
 function isAdminSessionsPage() {
     return Boolean(document.getElementById('vipPcContainer'));
 }
@@ -117,6 +184,7 @@ function showPC() {
         const busyPcs = [];
 
         const adminPage = isAdminSessionsPage();
+        if (adminPage) initEndSessionModal();
 
         data.forEach(item => {
             const pc = document.createElement("div");
@@ -151,6 +219,7 @@ function showPC() {
                         </select>
                         <button type="button" class="coupon-confirm-btn admin-btn admin-btn--primary">Запустить сессию</button>
                     </div>
+                    ${item.status === 'занят' ? '<button type="button" class="end-session-btn admin-btn admin-btn--end-session admin-btn--subtract">Завершить сессию</button>' : ''}
                 </div>
             ` : `
                 <h4>Компьютер: ${item.number_pc}</h4>
@@ -233,6 +302,7 @@ function showPC() {
             const couponPicker = dropdown.querySelector('.coupon-picker');
             const packageSelect = dropdown.querySelector('.coupon-package-select');
             const couponConfirm = dropdown.querySelector('.coupon-confirm-btn');
+            const endSessionBtn = dropdown.querySelector('.end-session-btn');
 
             couponToggle.addEventListener('click', async () => {
                 const isOpen = !couponPicker.hidden;
@@ -277,6 +347,12 @@ function showPC() {
                     couponConfirm.disabled = false;
                 }
             });
+
+            if (endSessionBtn) {
+                endSessionBtn.addEventListener('click', () => {
+                    openEndSessionModal(item.id, item.number_pc);
+                });
+            }
         });
 
         if (busyPcs.length > 0 && busyPcContainer) {

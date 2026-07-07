@@ -63,6 +63,18 @@
 
 			<div id="busyPcContainer" class="busy-pcs-container"></div>
 
+			<div id="endSessionModal" class="admin-modal" hidden>
+				<div class="admin-modal__backdrop" data-close-end-session></div>
+				<div class="admin-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="endSessionTitle">
+					<h3 id="endSessionTitle">Завершить сессию досрочно</h3>
+					<p class="admin-modal__text">Компьютер №<span id="endSessionPcNumber">—</span></p>
+					<div class="admin-modal__actions">
+						<button type="button" class="admin-btn" data-close-end-session>Отмена</button>
+						<button type="button" class="admin-btn admin-btn--subtract" id="endSessionConfirm">Завершить сессию досрочно</button>
+					</div>
+				</div>
+			</div>
+
 		</section>
 
 
@@ -211,7 +223,7 @@
 
 <script src="{{ url_for('static', filename='js/admin.js') }}?v=1.5" defer></script>
 
-<script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.2" defer></script>
+<script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.3" defer></script>
 
 <script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
 
