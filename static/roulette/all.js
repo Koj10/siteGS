@@ -82,8 +82,18 @@
         const token = this.getCookie('jwt_token')
         return {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
         }
+      },
+      getApiError(error, fallback) {
+        const response = error && error.response
+        const data = response && response.data
+        if (data && typeof data === 'object' && data.error) {
+          return data.error
+        }
+        if (response && response.status) {
+          return `${fallback} (код ${response.status})`
+        }
+        return fallback
       },
       prizeActive() {
         let vm = this
@@ -147,10 +157,18 @@
         }
       },
       async performSpin() {
-        const { data } = await axios.post(`${getApiBase()}/roulette/spin`, {}, {
-          headers: this.authHeaders(),
-        })
-        return data
+        const headers = this.authHeaders()
+        const url = `${getApiBase()}/roulette/spin?perform=1`
+        try {
+          const { data } = await axios.get(url, { headers })
+          return data
+        } catch (error) {
+          if (error.response && error.response.status === 405) {
+            const { data } = await axios.post(`${getApiBase()}/roulette/spin`, null, { headers })
+            return data
+          }
+          throw error
+        }
       },
       async claimPrize() {
         if (this.claimLoading) return
@@ -163,9 +181,19 @@
 
         this.claimLoading = true
         try {
-          const { data } = await axios.post(`${getApiBase()}/roulette/claim`, {}, {
-            headers: this.authHeaders(),
-          })
+          const headers = this.authHeaders()
+          let data
+          try {
+            const response = await axios.get(`${getApiBase()}/roulette/claim?perform=1`, { headers })
+            data = response.data
+          } catch (error) {
+            if (error.response && error.response.status === 405) {
+              const response = await axios.post(`${getApiBase()}/roulette/claim`, null, { headers })
+              data = response.data
+            } else {
+              throw error
+            }
+          }
 
           if (typeof updateUserData === 'function') {
             await updateUserData()
@@ -177,9 +205,7 @@
           showNotification(`Приз получен: ${data.prize_name}`)
         } catch (error) {
           console.error('Ошибка получения приза', error)
-          const responseData = error.response && error.response.data
-          const message = (responseData && responseData.error) || 'Не удалось получить приз'
-          showNotification(message, true)
+          showNotification(this.getApiError(error, 'Не удалось получить приз'), true)
         } finally {
           this.claimLoading = false
         }
@@ -309,11 +335,16 @@
         } catch (error) {
           console.error('Ошибка спина', error)
           const responseData = error.response && error.response.data
-          const message = (responseData && responseData.error) || 'Не удалось выполнить спин'
           if (responseData && responseData.pending) {
             vm.showPendingPrize(responseData.pending)
           }
-          showNotification(message, true)
+          showNotification(vm.getApiError(error, 'Не удалось выполнить спин'), true)
+          vm.isSpinning = false
+          return
+        }
+
+        if (spinResult.prize_index === undefined || spinResult.prize_index === null) {
+          showNotification('Сервер не вернул приз. Обновите API на сервере.', true)
           vm.isSpinning = false
           return
         }
