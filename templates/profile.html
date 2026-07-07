@@ -18,9 +18,38 @@
 	<h2 class="section-title section-title--muted">НЕДОСТУПНЫЕ</h2>
 	<div id="blockedContainer" class="cardsContainer"></div>
 </section>
+
+<div id="bonusCaseModal" class="bonus-case-modal" hidden>
+	<div class="bonus-case-modal__backdrop"></div>
+	<div class="bonus-case-modal__dialog" role="dialog" aria-labelledby="bonusCaseModalTitle" aria-modal="true">
+		<button type="button" id="bonusCaseCloseBtn" class="bonus-case-modal__close" aria-label="Закрыть">&times;</button>
+		<h2 id="bonusCaseModalTitle" class="bonus-case-modal__title">БОНУС-КЕЙС</h2>
+		<div class="bonus-case-roulette">
+			<div class="bonus-case-roulette__viewport">
+				<div class="bonus-case-roulette__pointer"></div>
+				<div class="bonus-case-roulette__strip"></div>
+			</div>
+		</div>
+		<div class="bonus-case-result" hidden>
+			<p class="bonus-case-result__caption">Ваш приз</p>
+			<p class="bonus-case-result__amount">0 ₽</p>
+		</div>
+		<div class="bonus-case-modal__actions">
+			<button type="button" id="bonusCaseClaimBtn" class="card-buy buy-button" disabled>Получить</button>
+		</div>
+		<div class="bonus-case-chances">
+			<span class="bonus-case-chances__item"><strong>100 ₽</strong> — 45%</span>
+			<span class="bonus-case-chances__item"><strong>150 ₽</strong> — 30%</span>
+			<span class="bonus-case-chances__item"><strong>200 ₽</strong> — 18%</span>
+			<span class="bonus-case-chances__item"><strong>300 ₽</strong> — 6%</span>
+			<span class="bonus-case-chances__item"><strong>500 ₽</strong> — 1%</span>
+		</div>
+	</div>
+</div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/card-images.js') }}?v=1.0"></script>
-<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.1"></script>
+<script src="{{ url_for('static', filename='js/inventory.js') }}?v=2.2"></script>
+<script src="{{ url_for('static', filename='js/bonus-case.js') }}?v=1.0"></script>
 <script src="{{ url_for('static', filename='js/activate.js') }}" defer></script>
 {% endblock %}

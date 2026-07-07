@@ -1,7 +1,6 @@
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 const inventory = user?.inventory?.time_packages || {};
-const bonusCards = Number(user?.inventory?.bonuses?.card || user?.bonus_cards || 0);
 
 const host = getApiBase();
 const container = document.getElementById('cardsContainer');
@@ -10,6 +9,20 @@ const bonusSection = document.getElementById('bonusCardsSection');
 const bonusContainer = document.getElementById('bonusCardsContainer');
 const pc_token = getCookie('pc_token');
 const jwtToken = getCookie('jwt_token');
+
+function getBonusCards() {
+    const stored = localStorage.getItem('user');
+    if (!stored) return 0;
+    const currentUser = JSON.parse(stored);
+    return Number(currentUser?.inventory?.bonuses?.card || currentUser?.bonus_cards || 0);
+}
+
+function hasPendingBonusClaim() {
+    const stored = localStorage.getItem('user');
+    if (!stored) return false;
+    const currentUser = JSON.parse(stored);
+    return Boolean(currentUser?.pending_bonus_claim);
+}
 
 function getPeriodLabel(item) {
     if (item.is_weekend === 1) return 'ВЫХОДНЫЕ';
@@ -54,6 +67,9 @@ function buildInventoryCard(item, buttonHTML, isBlocked, eagerImage) {
 function renderBonusCards() {
     if (!bonusContainer || !bonusSection) return;
 
+    const bonusCards = getBonusCards();
+    const pendingClaim = hasPendingBonusClaim();
+
     bonusContainer.replaceChildren();
     if (bonusCards <= 0) {
         bonusSection.hidden = true;
@@ -61,17 +77,35 @@ function renderBonusCards() {
     }
 
     bonusSection.hidden = false;
-    for (let i = 0; i < bonusCards; i++) {
+    for (let i = 0; i < bonusCards; i += 1) {
         const card = document.createElement('div');
-        card.className = 'card card_product bonus-card-placeholder';
+        card.className = 'card card_product bonus-case-card';
         card.innerHTML = `
+            <span class="card-badge">КЕЙС</span>
+            <div class="bonus-case-card__preview">
+                <span class="bonus-case-card__icon" aria-hidden="true"></span>
+            </div>
             <div class="card-body">
-                <h3 class="card-title">БОНУС</h3>
-                <span class="card-subtitle">СКОРО</span>
+                <h3 class="card-title">БОНУС-КЕЙС</h3>
+                <span class="card-subtitle">НА БАЛАНС</span>
                 <div class="card-divider"><span class="card-diamond"></span></div>
-                <p class="shop-empty" style="margin:0;padding:0;">Детали появятся позже</p>
+                <div class="card-footer">
+                    <button class="card-buy buy-button bonus-case-open-btn" type="button"${pendingClaim ? ' disabled' : ''}>Открыть</button>
+                </div>
             </div>
         `;
+
+        const openBtn = card.querySelector('.bonus-case-open-btn');
+        openBtn.addEventListener('click', () => {
+            if (pendingClaim || openBtn.disabled) {
+                showNotification('Сначала заберите предыдущий приз', true);
+                return;
+            }
+            if (typeof window.openBonusCase === 'function') {
+                window.openBonusCase();
+            }
+        });
+
         bonusContainer.appendChild(card);
     }
 }
@@ -147,3 +181,5 @@ async function loadInventoryCards() {
 
 loadInventoryCards();
 renderBonusCards();
+document.addEventListener('userInventoryUpdated', renderBonusCards);
+window.renderBonusCards = renderBonusCards;

@@ -8,6 +8,7 @@
 @import url("custom.css");
 @import url("admin.css");
 @import url("friends.css");
+@import url("bonus-case.css");
 
 * {
 	padding: 0;
