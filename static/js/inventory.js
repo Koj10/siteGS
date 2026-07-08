@@ -4,7 +4,8 @@ const inventory = user?.inventory?.time_packages || {};
 
 const host = getApiBase();
 const container = document.getElementById('cardsContainer');
-const blockedSection = document.getElementById('blockedContainer');
+const blockedContainer = document.getElementById('blockedContainer');
+const blockedSection = document.querySelector('.shop-section--blocked');
 const bonusSection = document.getElementById('bonusCardsSection');
 const bonusContainer = document.getElementById('bonusCardsContainer');
 const pc_token = getCookie('pc_token');
@@ -110,17 +111,24 @@ function renderBonusCards() {
     }
 }
 
+function setBlockedEmptyState() {
+    if (blockedContainer) blockedContainer.replaceChildren();
+    if (blockedSection) blockedSection.style.display = 'none';
+}
+
 async function loadInventoryCards() {
     if (!container) return;
 
     const ids = Object.keys(inventory);
     if (ids.length === 0) {
         container.innerHTML = '<p class="shop-empty">Инвентарь пуст.</p>';
+        setBlockedEmptyState();
         return;
     }
 
     container.innerHTML = '<p class="shop-empty shop-loading">Загрузка карточек...</p>';
-    if (blockedSection) blockedSection.replaceChildren();
+    if (blockedContainer) blockedContainer.replaceChildren();
+    if (blockedSection) blockedSection.style.display = 'none';
 
     const requests = ids.map(async (id) => {
         const response = await fetch(`${host}/time_packages/${id}`, {
@@ -160,18 +168,27 @@ async function loadInventoryCards() {
         container.replaceChildren();
 
         let hasBlocked = false;
+        let hasAvailable = false;
+        if (blockedContainer) blockedContainer.replaceChildren();
+
         groups.flat().forEach(card => {
-            if (card.classList.contains('deactivate') && blockedSection) {
-                blockedSection.style.display = 'flex';
-                blockedSection.appendChild(card);
+            if (card.classList.contains('deactivate') && blockedContainer) {
+                blockedContainer.appendChild(card);
                 hasBlocked = true;
             } else {
                 container.appendChild(card);
+                hasAvailable = true;
             }
         });
 
-        if (!hasBlocked && blockedSection) {
-            blockedSection.closest('.shop-section--blocked')?.style.setProperty('display', 'none');
+        if (!hasAvailable) {
+            container.innerHTML = '<p class="shop-empty">Нет доступных карточек.</p>';
+        }
+
+        if (hasBlocked && blockedSection) {
+            blockedSection.style.display = '';
+        } else {
+            setBlockedEmptyState();
         }
     } catch (error) {
         console.error('Ошибка загрузки инвентаря:', error);

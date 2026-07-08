@@ -10,6 +10,7 @@
 @import url("friends.css");
 @import url("bonus-case.css");
 @import url("bonus-progress.css");
+@import url("adaptive.css");
 
 * {
 	padding: 0;

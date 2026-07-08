@@ -1,0 +1,278 @@
+/* Global adaptive tuning for common layouts */
+.app-main {
+	width: min(100%, 1480px);
+}
+
+.cardsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: stretch;
+	gap: 18px;
+	margin-bottom: 48px;
+}
+
+.cardsContainer .card.card_product {
+	width: 260px;
+	max-width: 100%;
+	flex: 0 1 260px;
+}
+
+.cardsContainer .shop-empty {
+	width: 100%;
+	text-align: center;
+}
+
+@media (min-width: 1600px) {
+	.app-main {
+		max-width: 1560px;
+		padding-left: 56px;
+		padding-right: 56px;
+	}
+
+	.cardsContainer {
+		gap: 22px;
+	}
+}
+
+@media (min-width: 1000px) and (max-width: 1199px) {
+	.app-header {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.nav-item {
+		padding: 10px 14px;
+		font-size: 0.86rem;
+	}
+
+	.app-main {
+		padding: 26px 20px 108px;
+	}
+
+	.cardsContainer .card.card_product {
+		width: 240px;
+		flex-basis: 240px;
+	}
+}
+
+@media (min-width: 640px) and (max-width: 999px) {
+	.wallet-mobile {
+		left: 16px;
+		right: 16px;
+		top: 12px;
+		justify-content: space-between;
+	}
+
+	.balance-mobile {
+		min-width: 112px;
+		text-align: center;
+	}
+
+	.app-main {
+		padding: 72px 16px calc(88px + env(safe-area-inset-bottom));
+	}
+
+	.cardsContainer {
+		gap: 12px;
+	}
+
+	.cardsContainer .card.card_product {
+		width: 220px;
+		flex-basis: 220px;
+	}
+
+	.card.card_product {
+		min-width: 0;
+	}
+
+	.card-body {
+		padding: 12px;
+	}
+
+	.card-title {
+		font-size: 0.76rem;
+	}
+
+	.card-subtitle {
+		font-size: 0.62rem;
+		letter-spacing: 0.14em;
+	}
+
+	.card-footer {
+		gap: 8px;
+		align-items: flex-end;
+	}
+
+	.card-price {
+		font-size: 1rem;
+		line-height: 1;
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	.card-buy {
+		width: auto;
+		min-width: 92px;
+		padding: 8px 10px !important;
+		font-size: 0.72rem !important;
+	}
+
+	.bonus-case-modal {
+		padding: 16px;
+	}
+
+	.bonus-case-modal__dialog {
+		max-height: min(92vh, 780px);
+		overflow-y: auto;
+	}
+}
+
+@media (max-width: 639px) {
+	.wallet-mobile {
+		left: 10px;
+		right: 10px;
+		top: 10px;
+		gap: 6px;
+		justify-content: space-between;
+	}
+
+	.bonus-progress-widget--mobile {
+		min-width: 0;
+		flex: 1;
+	}
+
+	.balance-mobile {
+		padding: 8px 10px;
+		font-size: 0.78rem;
+		white-space: nowrap;
+	}
+
+	.app-header {
+		height: calc(64px + env(safe-area-inset-bottom));
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+
+	.app-main {
+		padding: 70px 10px calc(86px + env(safe-area-inset-bottom));
+	}
+
+	.shop-section {
+		margin-bottom: 12px;
+	}
+
+	.section-title {
+		font-size: 0.92rem;
+		letter-spacing: 0.14em;
+		margin-bottom: 18px;
+	}
+
+	.cardsContainer {
+		gap: 10px;
+		margin-bottom: 24px;
+	}
+
+	.card.card_product {
+		min-width: 0;
+		border-radius: 14px;
+	}
+
+	.card-image-wrap {
+		min-height: 132px;
+	}
+
+	.card-body {
+		padding: 10px 10px 12px;
+	}
+
+	.card-title {
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+	}
+
+	.card-subtitle {
+		font-size: 0.58rem;
+		letter-spacing: 0.1em;
+	}
+
+	.card-divider {
+		margin: 8px 0;
+	}
+
+	.card-footer {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 6px;
+		padding-top: 2px;
+	}
+
+	.card-price {
+		font-size: 1rem;
+		line-height: 1.1;
+		white-space: nowrap;
+	}
+
+	.card-buy {
+		width: 100%;
+		padding: 7px 8px !important;
+		font-size: 0.68rem !important;
+	}
+
+	.bonus-case-modal {
+		padding: 10px;
+		align-items: flex-end;
+	}
+
+	.bonus-case-modal__dialog {
+		width: 100%;
+		max-height: min(90vh, 760px);
+		overflow-y: auto;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		padding: 18px 10px 14px;
+	}
+
+	.bonus-case-modal__title {
+		font-size: 0.82rem;
+		letter-spacing: 0.12em;
+		margin-bottom: 12px;
+	}
+
+	.bonus-case-roulette__viewport {
+		height: 140px;
+	}
+
+	.bonus-case-item {
+		flex-basis: 96px;
+	}
+
+	.bonus-case-item__amount {
+		font-size: 0.9rem;
+	}
+
+	.bonus-case-item__coin {
+		width: 24px;
+		height: 24px;
+	}
+
+	.bonus-case-result__amount {
+		font-size: 1.5rem;
+	}
+
+	.bonus-case-modal__actions {
+		gap: 8px;
+	}
+
+	.bonus-case-modal__actions .card-buy {
+		min-width: 0;
+		flex: 1;
+	}
+}
+
+@media (max-width: 380px) {
+	.cardsContainer .card.card_product {
+		width: 100%;
+		max-width: 280px;
+		flex-basis: 100%;
+	}
+}
