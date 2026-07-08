@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Настройки{% endblock %}
+{% block content %}
+<section class="settings-page">
+	<h2 class="section-title">НАСТРОЙКИ</h2>
+	<div class="settings-card">
+		<form id="settingsForm" class="settings-form">
+			<div>
+				<label for="settingsFirstName">Имя</label>
+				<input id="settingsFirstName" name="first_name" type="text" required>
+			</div>
+			<div>
+				<label for="settingsLastName">Фамилия</label>
+				<input id="settingsLastName" name="last_name" type="text" required>
+			</div>
+			<div>
+				<label for="settingsTag">Тег</label>
+				<input id="settingsTag" name="tag" type="text" pattern="[a-z0-9_]{3,20}" required>
+				<p class="settings-hint">По тегу вас можно найти и добавить в друзья. Только латиница, цифры и _.</p>
+			</div>
+			<div>
+				<label for="settingsBirthday">День рождения</label>
+				<input id="settingsBirthday" name="date_of_birth" type="date">
+				<p id="settingsBirthdayHint" class="settings-hint">День рождения можно указать только один раз.</p>
+			</div>
+			<button type="submit" class="card-buy buy-button">Сохранить</button>
+		</form>
+	</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}?v=1.0" defer></script>
+{% endblock %}

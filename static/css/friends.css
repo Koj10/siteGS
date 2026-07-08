@@ -85,6 +85,15 @@
 	color: var(--white);
 }
 
+.friends-row__tag {
+	display: block;
+	margin-top: 2px;
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.68rem;
+	color: var(--gold-light);
+	letter-spacing: 0.04em;
+}
+
 .friends-row__actions {
 	display: flex;
 	gap: 8px;

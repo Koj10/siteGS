@@ -1,0 +1,209 @@
+.user-menu {
+	position: relative;
+}
+
+.user-menu__trigger {
+	border: none;
+	background: transparent;
+	padding: 0;
+	cursor: pointer;
+}
+
+.user-menu__trigger:focus-visible {
+	outline: 2px solid var(--border-glow);
+	outline-offset: 2px;
+	border-radius: 50%;
+}
+
+.user-menu__dropdown {
+	position: absolute;
+	top: calc(100% + 10px);
+	right: 0;
+	min-width: 220px;
+	padding: 8px;
+	border-radius: 14px;
+	border: 1px solid var(--border-glow);
+	background: rgba(18, 14, 28, 0.98);
+	box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+	z-index: 200;
+}
+
+.user-menu__dropdown[hidden] {
+	display: none;
+}
+
+.user-menu__head {
+	padding: 10px 12px 12px;
+	border-bottom: 1px solid var(--border-subtle);
+	margin-bottom: 6px;
+}
+
+.user-menu__name {
+	font-size: 0.92rem;
+	font-weight: 600;
+	color: var(--white);
+}
+
+.user-menu__tag {
+	margin-top: 4px;
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.72rem;
+	color: var(--gold-light);
+	letter-spacing: 0.06em;
+}
+
+.user-menu__item {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 10px;
+	color: var(--text-color) !important;
+	text-decoration: none;
+	font-size: 0.9rem;
+	text-align: left;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+}
+
+.user-menu__item:hover {
+	background: rgba(167, 139, 212, 0.12);
+	color: var(--white) !important;
+}
+
+.user-menu__item--danger {
+	color: #f0a0a0 !important;
+}
+
+.user-menu__item--danger:hover {
+	background: rgba(232, 90, 90, 0.12);
+	color: #ffb3b3 !important;
+}
+
+.user-chip--mobile {
+	display: none;
+}
+
+.account-page,
+.settings-page,
+.loyalty-page {
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.account-card,
+.settings-card,
+.loyalty-card {
+	padding: 24px;
+	border-radius: var(--radius-lg);
+	border: 1px solid var(--border-subtle);
+	background: rgba(26, 21, 40, 0.72);
+	box-shadow: var(--shadow-card);
+}
+
+.account-card__avatar {
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.6rem;
+	font-weight: 700;
+	background: var(--gradient-purple);
+	border: 2px solid var(--border-glow);
+	margin-bottom: 16px;
+}
+
+.account-field {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 12px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.account-field:last-child {
+	border-bottom: none;
+}
+
+.account-field__label {
+	color: var(--text-muted);
+	font-size: 0.82rem;
+}
+
+.account-field__value {
+	color: var(--white);
+	font-weight: 600;
+	text-align: right;
+}
+
+.account-tag {
+	font-family: "Orbitron", sans-serif;
+	color: var(--gold-light);
+}
+
+.settings-form {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.settings-form label {
+	font-size: 0.82rem;
+	color: var(--text-muted);
+	font-weight: 600;
+}
+
+.settings-form input {
+	width: 100%;
+}
+
+.settings-form input:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.settings-hint {
+	font-size: 0.78rem;
+	color: var(--text-muted);
+	line-height: 1.4;
+}
+
+.loyalty-stats {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.loyalty-stat {
+	padding: 14px;
+	border-radius: 12px;
+	border: 1px solid var(--border-subtle);
+	background: rgba(167, 139, 212, 0.08);
+}
+
+.loyalty-stat__label {
+	font-size: 0.72rem;
+	color: var(--text-muted);
+	margin-bottom: 6px;
+}
+
+.loyalty-stat__value {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.1rem;
+	color: var(--gold-light);
+}
+
+@media (width <= 1000px) {
+	.user-chip--mobile {
+		display: block;
+	}
+
+	.user-menu--mobile .user-menu__dropdown {
+		right: 0;
+		left: auto;
+	}
+}

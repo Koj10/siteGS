@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Программа лояльности{% endblock %}
+{% block content %}
+<section class="loyalty-page">
+	<h2 class="section-title">ПРОГРАММА ЛОЯЛЬНОСТИ</h2>
+	<div class="loyalty-card">
+		<p>За каждые <strong>2000 ₽</strong> пополнения баланса вы получаете <strong>1 бонусный кейс</strong>.</p>
+		<p class="settings-hint" style="margin-top:10px;">Откройте кейс в инвентаре и получите деньги на баланс.</p>
+		<div class="loyalty-stats">
+			<div class="loyalty-stat">
+				<div class="loyalty-stat__label">До бонуса</div>
+				<div class="loyalty-stat__value"><span class="bonus-current">0</span>/<span class="bonus-threshold">2000</span> ₽</div>
+			</div>
+			<div class="loyalty-stat">
+				<div class="loyalty-stat__label">Бонусных кейсов</div>
+				<div class="loyalty-stat__value user-bonus-cards">0</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+	updateUserData().then((user) => {
+		if (!user) return;
+		const cards = Number(user.bonus_cards || user.inventory?.bonuses?.card || 0);
+		const el = document.querySelector('.user-bonus-cards');
+		if (el) el.textContent = cards;
+	});
+</script>
+{% endblock %}

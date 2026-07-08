@@ -8,7 +8,7 @@
     </header>
 
     <div class="friends-search">
-        <input type="search" id="friendsSearch" class="friends-input" placeholder="Поиск по имени или фамилии" autocomplete="off">
+        <input type="search" id="friendsSearch" class="friends-input" placeholder="Поиск по имени, фамилии или тегу" autocomplete="off">
     </div>
     <div id="friendsSearchResults" class="friends-list"></div>
 
@@ -29,5 +29,5 @@
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/friends.js') }}?v=1.0" defer></script>
+<script src="{{ url_for('static', filename='js/friends.js') }}?v=1.1" defer></script>
 {% endblock %}

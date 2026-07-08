@@ -33,6 +33,7 @@ function updateUserData() {
         if (typeof window.handleBonusProgressUpdate === 'function') {
             window.handleBonusProgressUpdate(result, prevUser);
         }
+        document.dispatchEvent(new CustomEvent('userDataUpdated', { detail: result }));
         return result;
     })
     .catch(error => {

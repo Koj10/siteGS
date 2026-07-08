@@ -35,6 +35,21 @@ def index():
     return render_template("shop.html")
 
 
+@app.route("/account")
+def account():
+    return render_template("account.html")
+
+
+@app.route("/settings")
+def settings_page():
+    return render_template("settings.html")
+
+
+@app.route("/loyalty")
+def loyalty():
+    return render_template("loyalty.html")
+
+
 @app.route("/profile")
 def profile():
     return render_template("profile.html")

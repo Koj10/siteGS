@@ -26,11 +26,13 @@ function renderEmpty(container, text) {
 
 function renderUserRow(user, actionsHtml) {
     const initial = (user.first_name || '?').charAt(0).toUpperCase();
+    const tagLine = user.tag ? `<span class="friends-row__tag">@${escapeText(user.tag)}</span>` : '';
     return `
         <div class="friends-row" data-user-id="${user.id}">
             <div class="friends-row__avatar">${escapeText(initial)}</div>
             <div class="friends-row__info">
                 <h4>${escapeText(userName(user))}</h4>
+                ${tagLine}
             </div>
             <div class="friends-row__actions">${actionsHtml}</div>
         </div>
