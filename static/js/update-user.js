@@ -27,7 +27,12 @@ function updateUserData() {
         return response.json();
     })
     .then(result => {
+        const prevRaw = localStorage.getItem('user');
+        const prevUser = prevRaw ? JSON.parse(prevRaw) : null;
         localStorage.setItem('user', JSON.stringify(result));
+        if (typeof window.handleBonusProgressUpdate === 'function') {
+            window.handleBonusProgressUpdate(result, prevUser);
+        }
         return result;
     })
     .catch(error => {

@@ -1,0 +1,110 @@
+.bonus-progress-widget {
+	position: relative;
+	overflow: visible;
+}
+
+.bonus-progress-widget__burst {
+	position: absolute;
+	inset: -8px;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.bonus-progress-widget__burst[hidden] {
+	display: none;
+}
+
+.bonus-progress-widget__burst::before,
+.bonus-progress-widget__burst::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	opacity: 0;
+}
+
+.bonus-progress-widget--earned {
+	animation: bonus-widget-pop 0.55s ease;
+	border-color: rgba(201, 165, 92, 0.75) !important;
+	background: rgba(201, 165, 92, 0.14) !important;
+	box-shadow:
+		0 0 0 1px rgba(201, 165, 92, 0.35),
+		0 0 28px rgba(201, 165, 92, 0.35);
+}
+
+.bonus-progress-widget--earned .bonus-progress-widget__ratio {
+	color: var(--gold-light);
+	animation: bonus-ratio-flash 0.8s ease;
+}
+
+.bonus-progress-widget--earned .bonus-progress-widget__label {
+	color: var(--gold-light);
+	letter-spacing: 0.18em;
+}
+
+.bonus-progress-widget--earned .bonus-progress-widget__burst::before {
+	animation: bonus-ring-burst 0.9s ease-out forwards;
+	border: 2px solid rgba(201, 165, 92, 0.65);
+	border-radius: var(--radius-md);
+}
+
+.bonus-progress-widget--earned .bonus-progress-widget__burst::after {
+	background:
+		radial-gradient(circle at 20% 50%, rgba(255, 215, 120, 0.9) 0 2px, transparent 3px),
+		radial-gradient(circle at 78% 35%, rgba(167, 139, 212, 0.95) 0 2px, transparent 3px),
+		radial-gradient(circle at 62% 78%, rgba(255, 140, 66, 0.95) 0 2px, transparent 3px),
+		radial-gradient(circle at 35% 22%, rgba(255, 255, 255, 0.95) 0 1.5px, transparent 2.5px),
+		radial-gradient(circle at 88% 68%, rgba(201, 165, 92, 0.95) 0 2px, transparent 3px);
+	animation: bonus-spark-burst 0.85s ease-out forwards;
+}
+
+.bonus-progress-widget__fill {
+	transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bonus-progress-widget__fill--celebrate {
+	background: linear-gradient(90deg, #ffd56a, #c9a55c, #ffd56a) !important;
+	background-size: 200% 100%;
+	animation: bonus-fill-shimmer 0.75s linear infinite;
+	box-shadow:
+		0 0 14px rgba(255, 213, 106, 0.75),
+		0 0 28px rgba(201, 165, 92, 0.45);
+}
+
+@keyframes bonus-widget-pop {
+	0% { transform: scale(1); }
+	35% { transform: scale(1.06); }
+	100% { transform: scale(1); }
+}
+
+@keyframes bonus-ratio-flash {
+	0%, 100% { transform: scale(1); }
+	40% { transform: scale(1.12); }
+}
+
+@keyframes bonus-fill-shimmer {
+	0% { background-position: 100% 0; }
+	100% { background-position: -100% 0; }
+}
+
+@keyframes bonus-ring-burst {
+	0% {
+		opacity: 0.85;
+		transform: scale(0.85);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(1.35);
+	}
+}
+
+@keyframes bonus-spark-burst {
+	0% {
+		opacity: 1;
+		transform: scale(0.6);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(1.45);
+	}
+}

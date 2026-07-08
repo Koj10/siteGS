@@ -10,16 +10,17 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=3.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=3.2">
 
     <link rel="preconnect" href="{{ gs_api_base }}" crossorigin>
     <link rel="dns-prefetch" href="{{ gs_api_base }}">
 
     <script>window.GS_API_BASE = {{ gs_api_base | tojson }};</script>
     <script src="{{ url_for('static', filename='js/api-config.js') }}?v=1.0.2"></script>
-    <script src="{{ url_for('static', filename='js/update-user.js') }}?v=1.0.2"></script>
+    <script src="{{ url_for('static', filename='js/update-user.js') }}?v=1.0.3"></script>
     <script src="{{ url_for('static', filename='js/logout.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/notification.js') }}?v=1.0.1" defer></script>
+    <script src="{{ url_for('static', filename='js/bonus-progress.js') }}?v=1.0"></script>
     <script src="{{ url_for('static', filename='js/menu.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/send-payment.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/loading.js') }}" defer></script>
@@ -40,6 +41,7 @@
     {% if self.title() not in ['Подтверждение', 'Вход', 'Прайс', 'Восстановление пароля'] %}
     <div class="mobile wallet-mobile">
         <div class="bonus-progress-widget bonus-progress-widget--mobile">
+            <span class="bonus-progress-widget__burst" hidden aria-hidden="true"></span>
             <div class="bonus-progress-widget__head">
                 <span class="bonus-progress-widget__label">ДО БОНУСА</span>
                 <span class="bonus-progress-widget__ratio"><span class="bonus-current">0</span>/<span class="bonus-threshold">2000</span></span>
@@ -89,6 +91,7 @@
 
         <div class="app-user">
             <div class="bonus-progress-widget pc">
+                <span class="bonus-progress-widget__burst" hidden aria-hidden="true"></span>
                 <div class="bonus-progress-widget__head">
                     <span class="bonus-progress-widget__label">ДО БОНУСА</span>
                     <span class="bonus-progress-widget__ratio"><span class="bonus-current">0</span>/<span class="bonus-threshold">2000</span></span>
@@ -132,6 +135,12 @@
         const adminElements = document.querySelectorAll(".admin");
 
         function updateBonusCounter(user) {
+            if (typeof window.applyBonusProgressUI === 'function') {
+                if (!window.isBonusCelebrating || !window.isBonusCelebrating()) {
+                    window.applyBonusProgressUI(user);
+                }
+                return;
+            }
             if (!user) return;
 
             const progress = Number(user.topup_bonus_progress) || 0;
