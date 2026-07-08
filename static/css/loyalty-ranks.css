@@ -25,14 +25,15 @@
 .rank-progress {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 22px;
 }
 
 .rank-progress__head {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
-	gap: 12px;
+	gap: 16px;
+	flex-wrap: wrap;
 }
 
 .rank-progress__title {
@@ -42,96 +43,302 @@
 	margin-bottom: 4px;
 }
 
-.rank-progress__subtitle,
-.rank-progress__hint {
+.rank-progress__subtitle {
 	font-size: 0.78rem;
 	color: var(--text-muted);
 	line-height: 1.45;
 }
 
-.rank-progress__stats {
+.rank-progress__stats-inline {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px;
+	font-size: 0.8rem;
+	color: var(--text-muted);
+}
+
+.rank-progress__stats-inline strong {
+	color: var(--gold-light);
+	font-family: "Orbitron", sans-serif;
+}
+
+/* --- Progress to next rank (The Finals style) --- */
+
+.rank-next {
+	display: grid;
+	grid-template-columns: minmax(88px, 110px) minmax(0, 1fr) minmax(88px, 110px);
+	align-items: center;
+	gap: 16px;
+	padding: 20px 18px;
+	border-radius: 16px;
+	border: 1px solid var(--border-subtle);
+	background:
+		linear-gradient(180deg, rgba(167, 139, 212, 0.08), rgba(14, 11, 24, 0.35)),
+		rgba(10, 8, 18, 0.75);
+}
+
+.rank-emblem {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	text-align: center;
+}
+
+.rank-emblem__glow {
+	position: absolute;
+	top: 8px;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	background: color-mix(in srgb, var(--rank-color, #a78bd4) 28%, transparent);
+	filter: blur(14px);
+	pointer-events: none;
+}
+
+.rank-emblem__diamond {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transform: rotate(45deg);
+	border-radius: 10px;
+	border: 2px solid color-mix(in srgb, var(--rank-color, #a78bd4) 80%, #fff);
+	background:
+		linear-gradient(145deg, color-mix(in srgb, var(--rank-color, #a78bd4) 35%, #111), rgba(8, 6, 14, 0.95));
+	box-shadow:
+		0 0 18px color-mix(in srgb, var(--rank-color, #a78bd4) 45%, transparent),
+		inset 0 0 16px rgba(255, 255, 255, 0.06);
+}
+
+.rank-emblem__initial {
+	transform: rotate(-45deg);
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.35rem;
+	font-weight: 800;
+	color: #fff;
+	text-shadow: 0 0 12px color-mix(in srgb, var(--rank-color, #a78bd4) 70%, transparent);
+}
+
+.rank-emblem__name {
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: var(--white);
+	letter-spacing: 0.05em;
+}
+
+.rank-emblem__discount {
+	font-size: 0.68rem;
+	color: var(--gold-light);
+}
+
+.rank-emblem--empty .rank-emblem__placeholder {
+	width: 64px;
+	height: 64px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	border: 1px dashed rgba(255, 255, 255, 0.15);
+	color: var(--text-muted);
+	font-size: 1.2rem;
+}
+
+.rank-next__center {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	min-width: 0;
+}
+
+.rank-next__label {
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.rank-next__bar-shell {
+	padding: 0 4px;
+}
+
+.rank-next__bar {
+	position: relative;
+	height: 34px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	overflow: hidden;
+}
+
+.rank-next__fill {
+	position: absolute;
+	inset: 0 auto 0 0;
+	border-radius: inherit;
+	background: linear-gradient(90deg, #7c5cbf, #d4af37 70%, #50fa7b);
+	box-shadow: 0 0 18px rgba(167, 139, 212, 0.35);
+	transition: width 0.4s ease;
+}
+
+.rank-next__bar-text {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.82rem;
+	font-weight: 700;
+	color: #fff;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+}
+
+.rank-next__hint {
+	margin: 0;
+	font-size: 0.78rem;
+	color: var(--text-muted);
+	text-align: center;
+	line-height: 1.45;
+}
+
+.rank-next__hint strong {
+	color: var(--gold-light);
+}
+
+/* --- All ranks catalog --- */
+
+.rank-catalog__title {
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.82rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	margin-bottom: 12px;
+}
+
+.rank-catalog__grid {
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	gap: 10px;
+}
+
+.rank-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 16px 10px 14px;
+	border-radius: 14px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: rgba(18, 14, 28, 0.72);
+	text-align: center;
+	transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rank-card--reached {
+	border-color: color-mix(in srgb, var(--rank-color, #a78bd4) 35%, transparent);
+}
+
+.rank-card--current {
+	border-color: color-mix(in srgb, var(--rank-color, #a78bd4) 75%, #fff);
+	background:
+		linear-gradient(180deg, color-mix(in srgb, var(--rank-color, #a78bd4) 16%, transparent), rgba(18, 14, 28, 0.9));
+	box-shadow:
+		0 0 22px color-mix(in srgb, var(--rank-color, #a78bd4) 22%, transparent),
+		inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+	transform: translateY(-2px);
+}
+
+.rank-card__emblem {
+	width: 52px;
+	height: 52px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.rank-card__diamond {
+	width: 42px;
+	height: 42px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transform: rotate(45deg);
+	border-radius: 8px;
+	border: 2px solid color-mix(in srgb, var(--rank-color, #a78bd4) 70%, #fff);
+	background: linear-gradient(145deg, color-mix(in srgb, var(--rank-color, #a78bd4) 30%, #111), rgba(8, 6, 14, 0.95));
+	box-shadow: 0 0 12px color-mix(in srgb, var(--rank-color, #a78bd4) 30%, transparent);
+}
+
+.rank-card__diamond span {
+	transform: rotate(-45deg);
+	font-family: "Orbitron", sans-serif;
+	font-size: 1rem;
+	font-weight: 800;
+	color: #fff;
+}
+
+.rank-card__name {
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: var(--white);
+	letter-spacing: 0.04em;
+}
+
+.rank-card__hours {
+	font-size: 0.68rem;
+	color: var(--text-muted);
+}
+
+.rank-card__discount {
+	font-size: 0.72rem;
+	color: var(--gold-light);
+	font-weight: 600;
+}
+
+.rank-card__badge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	padding: 2px 6px;
+	border-radius: 999px;
+	font-size: 0.55rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: #111;
+	background: var(--gold-light);
+}
+
+.loyalty-cashback {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin-top: 14px;
+}
+
+.loyalty-cashback__stats {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px;
 }
 
-.rank-track {
-	position: relative;
-	padding: 34px 0 42px;
+.loyalty-cashback .buy-button {
+	width: 100%;
 }
 
-.rank-track__bar {
-	height: 10px;
-	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.08);
-	overflow: hidden;
-	border: 1px solid var(--border-subtle);
-}
-
-.rank-track__fill {
-	height: 100%;
-	border-radius: inherit;
-	background: linear-gradient(90deg, #a78bd4, #50fa7b);
-	transition: width 0.35s ease;
-}
-
-.rank-track__markers {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 18px;
-	height: calc(100% - 18px);
-}
-
-.rank-track__marker {
-	position: absolute;
-	top: 0;
-	transform: translateX(-50%);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	min-width: 56px;
-	text-align: center;
-}
-
-.rank-track__dot {
-	width: 14px;
-	height: 14px;
-	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.2);
-	border: 2px solid rgba(255, 255, 255, 0.35);
-	margin-bottom: 8px;
-}
-
-.rank-track__marker--reached .rank-track__dot {
-	background: var(--purple-light);
-	border-color: var(--gold-light);
-	box-shadow: 0 0 10px rgba(167, 139, 212, 0.45);
-}
-
-.rank-track__marker--active .rank-track__dot {
-	background: var(--gold-light);
-	border-color: #fff;
-	box-shadow: 0 0 14px rgba(255, 215, 120, 0.55);
-	transform: scale(1.1);
-}
-
-.rank-track__label {
-	font-size: 0.68rem;
-	font-weight: 700;
-	color: var(--text-muted);
-	white-space: nowrap;
-}
-
-.rank-track__marker--active .rank-track__label,
-.rank-track__marker--reached .rank-track__label {
-	color: var(--white);
-}
-
-.rank-track__discount {
-	font-size: 0.62rem;
-	color: var(--gold-light);
-	margin-top: 2px;
+.loyalty-cashback .buy-button:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
 }
 
 .loyalty-section + .loyalty-section {
@@ -183,16 +390,49 @@
 	transform: translateY(-1px);
 }
 
+@media (width <= 900px) {
+	.rank-catalog__grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
 @media (width <= 700px) {
-	.rank-track__marker {
-		min-width: 48px;
+	.rank-next {
+		grid-template-columns: 1fr;
+		gap: 18px;
 	}
 
-	.rank-track__label {
-		font-size: 0.58rem;
+	.rank-emblem--current,
+	.rank-emblem--next {
+		flex-direction: row;
+		justify-content: center;
+		gap: 12px;
 	}
 
-	.rank-track__discount {
-		display: none;
+	.rank-emblem--next {
+		order: 3;
+	}
+
+	.rank-next__center {
+		order: 2;
+	}
+
+	.rank-catalog__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (width <= 420px) {
+	.rank-catalog__grid {
+		display: flex;
+		overflow-x: auto;
+		gap: 10px;
+		padding-bottom: 6px;
+		scroll-snap-type: x mandatory;
+	}
+
+	.rank-card {
+		flex: 0 0 140px;
+		scroll-snap-align: start;
 	}
 }

@@ -146,17 +146,24 @@ function sendBuyRequest(productId) {
         },
         body: JSON.stringify({ id: productId, quality: 1 })
     })
-    .then(response => {
-        if (!response.ok) throw new Error(`Ошибка запроса: ${response.status}`);
-        return response.json();
+    .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            throw new Error(data.error || `Ошибка запроса: ${response.status}`);
+        }
+        return data;
     })
-    .then(() => {
+    .then((data) => {
         updateUserData();
-        showNotification('Товар добавлен в профиль');
+        if (data.cashback_earned > 0) {
+            showNotification(`Покупка успешна! Кешбэк +${data.cashback_earned} ₽ (${data.cashback_percent}%)`);
+        } else {
+            showNotification('Товар добавлен в инвентарь');
+        }
     })
     .catch(error => {
         console.error('Ошибка покупки:', error);
-        showNotification('Недостаточный баланс :(', true);
+        showNotification(error.message || 'Недостаточный баланс :(', true);
     });
 }
 
