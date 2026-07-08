@@ -12,6 +12,7 @@
 @import url("bonus-progress.css");
 @import url("adaptive.css");
 @import url("user-menu.css");
+@import url("date-field.css");
 
 * {
 	padding: 0;

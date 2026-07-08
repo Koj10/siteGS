@@ -9,13 +9,7 @@ function formatMoney(value) {
 }
 
 function formatDateTime(value) {
-    if (!value) return '—';
-    const date = new Date(value.includes('T') ? value : `${value.replace(' ', 'T')}`);
-    if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleString('ru-RU', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-    });
+    return formatDmyDateTime(value);
 }
 
 function paymentLabel(method) {
@@ -166,11 +160,22 @@ async function fetchReportPeriod(period) {
 }
 
 async function fetchReportRange(dateFrom, dateTo) {
+    const isoFrom = toIsoDate(dateFrom) || dateFrom;
+    const isoTo = toIsoDate(dateTo) || dateTo;
     const qs = new URLSearchParams({
-        date_from: dateFrom,
-        date_to: dateTo
+        date_from: isoFrom,
+        date_to: isoTo
     });
     return apiFetchReport(`${reportsHost}/admin/revenue/report?${qs.toString()}`);
+}
+
+let reportsRequestId = 0;
+
+function localIsoDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 function applyReportData(data, options = {}) {
@@ -189,6 +194,8 @@ function applyReportData(data, options = {}) {
         if (customEl) renderRevenueCards(customEl, data.summary);
         if (summaryEl && periodSummaries) {
             renderRevenueCards(summaryEl, periodSummaries[currentPeriod] || data.summary);
+        } else if (summaryEl && data.summary) {
+            renderRevenueCards(summaryEl, data.summary);
         }
     } else {
         if (customEl && options.clearCustom) customEl.innerHTML = '';
@@ -206,11 +213,12 @@ function applyReportData(data, options = {}) {
 
 async function loadAdminReports(options = {}) {
     const panel = document.getElementById('panel-reports');
-    if (!panel || reportsLoading) return;
+    if (!panel) return;
 
     const force = options.force === true;
     if (reportsLoaded && !force && !options.period && !options.range) return;
 
+    const requestId = ++reportsRequestId;
     reportsLoading = true;
     showReportsLoading();
 
@@ -226,9 +234,13 @@ async function loadAdminReports(options = {}) {
             data = await fetchReportBootstrap();
         }
 
+        if (requestId !== reportsRequestId) return;
+
         applyReportData(data, { clearCustom: !options.range });
         reportsLoaded = true;
     } catch (error) {
+        if (requestId !== reportsRequestId) return;
+
         const summaryEl = document.getElementById('revenueSummary');
         if (summaryEl) {
             summaryEl.innerHTML = `<p class="admin-empty">${error.message}</p>`;
@@ -238,7 +250,9 @@ async function loadAdminReports(options = {}) {
             showNotification(error.message, true);
         }
     } finally {
-        reportsLoading = false;
+        if (requestId === reportsRequestId) {
+            reportsLoading = false;
+        }
     }
 }
 
@@ -251,12 +265,15 @@ function setupReportEvents() {
     const toInput = document.getElementById('reportTo');
     const rangeBtn = document.getElementById('reportRangeBtn');
 
+    const fromField = fromInput ? initDmyDateField(fromInput) : null;
+    const toField = toInput ? initDmyDateField(toInput) : null;
+
     const today = new Date();
     const monthAgo = new Date(today);
     monthAgo.setDate(monthAgo.getDate() - 30);
 
-    if (fromInput) fromInput.value = monthAgo.toISOString().slice(0, 10);
-    if (toInput) toInput.value = today.toISOString().slice(0, 10);
+    fromField?.setValue(localIsoDate(monthAgo));
+    toField?.setValue(localIsoDate(today));
 
     periodTabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -270,20 +287,28 @@ function setupReportEvents() {
     });
 
     rangeBtn?.addEventListener('click', async () => {
-        const from = fromInput?.value;
-        const to = toInput?.value;
+        const from = fromInput?.value?.trim();
+        const to = toInput?.value?.trim();
         if (!from || !to) {
             showNotification('Укажите обе даты', true);
             return;
         }
-        if (from > to) {
+        if (!toIsoDate(from) || !toIsoDate(to)) {
+            showNotification('Некорректная дата. Формат: ДД/ММ/ГГГГ', true);
+            return;
+        }
+        if (compareDmyDates(from, to) > 0) {
             showNotification('Дата «с» не может быть позже «по»', true);
             return;
         }
 
         rangeBtn.disabled = true;
         try {
-            await loadAdminReports({ range: { from, to }, showError: true });
+            await loadAdminReports({
+                force: true,
+                range: { from, to },
+                showError: true
+            });
         } finally {
             rangeBtn.disabled = false;
         }

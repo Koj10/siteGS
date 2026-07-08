@@ -161,9 +161,9 @@
 
 				<div class="admin-range__fields">
 
-					<label>С <input type="date" id="reportFrom" class="admin-input"></label>
+					<label>С <input type="text" id="reportFrom" class="admin-input" placeholder="ДД/ММ/ГГГГ" maxlength="10" inputmode="numeric"></label>
 
-					<label>По <input type="date" id="reportTo" class="admin-input"></label>
+					<label>По <input type="text" id="reportTo" class="admin-input" placeholder="ДД/ММ/ГГГГ" maxlength="10" inputmode="numeric"></label>
 
 					<button type="button" id="reportRangeBtn" class="admin-btn admin-btn--primary">Показать</button>
 
@@ -227,7 +227,7 @@
 
 <script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
 
-<script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.2" defer></script>
+<script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.5" defer></script>
 
 <script src="{{ url_for('static', filename='js/checkAdmin.js') }}?v=1.0.1" defer></script>
 

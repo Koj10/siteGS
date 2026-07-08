@@ -21,6 +21,16 @@
 		background: rgba(10, 8, 18, 0.85);
 		backdrop-filter: blur(16px);
 		border-bottom: 1px solid var(--border-subtle);
+		overflow: visible;
+	}
+
+	.app-user {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-shrink: 0;
+		position: relative;
+		z-index: 120;
 	}
 
 	.app-brand {
@@ -99,13 +109,6 @@
 		color: var(--gold-light) !important;
 		border-color: rgba(201, 165, 92, 0.35);
 		background: var(--gold-muted);
-	}
-
-	.app-user {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		flex-shrink: 0;
 	}
 
 	.bonus-progress-widget {

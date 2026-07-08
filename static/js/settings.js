@@ -4,6 +4,7 @@
 
     const birthdayInput = document.getElementById("settingsBirthday");
     const birthdayHint = document.getElementById("settingsBirthdayHint");
+    const birthdayField = birthdayInput ? initDmyDateField(birthdayInput) : null;
 
     function fillForm(user) {
         form.first_name.value = user.first_name || "";
@@ -11,13 +12,13 @@
         form.tag.value = user.tag || "";
 
         if (user.birthday_locked && user.date_of_birth) {
-            birthdayInput.value = user.date_of_birth;
-            birthdayInput.disabled = true;
+            birthdayField?.setValue(user.date_of_birth);
+            birthdayField?.setDisabled(true);
             birthdayHint.textContent = "День рождения уже указан и не может быть изменён.";
         } else {
-            birthdayInput.disabled = false;
-            birthdayInput.value = "";
-            birthdayHint.textContent = "День рождения можно указать только один раз.";
+            birthdayField?.setValue("");
+            birthdayField?.setDisabled(false);
+            birthdayHint.textContent = "День рождения можно указать только один раз. Формат: ДД/ММ/ГГГГ.";
         }
     }
 
@@ -36,7 +37,12 @@
         };
 
         if (!birthdayInput.disabled && birthdayInput.value) {
-            payload.date_of_birth = birthdayInput.value;
+            const birthday = formatDmyDate(birthdayInput.value.trim());
+            if (!toIsoDate(birthday)) {
+                showNotification("Некорректная дата рождения. Формат: ДД/ММ/ГГГГ", true);
+                return;
+            }
+            payload.date_of_birth = birthday;
         }
 
         try {

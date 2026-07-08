@@ -40,7 +40,11 @@
 		const tagEl = document.querySelector('.user-tag');
 		if (tagEl) tagEl.textContent = user.tag ? `@${user.tag}` : '—';
 		const birthdayEl = document.querySelector('.user-birthday');
-		if (birthdayEl) birthdayEl.textContent = user.date_of_birth || 'Не указан';
+		if (birthdayEl) {
+			birthdayEl.textContent = user.date_of_birth
+				? formatDmyDate(user.date_of_birth)
+				: 'Не указан';
+		}
 	});
 </script>
 {% endblock %}

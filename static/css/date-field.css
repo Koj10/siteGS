@@ -1,0 +1,71 @@
+.dmy-date-field {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	margin: 6px 0;
+	position: relative;
+}
+
+.dmy-date-field input[type="text"] {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+	margin: 0;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.dmy-date-field__picker {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	overflow: hidden;
+	border: 0;
+	padding: 0;
+	pointer-events: none;
+}
+
+.dmy-date-field__btn {
+	flex: 0 0 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--border-subtle);
+	border-left: none;
+	border-radius: 0 var(--radius-md) var(--radius-md) 0;
+	background: rgba(20, 16, 32, 0.8);
+	color: var(--text-muted);
+	cursor: pointer;
+	transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.dmy-date-field__btn:hover:not(:disabled) {
+	color: var(--white);
+	background: rgba(255, 255, 255, 0.08);
+	border-color: var(--purple-light);
+}
+
+.dmy-date-field__btn:disabled,
+.dmy-date-field--disabled .dmy-date-field__btn {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.dmy-date-field:focus-within input[type="text"],
+.dmy-date-field:focus-within .dmy-date-field__btn {
+	border-color: var(--purple-light);
+}
+
+.dmy-date-field:focus-within .dmy-date-field__btn {
+	box-shadow: 0 0 0 3px rgba(167, 139, 212, 0.15);
+}
+
+.admin-range__fields .dmy-date-field {
+	min-width: 170px;
+	margin: 0;
+}
+
+.admin-range__fields .dmy-date-field input[type="text"] {
+	margin: 0;
+}
