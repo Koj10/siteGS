@@ -24,15 +24,21 @@ function renderEmpty(container, text) {
     container.innerHTML = `<p class="friends-empty">${escapeText(text)}</p>`;
 }
 
-function renderUserRow(user, actionsHtml) {
+function renderUserRow(user, actionsHtml, options = {}) {
     const initial = (user.first_name || '?').charAt(0).toUpperCase();
     const tagLine = user.tag ? `<span class="friends-row__tag">@${escapeText(user.tag)}</span>` : '';
+    const rankLine = user.rank
+        ? `<span class="friends-row__rank">${escapeText(user.rank.name)} · ${user.rank.discount}%</span>`
+        : '';
+    const linkClass = options.linkable ? ' friends-row--link' : '';
+    const linkAttrs = options.linkable ? ` data-profile-link="/user/${user.id}"` : '';
     return `
-        <div class="friends-row" data-user-id="${user.id}">
+        <div class="friends-row${linkClass}" data-user-id="${user.id}"${linkAttrs}>
             <div class="friends-row__avatar">${escapeText(initial)}</div>
             <div class="friends-row__info">
                 <h4>${escapeText(userName(user))}</h4>
                 ${tagLine}
+                ${rankLine}
             </div>
             <div class="friends-row__actions">${actionsHtml}</div>
         </div>
@@ -78,7 +84,9 @@ function renderSearchResults(users) {
             default:
                 actions = actionButton('Добавить', 'friends-btn--primary', 'request', user.id);
         }
-        return renderUserRow(user, actions);
+        return renderUserRow(user, actions, {
+            linkable: user.friendship_status === 'accepted' || Boolean(user.profile_public)
+        });
     }).join('');
 }
 
@@ -107,7 +115,8 @@ function renderFriendsList(users) {
 
     container.innerHTML = users.map(user => renderUserRow(
         user,
-        actionButton('Удалить', 'friends-btn--ghost', 'remove', user.id)
+        actionButton('Удалить', 'friends-btn--ghost', 'remove', user.id),
+        { linkable: true }
     )).join('');
 }
 
@@ -182,6 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelector('.friends-page').addEventListener('click', (event) => {
+        const profileLink = event.target.closest('[data-profile-link]');
+        if (profileLink && !event.target.closest('[data-action]')) {
+            window.location.href = profileLink.dataset.profileLink;
+            return;
+        }
+
         const button = event.target.closest('[data-action]');
         if (!button) return;
         handleFriendAction(button.dataset.action, button.dataset.userId);

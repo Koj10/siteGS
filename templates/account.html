@@ -1,50 +1,67 @@
-{% extends "base.html" %}
-{% block title %}Профиль{% endblock %}
-{% block content %}
-<section class="account-page">
-	<h2 class="section-title">ПРОФИЛЬ</h2>
-	<div class="account-card">
-		<div class="account-card__avatar"><span class="user-chip__initial first_name">G</span></div>
-		<div class="account-field">
-			<span class="account-field__label">Имя</span>
-			<span class="account-field__value first_name">—</span>
-		</div>
-		<div class="account-field">
-			<span class="account-field__label">Фамилия</span>
-			<span class="account-field__value last_name">—</span>
-		</div>
-		<div class="account-field">
-			<span class="account-field__label">E-mail</span>
-			<span class="account-field__value email">—</span>
-		</div>
-		<div class="account-field">
-			<span class="account-field__label">Тег</span>
-			<span class="account-field__value account-tag user-tag">—</span>
-		</div>
-		<div class="account-field">
-			<span class="account-field__label">День рождения</span>
-			<span class="account-field__value user-birthday">—</span>
-		</div>
-		<div class="account-field">
-			<span class="account-field__label">Баланс</span>
-			<span class="account-field__value"><span class="balance">0</span> ₽</span>
-		</div>
-		<button type="button" class="card-buy buy-button width-max" style="margin-top:18px;" onclick="logout()">Выйти</button>
-	</div>
-</section>
-{% endblock %}
-{% block scripts %}
-<script>
-	updateUserData().then((user) => {
-		if (!user) return;
-		const tagEl = document.querySelector('.user-tag');
-		if (tagEl) tagEl.textContent = user.tag ? `@${user.tag}` : '—';
-		const birthdayEl = document.querySelector('.user-birthday');
-		if (birthdayEl) {
-			birthdayEl.textContent = user.date_of_birth
-				? formatDmyDate(user.date_of_birth)
-				: 'Не указан';
-		}
-	});
-</script>
-{% endblock %}
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<section class="account-page">
+	<h2 class="section-title">ПРОФИЛЬ</h2>
+	<div class="account-card">
+		<div class="account-card__avatar"><span class="user-chip__initial first_name">G</span></div>
+		<div class="user-profile-rank" id="accountRank"></div>
+		<div class="account-field">
+			<span class="account-field__label">Имя</span>
+			<span class="account-field__value first_name">—</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">Фамилия</span>
+			<span class="account-field__value last_name">—</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">E-mail</span>
+			<span class="account-field__value email">—</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">Тег</span>
+			<span class="account-field__value account-tag user-tag">—</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">День рождения</span>
+			<span class="account-field__value user-birthday">—</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">Наиграно в клубе</span>
+			<span class="account-field__value user-play-hours">0 ч</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">Скидка по рангу</span>
+			<span class="account-field__value user-rank-discount">1%</span>
+		</div>
+		<div class="account-field">
+			<span class="account-field__label">Баланс</span>
+			<span class="account-field__value"><span class="balance">0</span> ₽</span>
+		</div>
+		<button type="button" class="card-buy buy-button width-max" style="margin-top:18px;" onclick="logout()">Выйти</button>
+	</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/loyalty-ranks.js') }}?v=1.0" defer></script>
+<script defer>
+	document.addEventListener('DOMContentLoaded', async () => {
+		const user = await updateUserData();
+		if (!user) return;
+		const tagEl = document.querySelector('.user-tag');
+		if (tagEl) tagEl.textContent = user.tag ? `@${user.tag}` : '—';
+		const birthdayEl = document.querySelector('.user-birthday');
+		if (birthdayEl) {
+			birthdayEl.textContent = user.date_of_birth
+				? formatDmyDate(user.date_of_birth)
+				: 'Не указан';
+		}
+		const rankEl = document.getElementById('accountRank');
+		if (rankEl && user.rank) rankEl.innerHTML = rankBadgeHtml(user.rank, 'rank-badge--lg');
+		const hoursEl = document.querySelector('.user-play-hours');
+		if (hoursEl) hoursEl.textContent = `${formatPlayHours(user.play_hours || 0)} ч`;
+		const discountEl = document.querySelector('.user-rank-discount');
+		if (discountEl) discountEl.textContent = `${user.rank?.discount || 1}%`;
+	});
+</script>
+{% endblock %}

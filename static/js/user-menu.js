@@ -18,6 +18,16 @@
         document.querySelectorAll("[data-user-menu-tag]").forEach((el) => {
             el.textContent = tag;
         });
+
+        document.querySelectorAll("[data-user-menu-rank]").forEach((el) => {
+            if (user.rank) {
+                el.innerHTML = rankBadgeHtml(user.rank);
+                el.hidden = false;
+            } else {
+                el.innerHTML = "";
+                el.hidden = true;
+            }
+        });
     }
 
     function initUserMenu() {

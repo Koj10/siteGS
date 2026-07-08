@@ -4,12 +4,16 @@
 
     const birthdayInput = document.getElementById("settingsBirthday");
     const birthdayHint = document.getElementById("settingsBirthdayHint");
+    const profilePublicInput = document.getElementById("settingsProfilePublic");
     const birthdayField = birthdayInput ? initDmyDateField(birthdayInput) : null;
 
     function fillForm(user) {
         form.first_name.value = user.first_name || "";
         form.last_name.value = user.last_name || "";
         form.tag.value = user.tag || "";
+        if (profilePublicInput) {
+            profilePublicInput.checked = Boolean(user.profile_public);
+        }
 
         if (user.birthday_locked && user.date_of_birth) {
             birthdayField?.setValue(user.date_of_birth);
@@ -34,6 +38,7 @@
             first_name: form.first_name.value.trim(),
             last_name: form.last_name.value.trim(),
             tag: form.tag.value.trim(),
+            profile_public: Boolean(profilePublicInput?.checked),
         };
 
         if (!birthdayInput.disabled && birthdayInput.value) {

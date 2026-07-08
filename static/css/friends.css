@@ -94,6 +94,13 @@
 	letter-spacing: 0.04em;
 }
 
+.friends-row__rank {
+	display: block;
+	margin-top: 4px;
+	font-size: 0.72rem;
+	color: var(--text-muted);
+}
+
 .friends-row__actions {
 	display: flex;
 	gap: 8px;

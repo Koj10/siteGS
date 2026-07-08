@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+
+<section class="account-page user-profile-page">
+
+	<h2 class="section-title">ПРОФИЛЬ</h2>
+
+	<div id="userProfileState" class="settings-hint">Загрузка профиля...</div>
+
+	<div class="account-card" id="userProfileCard" hidden>
+
+		<div class="account-card__avatar"><span class="user-chip__initial" id="userProfileInitial">G</span></div>
+
+		<div class="user-profile-rank" id="userProfileRank"></div>
+
+		<div class="account-field">
+
+			<span class="account-field__label">Имя</span>
+
+			<span class="account-field__value" id="userProfileFirstName">—</span>
+
+		</div>
+
+		<div class="account-field">
+
+			<span class="account-field__label">Фамилия</span>
+
+			<span class="account-field__value" id="userProfileLastName">—</span>
+
+		</div>
+
+		<div class="account-field">
+
+			<span class="account-field__label">Тег</span>
+
+			<span class="account-field__value" id="userProfileTag">—</span>
+
+		</div>
+
+		<div class="account-field">
+
+			<span class="account-field__label">Наиграно в клубе</span>
+
+			<span class="account-field__value" id="userProfileHours">0 ч</span>
+
+		</div>
+
+		<div class="account-field">
+
+			<span class="account-field__label">Скидка по рангу</span>
+
+			<span class="account-field__value" id="userProfileDiscount">1%</span>
+
+		</div>
+
+	</div>
+
+	<div class="loyalty-card loyalty-section" id="userProfileLoyalty" hidden style="margin-top:18px;">
+
+		<h3 class="loyalty-section__title">Прогресс ранга</h3>
+
+		<div id="userProfileRankProgress"></div>
+
+	</div>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>window.USER_PROFILE_ID = {{ user_id }};</script>
+<script src="{{ url_for('static', filename='js/loyalty-ranks.js') }}?v=1.0" defer></script>
+<script src="{{ url_for('static', filename='js/user-profile.js') }}?v=1.0" defer></script>
+{% endblock %}
+

@@ -13,6 +13,7 @@
 @import url("adaptive.css");
 @import url("user-menu.css");
 @import url("date-field.css");
+@import url("loyalty-ranks.css");
 
 * {
 	padding: 0;

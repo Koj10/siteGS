@@ -1,0 +1,198 @@
+.rank-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	color: var(--rank-color, #c0c0c0);
+	border: 1px solid color-mix(in srgb, var(--rank-color, #c0c0c0) 55%, transparent);
+	background: color-mix(in srgb, var(--rank-color, #c0c0c0) 14%, transparent);
+}
+
+.rank-badge--lg {
+	font-size: 0.82rem;
+	padding: 6px 14px;
+}
+
+.user-menu__rank {
+	margin-top: 6px;
+}
+
+.rank-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.rank-progress__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.rank-progress__title {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1rem;
+	color: var(--white);
+	margin-bottom: 4px;
+}
+
+.rank-progress__subtitle,
+.rank-progress__hint {
+	font-size: 0.78rem;
+	color: var(--text-muted);
+	line-height: 1.45;
+}
+
+.rank-progress__stats {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.rank-track {
+	position: relative;
+	padding: 34px 0 42px;
+}
+
+.rank-track__bar {
+	height: 10px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.08);
+	overflow: hidden;
+	border: 1px solid var(--border-subtle);
+}
+
+.rank-track__fill {
+	height: 100%;
+	border-radius: inherit;
+	background: linear-gradient(90deg, #a78bd4, #50fa7b);
+	transition: width 0.35s ease;
+}
+
+.rank-track__markers {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 18px;
+	height: calc(100% - 18px);
+}
+
+.rank-track__marker {
+	position: absolute;
+	top: 0;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 56px;
+	text-align: center;
+}
+
+.rank-track__dot {
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.2);
+	border: 2px solid rgba(255, 255, 255, 0.35);
+	margin-bottom: 8px;
+}
+
+.rank-track__marker--reached .rank-track__dot {
+	background: var(--purple-light);
+	border-color: var(--gold-light);
+	box-shadow: 0 0 10px rgba(167, 139, 212, 0.45);
+}
+
+.rank-track__marker--active .rank-track__dot {
+	background: var(--gold-light);
+	border-color: #fff;
+	box-shadow: 0 0 14px rgba(255, 215, 120, 0.55);
+	transform: scale(1.1);
+}
+
+.rank-track__label {
+	font-size: 0.68rem;
+	font-weight: 700;
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.rank-track__marker--active .rank-track__label,
+.rank-track__marker--reached .rank-track__label {
+	color: var(--white);
+}
+
+.rank-track__discount {
+	font-size: 0.62rem;
+	color: var(--gold-light);
+	margin-top: 2px;
+}
+
+.loyalty-section + .loyalty-section {
+	margin-top: 18px;
+}
+
+.loyalty-section__title {
+	font-size: 0.9rem;
+	color: var(--white);
+	margin-bottom: 12px;
+}
+
+.settings-privacy {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 14px;
+	border-radius: 12px;
+	border: 1px solid var(--border-subtle);
+	background: rgba(167, 139, 212, 0.06);
+}
+
+.settings-privacy input {
+	width: auto;
+	margin: 3px 0 0;
+}
+
+.settings-privacy span {
+	font-size: 0.86rem;
+	color: var(--white);
+	line-height: 1.45;
+}
+
+.user-profile-page .account-card__avatar {
+	position: relative;
+}
+
+.user-profile-rank {
+	margin-top: 8px;
+}
+
+.friends-row--link {
+	cursor: pointer;
+	transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.friends-row--link:hover {
+	border-color: var(--purple-light);
+	transform: translateY(-1px);
+}
+
+@media (width <= 700px) {
+	.rank-track__marker {
+		min-width: 48px;
+	}
+
+	.rank-track__label {
+		font-size: 0.58rem;
+	}
+
+	.rank-track__discount {
+		display: none;
+	}
+}

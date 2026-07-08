@@ -60,6 +60,11 @@ def friends():
     return render_template("friends.html")
 
 
+@app.route("/user/<int:user_id>")
+def user_profile_page(user_id):
+    return render_template("user_profile.html", user_id=user_id)
+
+
 @app.route("/login")
 def login():
     return render_template("login.html")

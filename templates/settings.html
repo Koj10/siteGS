@@ -23,11 +23,18 @@
 				<input id="settingsBirthday" name="date_of_birth" type="text" placeholder="ДД/ММ/ГГГГ" maxlength="10" autocomplete="bday">
 				<p id="settingsBirthdayHint" class="settings-hint">День рождения можно указать только один раз. Формат: ДД/ММ/ГГГГ.</p>
 			</div>
+			<div class="settings-privacy">
+				<input id="settingsProfilePublic" name="profile_public" type="checkbox">
+				<div>
+					<label for="settingsProfilePublic">Открытый профиль</label>
+					<p class="settings-hint">Если включено, ваш профиль смогут просматривать все пользователи. Иначе — только друзья.</p>
+				</div>
+			</div>
 			<button type="submit" class="card-buy buy-button">Сохранить</button>
 		</form>
 	</div>
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/settings.js') }}?v=1.2" defer></script>
+<script src="{{ url_for('static', filename='js/settings.js') }}?v=1.3" defer></script>
 {% endblock %}
