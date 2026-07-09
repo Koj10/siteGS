@@ -1,5 +1,10 @@
 const host = getApiBase();
-const url = `${host}/time_packages`;
+
+function getPackagesUrl() {
+    const pcToken = getCookie('pc_token');
+    if (!pcToken) return `${host}/time_packages`;
+    return `${host}/time_packages?pc_token=${encodeURIComponent(pcToken)}`;
+}
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -30,7 +35,7 @@ function buildCard(item, isBlocked, eagerImage) {
     const badge = isBlocked ? '<span class="card-badge">СКОРО</span>' : '';
     const name = item.name || `ПАКЕТ ${item.duration_minutes || ''} МИН`;
     const subtitle = getPeriodLabel(item);
-    const price = Math.round(Number(item.price));
+    const price = Math.round(Number(item.display_price ?? item.price));
 
     card.innerHTML = `
         ${badge}
@@ -107,7 +112,7 @@ async function loadPackages() {
     const jwtToken = getCookie('jwt_token');
 
     try {
-        const response = await fetch(url, {
+        const response = await fetch(getPackagesUrl(), {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
@@ -136,7 +141,10 @@ async function loadPackages() {
 
 function sendBuyRequest(productId) {
     const jwtToken = getCookie('jwt_token');
+    const pcToken = getCookie('pc_token');
     const buyUrl = `${host}/buy/time_packages`;
+    const payload = { id: productId, quality: 1 };
+    if (pcToken) payload.pc_token = pcToken;
 
     fetch(buyUrl, {
         method: 'POST',
@@ -144,7 +152,7 @@ function sendBuyRequest(productId) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${jwtToken}`
         },
-        body: JSON.stringify({ id: productId, quality: 1 })
+        body: JSON.stringify(payload)
     })
     .then(async (response) => {
         const data = await response.json().catch(() => ({}));
