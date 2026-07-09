@@ -135,10 +135,11 @@ function isAdminSessionsPage() {
 }
 
 function formatPcStatus(status) {
+    if (status === 'заблокирован' || status === 'активен') {
+        return 'Активен';
+    }
     const labels = {
-        активен: 'Активен',
         занят: 'Занят',
-        заблокирован: 'Заблокирован',
         ремонт: 'На ремонте'
     };
     return labels[status] || status;
@@ -269,9 +270,6 @@ function showPC() {
             } else if (item.status === "ремонт") {
                 pc.innerHTML = `<p class="iconoir-pc-no-entry"></p>`;
                 pc.classList.add("fix");
-            } else if (item.status === "заблокирован") {
-                pc.innerHTML = `<p class="iconoir-pc-no-entry"></p>`;
-                pc.classList.add("blocked");
             } else {
                 pc.innerHTML = `<p class="iconoir-pc-check"></p>`;
                 pc.classList.add("active");
