@@ -15,17 +15,22 @@ function formatDuration(ms) {
 }
 
 function getSessionRemainingMs(pc) {
+    let remaining = 0;
+
     if (pc.session_started_at && pc.session_duration_minutes) {
         const start = parseDbDateTime(pc.session_started_at);
-        if (!start) return 0;
-        const totalMs = Number(pc.session_duration_minutes) * 60 * 1000;
-        const elapsed = Date.now() - start.getTime();
-        return Math.max(0, totalMs - elapsed);
+        if (start) {
+            const totalMs = Number(pc.session_duration_minutes) * 60 * 1000;
+            remaining = Math.max(0, totalMs - (Date.now() - start.getTime()));
+        }
     }
 
     const end = parseDbDateTime(pc.time_active);
-    if (!end) return 0;
-    return Math.max(0, end.getTime() - Date.now());
+    if (end) {
+        remaining = Math.max(remaining, Math.max(0, end.getTime() - Date.now()));
+    }
+
+    return remaining;
 }
 
 function formatPackageDuration(minutes) {

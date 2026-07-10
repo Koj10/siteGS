@@ -43,16 +43,23 @@ function showNotificationTime() {
     })
     .then(response => response.json())
     .then(responseData => {
-        const time_active = responseData.message.time_active || 'N/A';
-
-        if (time_active === "N/A"){
-            return;
-        }
-        
+        const pc = responseData.message || {};
         const notification = document.getElementById('out_time');
 
-        const endTime = new Date(time_active);
-        endTime.setHours(endTime.getHours() + 5);
+        let endTime = null;
+        if (pc.session_started_at && pc.session_duration_minutes) {
+            const start = new Date(String(pc.session_started_at).replace(' ', 'T'));
+            if (!Number.isNaN(start.getTime())) {
+                endTime = new Date(start.getTime() + Number(pc.session_duration_minutes) * 60 * 1000);
+            }
+        }
+        if (!endTime && pc.time_active) {
+            endTime = new Date(String(pc.time_active).replace(' ', 'T'));
+        }
+        if (!endTime || Number.isNaN(endTime.getTime())) {
+            return;
+        }
+
         const now = new Date();
 
         if (endTime <= now) {
