@@ -55,7 +55,7 @@ async function handleRegisterSubmit(e) {
 
         if (!response.ok) {
             if (response.status === 400) {
-                showNotification(jsonData.error || 'Проверьте введённые данные', true);
+                showNotification(jsonData.error || 'Эта почта уже зарегистрирована', true);
             } else {
                 showNotification('Введите правильные данные', true);
             }
@@ -81,8 +81,6 @@ function switchToRegister() {
 
     form.first_name.classList.remove("none");
     form.last_name.classList.remove("none");
-    form.phone_number.classList.remove("none");
-    document.querySelectorAll('.auth-label--register').forEach(el => el.classList.remove('none'));
 
     document.querySelectorAll('.auth-label--login').forEach(el => el.classList.add('none'));
 
@@ -93,11 +91,9 @@ function switchToRegister() {
 
     form.first_name.name = "first_name";
     form.last_name.name = "last_name";
-    form.phone_number.name = "phone_number";
 
     form.first_name.required = true;
     form.last_name.required = true;
-    form.phone_number.required = true;
 
     const identifier = form.identifier;
     const emailField = document.createElement("input");
@@ -122,8 +118,6 @@ function switchToLogin() {
 
     form.first_name.classList.add("none");
     form.last_name.classList.add("none");
-    form.phone_number.classList.add("none");
-    document.querySelectorAll('.auth-label--register').forEach(el => el.classList.add('none'));
 
     document.querySelectorAll('.auth-label--login').forEach(el => el.classList.remove('none'));
 
@@ -136,11 +130,9 @@ function switchToLogin() {
 
     form.first_name.removeAttribute("name");
     form.last_name.removeAttribute("name");
-    form.phone_number.removeAttribute("name");
 
     form.first_name.required = false;
     form.last_name.required = false;
-    form.phone_number.required = false;
 
     const emailField = form.email;
     if (emailField) {

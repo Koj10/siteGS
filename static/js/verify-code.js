@@ -1,4 +1,4 @@
-let phone = '';
+let email = '';
 
 function getAuthHeaders() {
     const jwtToken = getCookie('jwt_token');
@@ -8,7 +8,7 @@ function getAuthHeaders() {
     };
 }
 
-async function loadUserPhone() {
+async function loadUserEmail() {
     const jwtToken = getCookie('jwt_token');
     if (!jwtToken) {
         window.location.href = '/login';
@@ -25,9 +25,8 @@ async function loadUserPhone() {
     }
 
     const user = await response.json();
-    phone = user.phone_number;
-    const label = user.phone_masked || user.phone_number || '';
-    document.getElementById('phone').textContent = label;
+    email = user.email;
+    document.getElementById('email').textContent = email;
     return true;
 }
 
@@ -35,7 +34,7 @@ async function sendVerificationCode() {
     const response = await fetch(`${getApiBase()}/verify-code/send`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ phone })
+        body: JSON.stringify({ email })
     });
 
     const data = await response.json().catch(() => ({}));
@@ -47,7 +46,7 @@ async function sendVerificationCode() {
 function sendData() {
     const inputs = document.querySelectorAll('#send-code input');
     const code = Array.from(inputs).map(input => input.value).join('');
-    const data = { phone, code };
+    const data = { email, code };
 
     fetch(`${getApiBase()}/verify-code`, {
         method: 'POST',
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const resendBtn = document.getElementById('resendBtn');
 
     try {
-        const loaded = await loadUserPhone();
+        const loaded = await loadUserEmail();
         if (!loaded) return;
         await sendVerificationCode();
     } catch (error) {

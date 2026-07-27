@@ -188,7 +188,7 @@
             if (userData) {
                 const user = JSON.parse(userData);
 
-                if (!user.phone_confirmed && window.location.pathname !== "/verify") {
+                if (user.email_confirmed === 0 && window.location.pathname !== "/verify") {
                     window.location.href = "/verify";
                 }
 
