@@ -39,7 +39,7 @@ async function sendVerificationCode() {
 
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-        throw new Error(data.error || 'Не удалось отправить код');
+        throw new Error(data.error || data.detail || 'Не удалось отправить код');
     }
 }
 
