@@ -120,6 +120,16 @@ select:focus {
 }
 
 #send-code { margin: 20px 0; }
+.verify-lead {
+	margin: 12px 0 8px;
+	color: var(--text-secondary, #c4b5fd);
+	text-align: center;
+}
+.verify-phone {
+	margin: 0 0 16px;
+	text-align: center;
+	opacity: 0.85;
+}
 #newPassword { width: 100%; max-width: 600px; }
 #searchInput { width: 60%; margin-bottom: 20px; }
 #sortSelect { width: 60%; margin-bottom: 40px; }

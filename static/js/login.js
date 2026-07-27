@@ -10,7 +10,6 @@ if (jwtToken) {
     window.location.href = '/';
 }
 
-    // Функция для отправки формы входа
 async function handleLoginSubmit(e) {
     e.preventDefault();
     const formData = new FormData(form);
@@ -38,7 +37,6 @@ async function handleLoginSubmit(e) {
     }
 }
 
-    // Функция для отправки формы регистрации
 async function handleRegisterSubmit(e) {
     e.preventDefault();
     const formData = new FormData(form);
@@ -57,14 +55,13 @@ async function handleRegisterSubmit(e) {
 
         if (!response.ok) {
             if (response.status === 400) {
-                showNotification(`Эта почта уже зарегистрирована`, true);
+                showNotification(jsonData.error || 'Проверьте введённые данные', true);
             } else {
                 showNotification('Введите правильные данные', true);
             }
             return;
         }
 
-        // Успешная регистрация
         document.cookie = `jwt_token=${jsonData.token}; path=/; SameSite=Strict`;
         await updateUserData();
         window.location.href = '/verify';
@@ -74,96 +71,92 @@ async function handleRegisterSubmit(e) {
     }
 }
 
-    // Первоначально слушаем только вход
+form.addEventListener('submit', handleLoginSubmit);
+
+function switchToRegister() {
+    form.id = "registerForm";
+
+    form.removeEventListener('submit', handleLoginSubmit);
+    form.addEventListener('submit', handleRegisterSubmit);
+
+    form.first_name.classList.remove("none");
+    form.last_name.classList.remove("none");
+    form.phone_number.classList.remove("none");
+    document.querySelectorAll('.auth-label--register').forEach(el => el.classList.remove('none'));
+
+    document.querySelectorAll('.auth-label--login').forEach(el => el.classList.add('none'));
+
+    loginBtn.classList.add("iconoir-arrow-left-circle-solid");
+    loginBtn.textContent = "";
+    loginBtn.removeAttribute('style');
+    registerBtn.style.flexGrow = '1';
+
+    form.first_name.name = "first_name";
+    form.last_name.name = "last_name";
+    form.phone_number.name = "phone_number";
+
+    form.first_name.required = true;
+    form.last_name.required = true;
+    form.phone_number.required = true;
+
+    const identifier = form.identifier;
+    const emailField = document.createElement("input");
+    emailField.type = "text";
+    emailField.name = "email";
+    emailField.placeholder = "E-mail:";
+    emailField.required = true;
+    emailField.value = identifier.value.includes('@') ? identifier.value : '';
+
+    identifier.parentNode.replaceChild(emailField, identifier);
+
+    registerBtn.type = "submit";
+    registerBtn.classList.remove("outline-button");
+    loginBtn.type = "button";
+}
+
+function switchToLogin() {
+    form.id = "loginForm";
+
+    form.removeEventListener('submit', handleRegisterSubmit);
     form.addEventListener('submit', handleLoginSubmit);
 
-    // Функция для переключения на регистрацию
-    function switchToRegister() {
-        form.id = "registerForm";
+    form.first_name.classList.add("none");
+    form.last_name.classList.add("none");
+    form.phone_number.classList.add("none");
+    document.querySelectorAll('.auth-label--register').forEach(el => el.classList.add('none'));
 
-        // Удаляем старый обработчик
-        form.removeEventListener('submit', handleLoginSubmit);
-        form.addEventListener('submit', handleRegisterSubmit);
+    document.querySelectorAll('.auth-label--login').forEach(el => el.classList.remove('none'));
 
-        // Показываем имя и фамилию
-        form.first_name.classList.remove("none");
-        form.last_name.classList.remove("none");
+    loginBtn.classList.remove("iconoir-arrow-left-circle-solid");
+    loginBtn.textContent = "Войти";
+    registerBtn.removeAttribute('style');
+    loginBtn.style.flexGrow = '1';
 
-        loginBtn.classList.add("iconoir-arrow-left-circle-solid");
-        loginBtn.textContent = "";
-        loginBtn.removeAttribute('style');
-        registerBtn.style.flexGrow = '1';
+    registerBtn.classList.add("outline-button");
 
-        form.first_name.name = "first_name";
-        form.last_name.name = "last_name";
+    form.first_name.removeAttribute("name");
+    form.last_name.removeAttribute("name");
+    form.phone_number.removeAttribute("name");
 
-        form.first_name.required = true;
-        form.last_name.required = true;
+    form.first_name.required = false;
+    form.last_name.required = false;
+    form.phone_number.required = false;
 
-        // Заменяем identifier на email
-        const identifier = form.identifier;
-        const emailField = document.createElement("input");
-        emailField.type = "text";
-        emailField.name = "email";
-        emailField.placeholder = "E-mail:";
-        emailField.required = true;
-        emailField.value = identifier.value;
+    const emailField = form.email;
+    if (emailField) {
+        const identifierField = document.createElement("input");
+        identifierField.type = "text";
+        identifierField.name = "identifier";
+        identifierField.placeholder = "+7XXXXXXXXXX или email";
+        identifierField.required = true;
+        identifierField.value = emailField.value;
 
-        identifier.parentNode.replaceChild(emailField, identifier);
-
-        // Превращаем кнопку регистрации в submit
-        registerBtn.type = "submit";
-        registerBtn.classList.remove("outline-button");
-
-        // Убираем submit у кнопки "Войти"
-        loginBtn.type = "button";
+        emailField.parentNode.replaceChild(identifierField, emailField);
     }
 
-    // Функция для возврата к входу
-    function switchToLogin() {
-        form.id = "loginForm";
+    loginBtn.type = "submit";
+    registerBtn.type = "button";
+}
 
-        // Удаляем обработчик регистрации
-        form.removeEventListener('submit', handleRegisterSubmit);
-        form.addEventListener('submit', handleLoginSubmit);
-
-        // Скрываем имя и фамилию
-        form.first_name.classList.add("none");
-        form.last_name.classList.add("none");
-
-        loginBtn.classList.remove("iconoir-arrow-left-circle-solid");
-        loginBtn.textContent = "Войти";
-        registerBtn.removeAttribute('style');
-        loginBtn.style.flexGrow = '1';
-
-        registerBtn.classList.add("outline-button");
-
-        form.first_name.removeAttribute("name");
-        form.last_name.removeAttribute("name");
-
-        form.first_name.required = false;
-        form.last_name.required = false;
-
-
-
-        // Удаляем email и возвращаем identifier
-        const emailField = form.email;
-        if (emailField) {
-            const identifierField = document.createElement("input");
-            identifierField.type = "text";
-            identifierField.name = "identifier";
-            identifierField.placeholder = "E-mail:";
-            identifierField.required = true;
-            identifierField.value = emailField.value;
-
-            emailField.parentNode.replaceChild(identifierField, emailField);
-        }
-
-        // Возвращаем тип кнопок
-        loginBtn.type = "submit";
-        registerBtn.type = "button";
-    }
-
-    // Обработчики событий
-    loginBtn.addEventListener("click", switchToLogin);
-    registerBtn.addEventListener("click", switchToRegister);
+loginBtn.addEventListener("click", switchToLogin);
+registerBtn.addEventListener("click", switchToRegister);

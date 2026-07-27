@@ -12,7 +12,7 @@ COPY . .
 RUN find . -name "__pycache__" -exec rm -rf {} + \
     && find . -name "*.pyc" -delete
 
-ENV CONTAINER_PORT=6100
-ENV GS_API_BASE=https://api.game-sense.ru
+ENV CONTAINER_PORT=8100
+ENV GS_API_BASE=http://77.91.100.153:6001
 
 CMD ["gunicorn", "--config", "gunicorn.conf.py", "server:app"]

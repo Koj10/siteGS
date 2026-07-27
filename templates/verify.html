@@ -3,7 +3,8 @@
 {% block content %}
 <section class="center-display">
     <h4 id="custom-notification" class="notification"></h4>
-    <h4 id="email"></h4>
+    <p class="verify-lead">Введите код из SMS</p>
+    <p id="phone" class="verify-phone"></p>
     <div id="send-code" class="row">
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
         <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
@@ -14,10 +15,10 @@
     </div>
     <div class="row between">
         <button onclick="logout()"><span class="icon iconoir-arrow-left-circle-solid"></span></button>
-        <button id="resendBtn" class="deactivate" style="flex-grow: 1;">Отправить снова</button>
+        <button id="resendBtn" class="deactivate" style="flex-grow: 1;">Отправить код снова</button>
     </div>
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/verify-code.js') }}?v=2.0" defer></script>
+<script src="{{ url_for('static', filename='js/verify-code.js') }}?v=3.0" defer></script>
 {% endblock %}

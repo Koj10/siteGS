@@ -58,8 +58,11 @@
 			<input type="text" id="first_name" placeholder="Имя" required class="none">
 			<input type="text" id="last_name" placeholder="Фамилия" required class="none">
 
-			<label class="auth-label">E-mail</label>
-			<input type="text" name="identifier" placeholder="your@email.com" required>
+			<label class="auth-label auth-label--register none">Телефон</label>
+			<input type="text" id="phone_number" name="phone_number" placeholder="+7 (___) ___-__-__" class="none">
+
+			<label class="auth-label auth-label--login">E-mail или телефон</label>
+			<input type="text" name="identifier" placeholder="+7XXXXXXXXXX или email" required>
 
 			<label class="auth-label">Пароль</label>
 			<input type="password" name="password" placeholder="••••••••" required>
@@ -70,7 +73,7 @@
 			</div>
 
 			<div class="auth-links row between">
-				<a href="https://game-sense.ru" class="auth-link">
+				<a href="http://77.91.100.153:6200" class="auth-link">
 					<span class="iconoir-home"></span> На главную
 				</a>
 				<a data-menu="reset-password" class="auth-link auth-link--accent">Забыли пароль?</a>
@@ -82,6 +85,6 @@
 </section>
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/login.js') }}?v=2.0" defer></script>
+<script src="{{ url_for('static', filename='js/login.js') }}?v=3.0" defer></script>
 <script src="{{ url_for('static', filename='js/reset-password.js') }}" defer></script>
 {% endblock %}
