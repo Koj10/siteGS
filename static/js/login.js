@@ -1,13 +1,57 @@
 const form = document.getElementById("loginForm");
 const buttons = form.querySelectorAll("button");
-
 const loginBtn = buttons[0];
 const registerBtn = buttons[1];
+const loginEmail = document.getElementById("loginEmail");
+const registerEmail = document.getElementById("registerEmail");
+const firstName = document.getElementById("first_name");
+const lastName = document.getElementById("last_name");
 
 const jwtToken = getCookie('jwt_token');
-
 if (jwtToken) {
     window.location.href = '/';
+}
+
+function setRegisterMode(isRegister) {
+    form.id = isRegister ? "registerForm" : "loginForm";
+
+    document.querySelectorAll('.auth-field--login').forEach(el => {
+        el.classList.toggle('none', isRegister);
+    });
+    document.querySelectorAll('.auth-field--register').forEach(el => {
+        el.classList.toggle('none', !isRegister);
+    });
+
+    loginEmail.required = !isRegister;
+    loginEmail.disabled = isRegister;
+    registerEmail.required = isRegister;
+
+    firstName.required = isRegister;
+    lastName.required = isRegister;
+
+    if (isRegister) {
+        loginBtn.classList.add("iconoir-arrow-left-circle-solid");
+        loginBtn.textContent = "";
+        loginBtn.removeAttribute('style');
+        registerBtn.style.flexGrow = '1';
+        registerBtn.type = "submit";
+        registerBtn.classList.remove("outline-button");
+        loginBtn.type = "button";
+
+        if (!registerEmail.value && loginEmail.value.includes('@')) {
+            registerEmail.value = loginEmail.value.trim();
+        }
+        registerEmail.focus();
+    } else {
+        loginBtn.classList.remove("iconoir-arrow-left-circle-solid");
+        loginBtn.textContent = "Войти";
+        registerBtn.removeAttribute('style');
+        loginBtn.style.flexGrow = '1';
+        registerBtn.type = "button";
+        registerBtn.classList.add("outline-button");
+        loginBtn.type = "submit";
+        loginEmail.focus();
+    }
 }
 
 async function handleLoginSubmit(e) {
@@ -18,9 +62,7 @@ async function handleLoginSubmit(e) {
     try {
         const response = await fetch(`${getApiBase()}/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
 
@@ -39,26 +81,30 @@ async function handleLoginSubmit(e) {
 
 async function handleRegisterSubmit(e) {
     e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
+
+    const payload = {
+        first_name: firstName.value.trim(),
+        last_name: lastName.value.trim(),
+        email: registerEmail.value.trim().toLowerCase(),
+        password: form.password.value
+    };
+
+    if (!payload.first_name || !payload.last_name || !payload.email || !payload.password) {
+        showNotification('Заполните все поля регистрации', true);
+        return;
+    }
 
     try {
         const response = await fetch(`${getApiBase()}/register`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
-        const jsonData = await response.json();
+        const jsonData = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            if (response.status === 400) {
-                showNotification(jsonData.error || 'Эта почта уже зарегистрирована', true);
-            } else {
-                showNotification('Введите правильные данные', true);
-            }
+            showNotification(jsonData.error || 'Не удалось зарегистрироваться', true);
             return;
         }
 
@@ -74,80 +120,17 @@ async function handleRegisterSubmit(e) {
 form.addEventListener('submit', handleLoginSubmit);
 
 function switchToRegister() {
-    form.id = "registerForm";
-
+    if (form.id === "registerForm") return;
     form.removeEventListener('submit', handleLoginSubmit);
     form.addEventListener('submit', handleRegisterSubmit);
-
-    form.first_name.classList.remove("none");
-    form.last_name.classList.remove("none");
-
-    document.querySelectorAll('.auth-label--login').forEach(el => el.classList.add('none'));
-
-    loginBtn.classList.add("iconoir-arrow-left-circle-solid");
-    loginBtn.textContent = "";
-    loginBtn.removeAttribute('style');
-    registerBtn.style.flexGrow = '1';
-
-    form.first_name.name = "first_name";
-    form.last_name.name = "last_name";
-
-    form.first_name.required = true;
-    form.last_name.required = true;
-
-    const identifier = form.identifier;
-    const emailField = document.createElement("input");
-    emailField.type = "text";
-    emailField.name = "email";
-    emailField.placeholder = "E-mail:";
-    emailField.required = true;
-    emailField.value = identifier.value.includes('@') ? identifier.value : '';
-
-    identifier.parentNode.replaceChild(emailField, identifier);
-
-    registerBtn.type = "submit";
-    registerBtn.classList.remove("outline-button");
-    loginBtn.type = "button";
+    setRegisterMode(true);
 }
 
 function switchToLogin() {
-    form.id = "loginForm";
-
+    if (form.id === "loginForm") return;
     form.removeEventListener('submit', handleRegisterSubmit);
     form.addEventListener('submit', handleLoginSubmit);
-
-    form.first_name.classList.add("none");
-    form.last_name.classList.add("none");
-
-    document.querySelectorAll('.auth-label--login').forEach(el => el.classList.remove('none'));
-
-    loginBtn.classList.remove("iconoir-arrow-left-circle-solid");
-    loginBtn.textContent = "Войти";
-    registerBtn.removeAttribute('style');
-    loginBtn.style.flexGrow = '1';
-
-    registerBtn.classList.add("outline-button");
-
-    form.first_name.removeAttribute("name");
-    form.last_name.removeAttribute("name");
-
-    form.first_name.required = false;
-    form.last_name.required = false;
-
-    const emailField = form.email;
-    if (emailField) {
-        const identifierField = document.createElement("input");
-        identifierField.type = "text";
-        identifierField.name = "identifier";
-        identifierField.placeholder = "+7XXXXXXXXXX или email";
-        identifierField.required = true;
-        identifierField.value = emailField.value;
-
-        emailField.parentNode.replaceChild(identifierField, emailField);
-    }
-
-    loginBtn.type = "submit";
-    registerBtn.type = "button";
+    setRegisterMode(false);
 }
 
 loginBtn.addEventListener("click", switchToLogin);
