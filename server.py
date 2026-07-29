@@ -3,21 +3,28 @@ import os
 from flask import (
     Flask,
     render_template,
-    send_from_directory,
     request,
     redirect,
     url_for,
     make_response,
 )
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+PUBLIC_LANDING_URL = os.getenv("LANDING_URL", "https://gamesense-club.ru").rstrip("/")
+PUBLIC_API_URL = os.getenv("GS_API_BASE", "https://api.gamesense-club.ru").rstrip("/")
+
+PUBLIC_ROUTES = {"login", "static", "login_pc", "reset_password", "price"}
 
 
 @app.context_processor
-def inject_api_base():
-    return {"gs_api_base": os.getenv("GS_API_BASE", "http://77.91.100.153:6001")}
-
-PUBLIC_ROUTES = {"login", "static", "login_pc", "reset_password", "price"}
+def inject_urls():
+    return {
+        "gs_api_base": PUBLIC_API_URL,
+        "landing_url": PUBLIC_LANDING_URL,
+    }
 
 
 @app.before_request

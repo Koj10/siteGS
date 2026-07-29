@@ -1,0 +1,12 @@
+services:
+  site:
+    build: .
+    image: gs-site:local
+    container_name: gs_site
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    env_file:
+      - .env
+    environment:
+      CONTAINER_PORT: "8100"
