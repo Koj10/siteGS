@@ -10,7 +10,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=5.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=5.6">
 
     <link rel="preconnect" href="{{ gs_api_base }}" crossorigin>
     <link rel="dns-prefetch" href="{{ gs_api_base }}">
@@ -23,7 +23,7 @@
     <script src="{{ url_for('static', filename='js/logout.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/notification.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/bonus-progress.js') }}?v=1.0"></script>
-    <script src="{{ url_for('static', filename='js/user-menu.js') }}?v=1.2" defer></script>
+    <script src="{{ url_for('static', filename='js/user-menu.js') }}?v=1.4" defer></script>
     <script src="{{ url_for('static', filename='js/menu.js') }}?v=1.0.1" defer></script>
     <script src="{{ url_for('static', filename='js/send-payment.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/loading.js') }}" defer></script>
@@ -43,28 +43,32 @@
 
     {% if self.title() not in ['Подтверждение', 'Вход', 'Прайс', 'Восстановление пароля'] %}
     <div class="mobile wallet-mobile">
-        <div class="bonus-progress-widget bonus-progress-widget--mobile">
-            <span class="bonus-progress-widget__burst" hidden aria-hidden="true"></span>
-            <div class="bonus-progress-widget__head">
-                <span class="bonus-progress-widget__label">ДО БОНУСА</span>
-                <span class="bonus-progress-widget__ratio"><span class="bonus-current">0</span>/<span class="bonus-threshold">2000</span></span>
-            </div>
-            <div class="bonus-progress-widget__track">
-                <div class="bonus-progress-widget__fill"></div>
+        <div class="wallet-mobile__bonus">
+            <div class="bonus-progress-widget bonus-progress-widget--mobile bonus-progress-widget--compact" title="Прогресс до бонуса">
+                <span class="bonus-progress-widget__burst" hidden aria-hidden="true"></span>
+                <div class="bonus-progress-widget__head">
+                    <span class="bonus-progress-widget__label">До бонуса</span>
+                    <span class="bonus-progress-widget__ratio"><span class="bonus-current">0</span>/<span class="bonus-threshold">2000</span></span>
+                </div>
+                <div class="bonus-progress-widget__track">
+                    <div class="bonus-progress-widget__fill"></div>
+                </div>
             </div>
         </div>
-        <a class="balance-mobile">
-            <span class="balance">0</span> ₽
-        </a>
-        <div class="user-menu user-menu--mobile user-chip--mobile" data-user-menu>
-            <button type="button" class="user-menu__trigger" data-user-menu-trigger aria-label="Меню профиля">
-                <div class="user-chip__avatar">
-                    <span class="user-chip__initial first_name">G</span>
-                </div>
+        <div class="wallet-mobile__actions">
+            <a class="balance-mobile" href="/account" aria-label="Баланс">
+                <span class="balance">0</span> ₽
+            </a>
+            <button type="button" class="user-menu__trigger user-chip__avatar" id="mobileProfileOpen" aria-label="Открыть профиль" aria-expanded="false" aria-controls="mobileProfileSheet">
+                <span class="user-chip__initial first_name">G</span>
             </button>
-            <div class="user-menu__dropdown" hidden>
-                {% include 'user_menu_dropdown.html' %}
-            </div>
+        </div>
+    </div>
+
+    <div class="mobile-profile-sheet mobile" id="mobileProfileSheet" hidden>
+        <button type="button" class="mobile-profile-sheet__backdrop" id="mobileProfileClose" aria-label="Закрыть меню"></button>
+        <div class="mobile-profile-sheet__panel" role="dialog" aria-modal="true" aria-label="Меню профиля">
+            {% include 'user_menu_dropdown.html' %}
         </div>
     </div>
     <header class="app-header">

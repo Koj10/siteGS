@@ -58,19 +58,15 @@
 
 @media (min-width: 640px) and (max-width: 999px) {
 	.wallet-mobile {
-		left: 16px;
-		right: 16px;
-		top: 12px;
-		justify-content: space-between;
-	}
-
-	.balance-mobile {
-		min-width: 112px;
-		text-align: center;
+		padding-left: 16px;
+		padding-right: 16px;
 	}
 
 	.app-main {
-		padding: 72px 16px calc(88px + env(safe-area-inset-bottom));
+		padding-top: calc(64px + env(safe-area-inset-top));
+		padding-left: 16px;
+		padding-right: 16px;
+		padding-bottom: calc(88px + env(safe-area-inset-bottom));
 	}
 
 	.cardsContainer {
@@ -130,22 +126,14 @@
 
 @media (max-width: 639px) {
 	.wallet-mobile {
-		left: 10px;
-		right: 10px;
-		top: 10px;
-		gap: 6px;
-		justify-content: space-between;
-	}
-
-	.bonus-progress-widget--mobile {
-		min-width: 132px;
-		flex: 1 1 auto;
+		padding-left: 10px;
+		padding-right: 10px;
+		gap: 8px;
 	}
 
 	.balance-mobile {
-		padding: 8px 10px;
-		font-size: 0.78rem;
-		white-space: nowrap;
+		padding: 0 10px;
+		font-size: 0.76rem;
 	}
 
 	.app-header {
@@ -154,7 +142,10 @@
 	}
 
 	.app-main {
-		padding: 70px 10px calc(86px + env(safe-area-inset-bottom));
+		padding-top: calc(60px + env(safe-area-inset-top));
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-bottom: calc(86px + env(safe-area-inset-bottom));
 	}
 
 	.shop-section {
@@ -221,17 +212,17 @@
 	}
 
 	.bonus-case-modal {
-		padding: 10px;
-		align-items: flex-end;
+		padding: 12px;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.bonus-case-modal__dialog {
-		width: 100%;
-		max-height: min(90vh, 760px);
+		width: min(100%, 420px);
+		max-height: min(88vh, 720px);
 		overflow-y: auto;
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
-		padding: 18px 10px 14px;
+		border-radius: var(--radius-lg);
+		padding: 20px 14px 16px;
 	}
 
 	.bonus-case-modal__title {

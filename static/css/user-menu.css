@@ -7,6 +7,47 @@
 	background: transparent;
 	padding: 0;
 	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+
+button.user-menu__trigger,
+#mobileProfileOpen {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	filter: none !important;
+	transform: none !important;
+	padding: 0 !important;
+	min-width: 0;
+	width: auto;
+	font-weight: inherit;
+	color: inherit;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+
+button.user-menu__trigger:hover,
+#mobileProfileOpen:hover {
+	background: transparent !important;
+	filter: none !important;
+	transform: none !important;
+}
+
+.user-menu__trigger.user-chip__avatar,
+#mobileProfileOpen.user-chip__avatar,
+#mobileProfileOpen {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: var(--gradient-purple) !important;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid var(--border-glow) !important;
+	box-shadow: 0 0 16px rgba(167, 139, 212, 0.25);
+	flex-shrink: 0;
 }
 
 .user-menu__trigger:focus-visible {
@@ -80,8 +121,26 @@
 	color: #ffb3b3 !important;
 }
 
-.user-chip--mobile {
-	display: none;
+.user-chip__avatar {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--gradient-purple);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid var(--border-glow);
+	box-shadow: 0 0 16px rgba(167, 139, 212, 0.25);
+	flex-shrink: 0;
+}
+
+.user-chip__initial {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--white);
+	line-height: 1;
+	pointer-events: none;
 }
 
 .account-page,
@@ -195,15 +254,4 @@
 	font-family: "Orbitron", sans-serif;
 	font-size: 1.1rem;
 	color: var(--gold-light);
-}
-
-@media (width <= 1000px) {
-	.user-chip--mobile {
-		display: block;
-	}
-
-	.user-menu--mobile .user-menu__dropdown {
-		right: 0;
-		left: auto;
-	}
 }

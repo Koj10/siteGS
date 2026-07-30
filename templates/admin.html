@@ -107,21 +107,43 @@
 
 			</div>
 
-			<div class="admin-balance-global">
-
-				<label class="admin-label">Способ оплаты (для пополнения)</label>
-
-				<div class="admin-pay-methods">
-
-					<label class="admin-pay-method"><input type="radio" name="payMethod" value="cash" checked> Наличные</label>
-
-					<label class="admin-pay-method"><input type="radio" name="payMethod" value="card"> Безнал</label>
-
-				</div>
-
-			</div>
-
 			<div id="balanceUsersList" class="admin-users-list"></div>
+
+			<div id="balanceOperationModal" class="admin-modal" hidden>
+				<div class="admin-modal__backdrop" data-close-balance-modal></div>
+				<div class="admin-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="balanceModalTitle">
+					<h3 id="balanceModalTitle">Подтверждение операции</h3>
+					<p class="admin-modal__text">Пользователь: <span id="balanceModalUser">—</span></p>
+					<p class="admin-modal__text">Текущий баланс: <span id="balanceModalCurrent">—</span> ₽</p>
+					<p class="admin-modal__text">Сумма операции: <span id="balanceModalAmount">—</span> ₽</p>
+					<p class="admin-modal__text">Баланс после: <span id="balanceModalNew">—</span> ₽</p>
+					<div id="balanceModalPayBlock" class="admin-modal__pay-block" hidden>
+						<span class="admin-label">Способ оплаты</span>
+						<div class="admin-pay-picker" role="radiogroup" aria-label="Способ оплаты">
+							<label class="admin-pay-option">
+								<input type="radio" name="balanceModalPayMethod" value="cash" checked>
+								<span class="admin-pay-option__card admin-pay-option__card--cash">
+									<span class="admin-pay-option__icon"><i class="iconoir-cash" aria-hidden="true"></i></span>
+									<span class="admin-pay-option__title">Наличные</span>
+									<span class="admin-pay-option__hint">Касса клуба</span>
+								</span>
+							</label>
+							<label class="admin-pay-option">
+								<input type="radio" name="balanceModalPayMethod" value="card">
+								<span class="admin-pay-option__card admin-pay-option__card--card">
+									<span class="admin-pay-option__icon"><i class="iconoir-credit-card" aria-hidden="true"></i></span>
+									<span class="admin-pay-option__title">Безнал</span>
+									<span class="admin-pay-option__hint">Карта / перевод</span>
+								</span>
+							</label>
+						</div>
+					</div>
+					<div class="admin-modal__actions">
+						<button type="button" class="admin-btn" data-close-balance-modal>Отмена</button>
+						<button type="button" class="admin-btn admin-btn--add" id="balanceModalConfirm">Подтвердить</button>
+					</div>
+				</div>
+			</div>
 
 		</section>
 
@@ -225,7 +247,7 @@
 
 <script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.4" defer></script>
 
-<script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.0" defer></script>
+<script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.1" defer></script>
 
 <script src="{{ url_for('static', filename='js/admin-reports.js') }}?v=1.5" defer></script>
 
