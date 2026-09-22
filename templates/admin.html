@@ -75,6 +75,41 @@
 				</div>
 			</div>
 
+			<div id="maintenanceModal" class="admin-modal" hidden>
+				<div class="admin-modal__backdrop" data-close-maintenance></div>
+				<div class="admin-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="maintenanceModalTitle">
+					<h3 id="maintenanceModalTitle">Режим обслуживания</h3>
+					<p class="admin-modal__text">Компьютер №<span id="maintenancePcNumber">—</span></p>
+					<p class="admin-modal__hint">Не учитывается в бухгалтерии. Действие записывается в журнал обслуживания.</p>
+					<label class="admin-label" for="maintenanceReason">Причина</label>
+					<input type="text" id="maintenanceReason" class="admin-input" placeholder="Например: установка игры, обновление драйвера" minlength="5" required>
+					<label class="admin-label" for="maintenancePin">PIN обслуживания</label>
+					<input type="password" id="maintenancePin" class="admin-input" placeholder="PIN клуба" autocomplete="off" required>
+					<label class="admin-checkbox">
+						<input type="checkbox" id="maintenanceForce">
+						<span>Принудительно (если на ПК идёт клиентская сессия)</span>
+					</label>
+					<div class="admin-modal__actions">
+						<button type="button" class="admin-btn" data-close-maintenance>Отмена</button>
+						<button type="button" class="admin-btn admin-btn--primary" id="maintenanceConfirm">Включить обслуживание</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="maintenanceEndModal" class="admin-modal" hidden>
+				<div class="admin-modal__backdrop" data-close-maintenance-end></div>
+				<div class="admin-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="maintenanceEndTitle">
+					<h3 id="maintenanceEndTitle">Завершить обслуживание</h3>
+					<p class="admin-modal__text">Компьютер №<span id="maintenanceEndPcNumber">—</span></p>
+					<label class="admin-label" for="maintenanceEndPin">PIN обслуживания</label>
+					<input type="password" id="maintenanceEndPin" class="admin-input" placeholder="PIN клуба" autocomplete="off" required>
+					<div class="admin-modal__actions">
+						<button type="button" class="admin-btn" data-close-maintenance-end>Отмена</button>
+						<button type="button" class="admin-btn admin-btn--primary" id="maintenanceEndConfirm">Вернуть в работу</button>
+					</div>
+				</div>
+			</div>
+
 		</section>
 
 
@@ -245,7 +280,7 @@
 
 <script src="{{ url_for('static', filename='js/admin.js') }}?v=1.5" defer></script>
 
-<script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.4" defer></script>
+<script src="{{ url_for('static', filename='js/showPC.js') }}?v=2.5" defer></script>
 
 <script src="{{ url_for('static', filename='js/admin-balance.js') }}?v=1.1" defer></script>
 

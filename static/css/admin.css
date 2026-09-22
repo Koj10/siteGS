@@ -726,3 +726,29 @@
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
+
+.admin-modal__hint {
+	font-size: 0.85rem;
+	color: var(--text-muted, #9a93b0);
+	margin: 0 0 12px;
+	line-height: 1.45;
+}
+
+.admin-checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin: 12px 0 16px;
+	font-size: 0.88rem;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.admin-checkbox input {
+	margin-top: 3px;
+}
+
+.computer.maintenance {
+	border-color: #6b8cce;
+	box-shadow: 0 0 0 1px rgba(107, 140, 206, 0.35);
+}

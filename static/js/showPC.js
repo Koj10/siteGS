@@ -145,9 +145,170 @@ function formatPcStatus(status) {
     }
     const labels = {
         занят: 'Занят',
-        ремонт: 'На ремонте'
+        ремонт: 'На ремонте',
+        админ: 'Обслуживание'
     };
     return labels[status] || status;
+}
+
+let pendingMaintenance = null;
+let pendingMaintenanceEnd = null;
+
+function openMaintenanceModal(computerId, numberPc) {
+    const modal = document.getElementById('maintenanceModal');
+    const numberEl = document.getElementById('maintenancePcNumber');
+    const reasonEl = document.getElementById('maintenanceReason');
+    const pinEl = document.getElementById('maintenancePin');
+    const forceEl = document.getElementById('maintenanceForce');
+    if (!modal || !numberEl) return;
+
+    pendingMaintenance = { computerId: Number(computerId), numberPc };
+    numberEl.textContent = numberPc;
+    if (reasonEl) reasonEl.value = '';
+    if (pinEl) pinEl.value = '';
+    if (forceEl) forceEl.checked = false;
+    modal.hidden = false;
+}
+
+function closeMaintenanceModal() {
+    const modal = document.getElementById('maintenanceModal');
+    if (modal) modal.hidden = true;
+    pendingMaintenance = null;
+}
+
+function openMaintenanceEndModal(computerId, numberPc) {
+    const modal = document.getElementById('maintenanceEndModal');
+    const numberEl = document.getElementById('maintenanceEndPcNumber');
+    const pinEl = document.getElementById('maintenanceEndPin');
+    if (!modal || !numberEl) return;
+
+    pendingMaintenanceEnd = { computerId: Number(computerId), numberPc };
+    numberEl.textContent = numberPc;
+    if (pinEl) pinEl.value = '';
+    modal.hidden = false;
+}
+
+function closeMaintenanceEndModal() {
+    const modal = document.getElementById('maintenanceEndModal');
+    if (modal) modal.hidden = true;
+    pendingMaintenanceEnd = null;
+}
+
+async function startMaintenance(computerId, pin, reason, force = false) {
+    const jwtToken = getCookie('jwt_token');
+    const response = await fetch(`${getApiBase()}/admin/pc/maintenance/start`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({
+            computer_id: Number(computerId),
+            pin,
+            reason,
+            force: Boolean(force)
+        })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        const err = new Error(data.error || `Ошибка ${response.status}`);
+        err.requiresForce = Boolean(data.requires_force);
+        throw err;
+    }
+    return data;
+}
+
+async function endMaintenance(computerId, pin) {
+    const jwtToken = getCookie('jwt_token');
+    const response = await fetch(`${getApiBase()}/admin/pc/maintenance/end`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({
+            computer_id: Number(computerId),
+            pin
+        })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || `Ошибка ${response.status}`);
+    return data;
+}
+
+function initMaintenanceModals() {
+    if (window.maintenanceModalsInitialized) return;
+    window.maintenanceModalsInitialized = true;
+
+    const startModal = document.getElementById('maintenanceModal');
+    const endModal = document.getElementById('maintenanceEndModal');
+    const startConfirm = document.getElementById('maintenanceConfirm');
+    const endConfirm = document.getElementById('maintenanceEndConfirm');
+
+    startModal?.addEventListener('click', (event) => {
+        if (event.target.closest('[data-close-maintenance]')) closeMaintenanceModal();
+    });
+    endModal?.addEventListener('click', (event) => {
+        if (event.target.closest('[data-close-maintenance-end]')) closeMaintenanceEndModal();
+    });
+
+    startConfirm?.addEventListener('click', async () => {
+        if (!pendingMaintenance) return;
+        const reason = document.getElementById('maintenanceReason')?.value?.trim() || '';
+        const pin = document.getElementById('maintenancePin')?.value?.trim() || '';
+        const force = document.getElementById('maintenanceForce')?.checked || false;
+
+        if (reason.length < 5) {
+            showNotification('Укажите причину (минимум 5 символов)', true);
+            return;
+        }
+        if (!pin) {
+            showNotification('Введите PIN обслуживания', true);
+            return;
+        }
+
+        startConfirm.disabled = true;
+        try {
+            const result = await startMaintenance(
+                pendingMaintenance.computerId,
+                pin,
+                reason,
+                force
+            );
+            showNotification(`ПК №${result.number_pc}: режим обслуживания включён`);
+            closeMaintenanceModal();
+            showPC();
+        } catch (error) {
+            if (error.requiresForce) {
+                showNotification(`${error.message} Отметьте «Принудительно».`, true);
+            } else {
+                showNotification(error.message, true);
+            }
+        } finally {
+            startConfirm.disabled = false;
+        }
+    });
+
+    endConfirm?.addEventListener('click', async () => {
+        if (!pendingMaintenanceEnd) return;
+        const pin = document.getElementById('maintenanceEndPin')?.value?.trim() || '';
+        if (!pin) {
+            showNotification('Введите PIN обслуживания', true);
+            return;
+        }
+
+        endConfirm.disabled = true;
+        try {
+            const result = await endMaintenance(pendingMaintenanceEnd.computerId, pin);
+            showNotification(`ПК №${result.number_pc}: обслуживание завершено`);
+            closeMaintenanceEndModal();
+            showPC();
+        } catch (error) {
+            showNotification(error.message, true);
+        } finally {
+            endConfirm.disabled = false;
+        }
+    });
 }
 
 function buildPackageOptions(packages) {
@@ -190,7 +351,10 @@ function showPC() {
         const busyPcs = [];
 
         const adminPage = isAdminSessionsPage();
-        if (adminPage) initEndSessionModal();
+        if (adminPage) {
+            initEndSessionModal();
+            initMaintenanceModals();
+        }
 
         data.forEach(item => {
             const pc = document.createElement("div");
@@ -226,6 +390,9 @@ function showPC() {
                         <button type="button" class="coupon-confirm-btn admin-btn admin-btn--primary">Запустить сессию</button>
                     </div>
                     ${item.status === 'занят' ? '<button type="button" class="end-session-btn admin-btn admin-btn--end-session admin-btn--subtract">Завершить сессию</button>' : ''}
+                    ${item.status === 'админ'
+                        ? '<button type="button" class="maintenance-end-btn admin-btn admin-btn--primary">Завершить обслуживание</button>'
+                        : '<button type="button" class="maintenance-start-btn admin-btn">Режим обслуживания</button>'}
                 </div>
             ` : `
                 <h4>Компьютер: ${item.number_pc}</h4>
@@ -275,6 +442,9 @@ function showPC() {
             } else if (item.status === "ремонт") {
                 pc.innerHTML = `<p class="iconoir-pc-no-entry"></p>`;
                 pc.classList.add("fix");
+            } else if (item.status === "админ") {
+                pc.innerHTML = `<p class="iconoir-tools"></p>`;
+                pc.classList.add("maintenance");
             } else {
                 pc.innerHTML = `<p class="iconoir-pc-check"></p>`;
                 pc.classList.add("active");
@@ -306,6 +476,15 @@ function showPC() {
             const packageSelect = dropdown.querySelector('.coupon-package-select');
             const couponConfirm = dropdown.querySelector('.coupon-confirm-btn');
             const endSessionBtn = dropdown.querySelector('.end-session-btn');
+            const maintenanceStartBtn = dropdown.querySelector('.maintenance-start-btn');
+            const maintenanceEndBtn = dropdown.querySelector('.maintenance-end-btn');
+
+            maintenanceStartBtn?.addEventListener('click', () => {
+                openMaintenanceModal(item.id, item.number_pc);
+            });
+            maintenanceEndBtn?.addEventListener('click', () => {
+                openMaintenanceEndModal(item.id, item.number_pc);
+            });
 
             couponToggle.addEventListener('click', async () => {
                 const isOpen = !couponPicker.hidden;
