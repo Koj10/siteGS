@@ -27,6 +27,7 @@ function activate_package(id_product) {
         return response.json();
     })
     .then(result => {
+        window.dispatchEvent(new CustomEvent('gs-session-started'));
         window.location.href = '/profile';
     })
     .catch(error => {
