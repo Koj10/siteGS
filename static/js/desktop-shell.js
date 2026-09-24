@@ -20,8 +20,9 @@
                     <i class="iconoir-app-window" aria-hidden="true"></i>
                     На рабочий стол
                 </button>
-                <button type="button" class="gs-session-bar__btn gs-session-bar__btn--secondary" id="gsRestoreBtn" hidden>
-                    Вернуться в GameSense
+                <button type="button" class="gs-session-bar__btn gs-session-bar__btn--secondary" id="gsEndSessionBtn">
+                    <i class="iconoir-log-out" aria-hidden="true"></i>
+                    Завершить сессию
                 </button>
             </div>
         `;
@@ -31,17 +32,42 @@
             const api = getShellApi();
             if (api && api.minimize_to_desktop) {
                 await api.minimize_to_desktop();
-                document.getElementById('gsRestoreBtn').hidden = false;
             } else {
                 showNotification('Обновите приложение GameSense на этом ПК', true);
             }
         });
 
-        document.getElementById('gsRestoreBtn').addEventListener('click', async () => {
-            const api = getShellApi();
-            if (api && api.restore_app) {
-                await api.restore_app();
-                document.getElementById('gsRestoreBtn').hidden = true;
+        document.getElementById('gsEndSessionBtn').addEventListener('click', async () => {
+            const pcToken = getCookie('pc_token');
+            const jwtToken = getCookie('jwt_token');
+            if (!pcToken || !jwtToken) {
+                showNotification('Войдите в аккаунт на этом ПК', true);
+                return;
+            }
+            if (!window.confirm('Завершить сессию? Оставшееся время не вернётся.')) {
+                return;
+            }
+
+            const button = document.getElementById('gsEndSessionBtn');
+            button.disabled = true;
+            try {
+                const response = await fetch(`${getApiBase()}/pc/session/end`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${jwtToken}`,
+                    },
+                    body: JSON.stringify({ token: pcToken }),
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(data.error || 'Не удалось завершить сессию');
+                }
+                bar.hidden = true;
+                showNotification('Сессия завершена');
+            } catch (error) {
+                showNotification(error.message || 'Не удалось завершить сессию', true);
+                button.disabled = false;
             }
         });
 
